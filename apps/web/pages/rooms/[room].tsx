@@ -83,7 +83,6 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         },
       };
     } catch (e) {
-      console.log(e);
       return {
         notFound: true,
         props: {},
