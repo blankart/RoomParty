@@ -1,0 +1,8 @@
+{
+  "name": "common-types",
+  "version": "0.0.0",
+  "private": true,
+  "files": [
+    "env.d.ts"
+  ]
+}

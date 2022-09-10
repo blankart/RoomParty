@@ -10,6 +10,20 @@
     },
     "dev": {
       "cache": false
+    },
+    "migrate": {
+      "cache": false
     }
-  }
+  },
+  "globalDependencies": [
+    ".env.local",
+    "$SERVER_PORT",
+    "$NEXT_PUBLIC_SERVER_URL",
+    "$SERVER_URL",
+    "$DATABASE_URL",
+    "$NEXT_PUBLIC_WEBSOCKET_URL",
+    "$WEBSOCKET_PORT",
+    "$WEB_BASE_URL",
+    "$PORT"
+  ]
 }

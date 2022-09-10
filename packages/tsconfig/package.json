@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "private": true,
   "files": [
+    "node.json",
     "base.json",
     "nextjs.json",
     "react-library.json"

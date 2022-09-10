@@ -1,0 +1,9 @@
+{
+  "extends": "tsconfig/node.json",
+  "include": ["./src"],
+  "exclude": ["dist", "build", "node_modules"],
+  "compilerOptions": {
+    "typeRoots": ["./types"]
+  },
+  "files": ["./types/global.d.ts"]
+}

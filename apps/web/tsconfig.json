@@ -1,5 +1,13 @@
 {
   "extends": "tsconfig/nextjs.json",
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
-  "exclude": ["node_modules"]
+  "exclude": ["node_modules"],
+  "compilerOptions": {
+    "typeRoots": ["./types"],
+    "baseUrl": ".",
+    "paths": {
+      "@web/*": ["./*"]
+    }
+  },
+  "files": ["./types/global.d.ts"]
 }
