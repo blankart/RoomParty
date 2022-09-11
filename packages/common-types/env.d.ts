@@ -7,5 +7,6 @@ export interface CustomProcessEnv {
     NEXT_PUBLIC_WEBSOCKET_URL?: string
     WEBSOCKET_PORT?: number
     WEB_BASE_URL?: string
+    NEXT_PUBLIC_WEB_BASE_URL?: string
     PORT?: number
 }

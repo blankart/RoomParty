@@ -13,13 +13,18 @@
     "@trpc/client": "^9.27.2",
     "@trpc/next": "^9.27.2",
     "@trpc/react": "^9.27.2",
+    "classnames": "^2.3.1",
     "next": "12.2.5",
     "next-superjson": "^0.0.4",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "react-hook-form": "^7.35.0",
+    "react-icons": "^4.4.0",
+    "react-player": "^2.10.1",
     "react-query": "^3.39.2",
     "superjson": "^1.9.1",
-    "trpc": "*"
+    "trpc": "*",
+    "zustand": "^4.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",

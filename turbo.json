@@ -13,6 +13,9 @@
     },
     "migrate": {
       "cache": false
+    },
+    "reset": {
+      "cache": false
     }
   },
   "globalDependencies": [
@@ -24,6 +27,7 @@
     "$NEXT_PUBLIC_WEBSOCKET_URL",
     "$WEBSOCKET_PORT",
     "$WEB_BASE_URL",
+    "$NEXT_PUBLIC_WEB_BASE_URL",
     "$PORT"
   ]
 }

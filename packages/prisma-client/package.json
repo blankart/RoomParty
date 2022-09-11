@@ -5,7 +5,8 @@
   "types": "./index.ts",
   "license": "MIT",
   "scripts": {
-    "migrate": "prisma migrate dev --name"
+    "migrate": "prisma migrate dev --name",
+    "reset": "prisma migrate reset --force"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",

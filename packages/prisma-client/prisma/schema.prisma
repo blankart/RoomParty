@@ -25,6 +25,7 @@ model Account {
   id_token          String?
   session_state     String?
   user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Room              Room[]
 
   @@unique([provider, providerAccountId])
 }
@@ -57,18 +58,22 @@ model VerificationToken {
 
 // Room Models
 model Room {
-  id        String   @id @default(cuid())
-  name      String
-  chats     Chat[]
-  createdAt DateTime @default(now())
+  id           String   @id @default(cuid())
+  name         String
+  chats        Chat[]
+  playerStatus Json?
+  createdAt    DateTime @default(now())
+  account      Account? @relation(fields: [accountId], references: [id])
+  accountId    String?
 }
 
 // Chat Models
 model Chat {
-  id        String   @id @default(cuid())
-  name      String
-  message   String
-  room      Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  roomId    String
-  createdAt DateTime @default(now())
+  id              String   @id @default(cuid())
+  name            String
+  message         String
+  room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId          String
+  createdAt       DateTime @default(now())
+  isSystemMessage Boolean? @default(false)
 }

@@ -3,5 +3,6 @@
 @tailwind utilities;
 
 html {
+  @apply overflow-hidden;
   color-scheme: dark;
 }

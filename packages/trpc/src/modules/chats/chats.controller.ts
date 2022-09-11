@@ -24,7 +24,10 @@ export const chatsRouter = createRouter()
     })
 
     .subscription('chatSubscription', {
-        input: zod.string(),
+        input: zod.object({
+            id: zod.string(),
+            name: zod.string()
+        }),
         async resolve({ input }) {
             return await ChatsService.chatSubscription(input)
         }

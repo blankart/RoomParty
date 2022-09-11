@@ -1,3 +1,4 @@
+import ChatsService from "../chats/chats.service"
 import ModelsService from "../models/models.service"
 
 class Rooms {
@@ -19,13 +20,23 @@ class Rooms {
             include: {
                 chats: true
             }
+        }).then(res => {
+            if (!res) return res
+            return { ...res, chats: res.chats.map(ChatsService.convertEmoticonsToEmojisInChatsObject) }
         })
     }
 
     async create(name: string) {
         return await ModelsService.client.room.create({
             data: {
-                name
+                name,
+                chats: {
+                    create: {
+                        name: 'Welcome Message',
+                        message: `Welcome to ${name}'s room!`,
+                        isSystemMessage: true
+                    }
+                }
             }
         })
     }
