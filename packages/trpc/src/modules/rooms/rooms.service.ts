@@ -49,7 +49,7 @@ class Rooms {
                 chats: {
                     create: {
                         name: 'Welcome Message',
-                        message: `Welcome to ${name}'s room!`,
+                        message: `Welcome to ${name}'s room! This room is only available for 24 hours. Create an account to own a watch room!`,
                         isSystemMessage: true
                     }
                 }
@@ -63,10 +63,18 @@ class Rooms {
             }
         })
 
-        const startAfter = new Date()
-        startAfter.setTime(startAfter.getTime() + 1_000 * 60 * 60 * 24)
+        if (!room.account?.id) {
+            const startAfter = new Date()
+            startAfter.setTime(startAfter.getTime() + 1_000 * 60 * 60 * 24)
 
-        QueueService.queue(ROOMS_SERVICE_QUEUE.DELETE_ROOM, { id: room.id }, { startAfter }, room.id).with(this.deleteRoom)
+            QueueService.queue(
+                ROOMS_SERVICE_QUEUE.DELETE_ROOM,
+                this.deleteRoom,
+                { id: room.id },
+                { startAfter },
+                room.id
+            )
+        }
 
         return room
     }

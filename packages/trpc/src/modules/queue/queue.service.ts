@@ -1,7 +1,17 @@
 import PgBoss from "pg-boss"
 
 type UnqueuedWork =
-    | { method: 'send', params: Parameters<PgBoss['sendOnce']>, func?: (...args: any) => any }
+    | {
+        method: 'send',
+        params:
+        | [
+            string,
+            ((...args: any[]) => any),
+            Record<string, any>,
+            Record<string, any>,
+            string
+        ]
+    }
 
 class Queue {
     private initialized?: boolean
@@ -24,8 +34,8 @@ class Queue {
     private onStart() {
         this.initialized = true
         for (const eq of this.unqueuedWorks) {
-            if (eq.method === 'send' && eq.func) {
-                this.queue(...eq.params).with(eq.func)
+            if (eq.method === 'send') {
+                this.queue(...eq.params)
             }
         }
 
@@ -34,12 +44,6 @@ class Queue {
 
     private addToUnqueuedWork(data: UnqueuedWork) {
         this.unqueuedWorks.push(data)
-
-        return {
-            with(func: ((...args: any) => any)) {
-                data.func = func
-            },
-        }
     }
 
     private getQueueCallback(id: string) {
@@ -55,15 +59,20 @@ class Queue {
         this.unqueuedWorks = this.unqueuedWorks.filter(uw => uw.params[0] !== id)
     }
 
-    queue(...args: Parameters<PgBoss['sendOnce']>) {
+    queue<T extends Parameters<PgBoss['sendOnce']>, F extends (...args: any) => any>(
+        name: T[0],
+        func: F,
+        data: Parameters<F>[0]['data'],
+        options: T[2],
+        key: string
+    ) {
         while (!this.initialized) {
-            return this.addToUnqueuedWork({ method: 'send', params: args })
+            return this.addToUnqueuedWork({ method: 'send', params: [name, func, data, options, key] })
         }
 
-        this.removeUnqueuedWork(args[0])
-        this.pgBossInstance.sendOnce(...args)
-
-        return this.getQueueCallback(args[0])
+        this.removeUnqueuedWork(name)
+        this.pgBossInstance.sendOnce(name, data, options, key)
+        this.pgBossInstance.work(name, func)
     }
 
     private initialize() {
