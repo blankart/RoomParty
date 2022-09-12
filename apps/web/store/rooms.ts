@@ -1,4 +1,3 @@
-import { PlayerStatus } from 'trpc';
 import { Chat } from 'prisma-client'
 import create from 'zustand'
 
@@ -6,7 +5,6 @@ export interface RoomsStore {
     chats?: Chat[]
     id?: string;
     name?: string
-    playerStatus?: PlayerStatus | null
     userName: string
     collapsed: boolean,
     showPrompt: boolean
@@ -15,6 +13,7 @@ export interface RoomsStore {
     isPlayed: boolean,
     scrubTime: number,
     url?: string,
+    type?: string,
 
     set: (roomStore?: Partial<RoomsStore>) => void
     addChat: (chat: Chat) => void,

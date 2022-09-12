@@ -24,7 +24,7 @@ export function useControlMutation() {
 export default function useYoutubePlayerWithControls(props: YoutubePlayerWithControlsProps) {
     const youtubePlayerRef = useRef<any>(null);
 
-    const { id, userName, scrubTime, url, set, playerStatus, sessionId } = useRoomsStore(
+    const { id, userName, scrubTime, url, set, sessionId, type } = useRoomsStore(
         (s) => ({
             id: s.id,
             userName: s.userName,
@@ -32,8 +32,8 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
             url: s.url,
             scrubTime: s.scrubTime,
             set: s.set,
-            playerStatus: s.playerStatus,
             sessionId: s.sessionId,
+            type: s.type,
         }),
         shallow
     );
@@ -58,15 +58,33 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
                 }
 
                 if (data.type === "PLAYED") {
-                    setWatchState({ isPlayed: true, url: data.url });
+                    setWatchState({
+                        isPlayed: true,
+                        url: data.url,
+                    });
                 }
             },
         }
     );
 
+    function initializeWatchState(
+        newState: Pick<RoomsStore, "scrubTime" | "isPlayed">
+    ) {
+        youtubePlayerRef?.current?.player?.player?.player?.seekTo(
+            newState.scrubTime,
+            "seconds"
+        );
+
+
+        if (newState.isPlayed) {
+            youtubePlayerRef?.current?.player?.player?.player?.playVideo();
+        } else {
+            youtubePlayerRef?.current?.player?.player?.player?.pauseVideo();
+        }
+    }
 
     function setWatchState(
-        newState: Partial<Pick<RoomsStore, "scrubTime" | "isPlayed" | "url">>
+        newState: Partial<Pick<RoomsStore, "scrubTime" | "isPlayed" | "url" | "type">>
     ) {
         if (newState.scrubTime && newState.scrubTime !== scrubTime) {
             youtubePlayerRef?.current?.player?.player?.player?.seekTo(
@@ -86,16 +104,69 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
         set({ ...newState });
     }
 
+    function onStart() {
+        initializeWatchState({
+            scrubTime: scrubTime ?? 0,
+            isPlayed: type !== 'PAUSED'
+        })
+    }
+
     const control = useControlMutation()
+
+    function onPause() {
+        url &&
+            control({
+                id: id!,
+                statusObject: {
+                    sessionId: sessionId,
+                    time: youtubePlayerRef?.current?.getCurrentTime() ?? 0,
+                    type: "PAUSED",
+                    name: userName!,
+                    url: url,
+                },
+            });
+    }
+
+    function onPlay() {
+        url &&
+            control({
+                id: id!,
+                statusObject: {
+                    sessionId: sessionId,
+                    type: "PLAYED",
+                    time: youtubePlayerRef?.current?.getCurrentTime() ?? 0,
+                    name: userName!,
+                    url: url,
+                },
+            });
+    }
+
+
+    function onSeek(time: number) {
+        url &&
+            control({
+                id: id!,
+                statusObject: {
+                    sessionId: sessionId,
+                    name: userName!,
+                    type: "SEEK_TO",
+                    time,
+                    url: url,
+                },
+            });
+    }
 
     return {
         url,
         sessionId,
         id,
         userName,
-        playerStatus,
         youtubePlayerRef,
         control,
-        setWatchState
+        setWatchState,
+        onStart,
+        onPause,
+        onPlay,
+        onSeek,
     }
 }

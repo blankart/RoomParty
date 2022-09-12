@@ -9,9 +9,11 @@
   },
   "dependencies": {
     "@trpc/server": "^9.27.2",
+    "pg-boss": "^8.0.0",
     "prisma-client": "*",
     "smile2emoji": "^3.1.1",
     "superjson": "^1.9.1",
+    "ytsr": "^3.8.0",
     "zod": "^3.19.0"
   },
   "devDependencies": {

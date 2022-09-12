@@ -25,10 +25,10 @@ export default function Chat(props: ChatProps) {
     <>
       {showPrompt && (
         <div className="absolute inset-0 z-20 flex items-center justify-center bg-slate-900/90">
-          <div className="bg-slate-900 w-[min(400px,90vw)] min-h-[min(400px,90vh)] p-4">
-            <h2 className="py-4 text-2xl text-center break-words">
-              Welcome to {name}&apos;s room!
-            </h2>
+          <div className="bg-slate-800 rounded-xl w-[min(500px,90vw)] min-h-[min(400px,90vh)] p-10 flex flex-col justify-center shadow-xl">
+            <h1 className="py-4 text-2xl font-normal text-center break-words">
+              Welcome to <b>{name}</b>&apos;s room!
+            </h1>
             <p className="py-2 text-center">
               Let me know your name so we can let you in!
             </p>
@@ -46,7 +46,7 @@ export default function Chat(props: ChatProps) {
       )}
       <div
         className={classNames(
-          "relative !h-screen flex flex-col",
+          "relative !h-screen flex flex-col shadow-xl",
           !collapsed ? "w-0" : "!w-[400px]"
         )}
       >
@@ -57,7 +57,7 @@ export default function Chat(props: ChatProps) {
         />
         <section className="flex-1 bg-slate-900 flex flex-col justify-end !h-screen">
           <section className="w-full p-4 bg-blue-800">
-            <h1>
+            <h1 className="text-sm font-normal !m-0">
               Welcome to <b>{name}</b>&apos;s room!
             </h1>
           </section>

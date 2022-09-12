@@ -1,4 +1,5 @@
 import dynamic from "next/dynamic";
+import React, { forwardRef } from "react";
 import useYoutubePlayerWithControls from "./useYoutubePlayerWithControls";
 import YoutubePlayerSetup from "./YoutubePlayerSetup";
 
@@ -22,76 +23,25 @@ export default function YoutubePlayerWithControls(
 ) {
   const ctx = useYoutubePlayerWithControls(props);
 
-  if (!ctx.url) {
-    return <YoutubePlayerSetup />;
-  }
-
   return (
-    <div className="w-full bg-slate-800">
-      <YoutubePlayer
-        onStart={() => {
-          if (ctx.playerStatus) {
-            ctx.setWatchState({
-              ...(ctx.playerStatus.time
-                ? { scrubTime: ctx.playerStatus.time }
-                : {}),
-
-              ...(ctx.playerStatus.type !== "PAUSED"
-                ? {
-                    isPlayed: false,
-                  }
-                : {}),
-            });
-          }
-        }}
-        onPause={() => {
-          ctx.url &&
-            ctx.control({
-              id: ctx.id!,
-              statusObject: {
-                sessionId: ctx.sessionId,
-                time: ctx.youtubePlayerRef?.current?.getCurrentTime() ?? 0,
-                type: "PAUSED",
-                name: ctx.userName!,
-                url: ctx.url,
-              },
-            });
-        }}
-        onPlay={() => {
-          ctx.url &&
-            ctx.control({
-              id: ctx.id!,
-              statusObject: {
-                sessionId: ctx.sessionId,
-                type: "PLAYED",
-                time: ctx.youtubePlayerRef?.current?.getCurrentTime() ?? 0,
-                name: ctx.userName!,
-                url: ctx.url,
-              },
-            });
-        }}
-        onSeek={(time) => {
-          ctx.url &&
-            ctx.control({
-              id: ctx.id!,
-              statusObject: {
-                sessionId: ctx.sessionId,
-                name: ctx.userName!,
-                type: "SEEK_TO",
-                time,
-                url: ctx.url,
-              },
-            });
-        }}
-        progressInterval={YOUTUBE_PLAYER_PROGRESS_INTERVAL}
-        stopOnUnmount
-        controls
-        youtubePlayerRef={ctx.youtubePlayerRef}
-        width="100%"
-        height="100%"
-        url={ctx.url}
-        config={YOUTUBE_PLAYER_CONFIG}
-      />
+    <div className="w-full max-h-screen overflow-scroll bg-slate-900">
+      <div className="relative w-full aspect-video bg-slate-800">
+        <YoutubePlayerSetup />
+        <YoutubePlayer
+          onStart={ctx.onStart}
+          onPause={ctx.onPause}
+          onPlay={ctx.onPlay}
+          onSeek={ctx.onSeek}
+          progressInterval={YOUTUBE_PLAYER_PROGRESS_INTERVAL}
+          stopOnUnmount
+          controls
+          youtubePlayerRef={ctx.youtubePlayerRef}
+          width="100%"
+          height="100%"
+          url={ctx.url}
+          config={YOUTUBE_PLAYER_CONFIG}
+        />
+      </div>
     </div>
   );
 }

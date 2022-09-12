@@ -1,5 +1,10 @@
 import ChatsService from "../chats/chats.service"
 import ModelsService from "../models/models.service"
+import QueueService from "../queue/queue.service"
+
+enum ROOMS_SERVICE_QUEUE {
+    DELETE_ROOM = 'DELETE_ROOM'
+}
 
 class Rooms {
     constructor() { }
@@ -18,7 +23,12 @@ class Rooms {
                 id
             },
             include: {
-                chats: true
+                chats: true,
+                account: {
+                    select: {
+                        id: true
+                    }
+                }
             }
         }).then(res => {
             if (!res) return res
@@ -26,8 +36,14 @@ class Rooms {
         })
     }
 
+    async deleteRoom(data: { data: { id: string } }) {
+        await ModelsService.client.room.delete({
+            where: { id: data.data.id },
+        })
+    }
+
     async create(name: string) {
-        return await ModelsService.client.room.create({
+        const room = await ModelsService.client.room.create({
             data: {
                 name,
                 chats: {
@@ -37,8 +53,22 @@ class Rooms {
                         isSystemMessage: true
                     }
                 }
+            },
+            include: {
+                account: {
+                    select: {
+                        id: true
+                    }
+                }
             }
         })
+
+        const startAfter = new Date()
+        startAfter.setTime(startAfter.getTime() + 1_000 * 60 * 60 * 24)
+
+        QueueService.queue(ROOMS_SERVICE_QUEUE.DELETE_ROOM, { id: room.id }, { startAfter }, room.id).with(this.deleteRoom)
+
+        return room
     }
 }
 

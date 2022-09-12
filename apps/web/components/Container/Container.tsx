@@ -9,7 +9,7 @@ export default function Container(props: ContainerProps) {
   return (
     <div
       className={classNames(
-        "w-full mx-auto prose dark:prose-invert min-h-screen dark:prose-invert relative",
+        "w-full mx-auto prose min-h-screen dark:prose-invert relative max-w-none",
         props.className
       )}
     >

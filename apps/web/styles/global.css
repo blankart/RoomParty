@@ -3,6 +3,6 @@
 @tailwind utilities;
 
 html {
-  @apply overflow-hidden;
+  @apply overflow-hidden bg-slate-900;
   color-scheme: dark;
 }

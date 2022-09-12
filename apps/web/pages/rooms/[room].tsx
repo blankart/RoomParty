@@ -26,11 +26,12 @@ export default function Room(
       chats: props.chats,
       scrubTime: props.playerStatus?.time,
       url: props.playerStatus?.url,
+      type: props.playerStatus?.type,
     });
   }, []);
 
   return (
-    <Container className="flex">
+    <Container className="relative flex">
       {!!id ? (
         <>
           <YoutubePlayerWithControls />
@@ -53,6 +54,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         name: res.name,
         chats: res.chats,
         playerStatus: res.playerStatus as PlayerStatus,
+        account: res.account,
+        createdAt: res.createdAt,
       },
     };
   } catch (e) {
