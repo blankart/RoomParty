@@ -67,7 +67,8 @@ class Rooms {
 
         if (!room.account?.id) {
             const startAfter = new Date()
-            startAfter.setTime(startAfter.getTime() + 1_000 * 60 * 60 * 24)
+            const ONE_DAY_IN_MS = 1_000 * 60 * 60 * 24
+            startAfter.setTime(startAfter.getTime() + ONE_DAY_IN_MS)
 
             QueueService.queue(
                 ROOMS_SERVICE_QUEUE.DELETE_ROOM,

@@ -5,28 +5,6 @@ import cors from 'cors'
 import ws from 'ws'
 import { applyWSSHandler } from '@trpc/server/adapters/ws';
 
-const WS_PORT = process.env.WEBSOCKET_PORT || 8001
-
-const wss = new ws.Server({
-    port: WS_PORT
-})
-const handler = applyWSSHandler({
-    wss, router, createContext: createContext as any
-})
-
-wss.on('connection', (ws) => {
-    console.log(`➕➕ Connection (${wss.clients.size})`);
-    ws.once('close', () => {
-        console.log(`➖➖ Connection (${wss.clients.size})`);
-    });
-});
-
-process.on('SIGTERM', () => {
-    console.log('SIGTERM');
-    handler.broadcastReconnectNotification();
-    wss.close();
-})
-
 const allowList = [process.env.WEB_BASE_URL]
 
 async function main() {
@@ -56,8 +34,28 @@ async function main() {
     );
 
     const port = process.env.SERVER_PORT || process.env.PORT || 8000
-    app.listen(port, () => {
+    const server = app.listen(port, () => {
         console.log(`listening on port ${port}.`)
+    })
+
+    const wss = new ws.Server({
+        server,
+    })
+    const handler = applyWSSHandler({
+        wss, router, createContext: createContext as any
+    })
+
+    wss.on('connection', (ws) => {
+        console.log(`➕➕ Connection (${wss.clients.size})`);
+        ws.once('close', () => {
+            console.log(`➖➖ Connection (${wss.clients.size})`);
+        });
+    });
+
+    process.on('SIGTERM', () => {
+        console.log('SIGTERM');
+        handler.broadcastReconnectNotification();
+        wss.close();
     })
 }
 
