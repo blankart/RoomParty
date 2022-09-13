@@ -15,7 +15,7 @@
     "prisma:reset": "env-cmd --file .env.local turbo run reset --filter=prisma-client --",
     "prisma:deploy": "env-cmd --file .env.local turbo run deploy --filter=prisma-client --",
     "postinstall": "if [ $SERVER_ENV ]; then npm run postinstall-server; else echo no environment detected, please set SERVER_ENV; fi",
-    "postinstall-server": "cd app/server && npm install"
+    "postinstall-server": "cd apps/server && npm install"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
