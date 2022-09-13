@@ -8,14 +8,15 @@
   ],
   "scripts": {
     "build": "turbo run build",
+    "build:server": "turbo run build --filter=server --",
     "dev": "env-cmd --file .env.local turbo run dev --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prisma:migrate": "env-cmd --file .env.local turbo run migrate --filter=prisma-client --",
     "prisma:reset": "env-cmd --file .env.local turbo run reset --filter=prisma-client --",
     "prisma:deploy": "env-cmd --file .env.local turbo run deploy --filter=prisma-client --",
-    "postinstall": "if [ $SERVER_ENV ]; then npm run postinstall-server; else echo no environment detected, please set SERVER_ENV; fi",
-    "postinstall-server": "cd apps/server && npm install"
+    "heroku-postbuild": "if [ $SERVER_ENV ]; then yarn run prod-server; else echo no environment detected, please set SERVER_ENV; fi",
+    "prod-server": "yarn run build:server"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
