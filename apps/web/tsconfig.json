@@ -7,7 +7,8 @@
     "baseUrl": ".",
     "paths": {
       "@web/*": ["./*"]
-    }
+    },
+    "types": ["google-one-tap", "google.accounts", "gapi"]
   },
   "files": ["./types/global.d.ts"]
 }

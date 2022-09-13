@@ -42,6 +42,11 @@ async function main() {
         res(null, corsOptions)
     }))
 
+    app.get('/oauth/google', async (req, res) => {
+        const response = await router.createCaller({ req, res }).query('users.googleOAuth')
+        res.redirect(response)
+    })
+
     app.use(
         '/trpc',
         trpcExpress.createExpressMiddleware({

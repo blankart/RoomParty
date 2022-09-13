@@ -5,11 +5,13 @@ import type { AppRouter } from "trpc";
 import superjson from "superjson";
 import { createTRPCClient as _createTRPCClient } from "@trpc/client";
 import { withTRPC as _withTRPC } from "@trpc/next";
+import { parseCookies } from "nookies";
 
 export const trpc = createReactQueryHooks<AppRouter>();
 export const _TRPCProvider = trpc.Provider;
 
 import { createWSClient, wsLink } from "@trpc/client/links/wsLink";
+import { ACCESS_TOKEN_KEY } from "trpc";
 
 interface TRPCProviderProps {
   children?: React.ReactNode;
@@ -37,7 +39,9 @@ export const createTRPCClient = () => {
         }
       : {}),
     headers() {
-      return {};
+      return {
+        access_token: parseCookies(null)[ACCESS_TOKEN_KEY],
+      };
     },
   });
 };
