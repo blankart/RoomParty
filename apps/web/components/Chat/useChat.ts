@@ -60,6 +60,7 @@ export default function useChat(props: ChatProps) {
     }
 
     useEffect(() => {
+        if (userName) return
         if (!id) return
         const storedName =
             (id && localStorage.getItem(getLocalStorageKeyName(id))) ?? "";

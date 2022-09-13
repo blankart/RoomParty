@@ -1,6 +1,7 @@
 import ChatsService from "../chats/chats.service"
 import ModelsService from "../models/models.service"
 import QueueService from "../queue/queue.service"
+import { CurrentUser } from "../../types/user"
 
 enum ROOMS_SERVICE_QUEUE {
     DELETE_ROOM = 'DELETE_ROOM'
@@ -42,17 +43,18 @@ class Rooms {
         })
     }
 
-    async create(name: string) {
+    async create(name: string, user: CurrentUser) {
         const room = await ModelsService.client.room.create({
             data: {
                 name,
                 chats: {
                     create: {
                         name: 'Welcome Message',
-                        message: `Welcome to ${name}'s room! This room is only available for 24 hours. Create an account to own a watch room!`,
+                        message: user ? `Welcome to ${name}'s room!` : `Welcome to ${name}'s room! This room is only available for 24 hours. Create an account to own a watch room!`,
                         isSystemMessage: true
                     }
-                }
+                },
+                ...(user ? { account: { connect: { id: user.id } } } : {})
             },
             include: {
                 account: {
@@ -77,6 +79,29 @@ class Rooms {
         }
 
         return room
+    }
+
+    async findMyRoom(id: string) {
+        return await ModelsService.client.room.findMany({
+            where: {
+                account: {
+                    id
+                }
+            },
+            select: {
+                id: true,
+                name: true,
+                playerStatus: true,
+                online: true,
+                createdAt: true
+            }
+        }).then(res => res.map(r => ({
+            id: r.id,
+            name: r.name,
+            online: r.online,
+            thumbnail: (r.playerStatus as any)?.thumbnail as string | null | undefined,
+            createdAt: r.createdAt
+        })).sort((a, b) => a.createdAt.getTime() < b.createdAt.getTime() ? 1 : -1))
     }
 }
 

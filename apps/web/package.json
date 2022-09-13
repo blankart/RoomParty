@@ -32,6 +32,7 @@
   "devDependencies": {
     "@babel/core": "^7.0.0",
     "@tailwindcss/forms": "^0.5.3",
+    "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.7",
     "@types/gapi": "^0.0.42",
     "@types/google-one-tap": "^1.2.1",
@@ -41,6 +42,7 @@
     "@types/react": "18.0.17",
     "autoprefixer": "^10.4.8",
     "common-config": "*",
+    "common-types": "*",
     "eslint": "7.32.0",
     "eslint-config-custom": "*",
     "next-transpile-modules": "9.0.0",

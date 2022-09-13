@@ -30,7 +30,7 @@ class Player {
         })
     }
 
-    async control(data: { id: string, statusObject: any }) {
+    async control(data: { id: string, statusObject: PlayerStatus }) {
         playerStatusEventEmitter.emit(`${data.id}.statusSubscription.control`, data.statusObject)
         await ModelsService.client.room.update({
             where: {

@@ -28,9 +28,9 @@ export function useYoutubePlayerSetup(props: YoutubePlayerSetupProps) {
     }, [url])
 
     const { data: searchResult, refetch, isLoading } = trpc.useQuery(['youtube.search', debouncedQ], {
-        enabled: !!debouncedQ,
         select(data) {
             return (data?.items ?? []).map(item => ({
+                id: item.id,
                 title: item.title,
                 thumbnailSrc: item.thumbnails?.[0]?.url,
                 description: item.description,
@@ -45,7 +45,7 @@ export function useYoutubePlayerSetup(props: YoutubePlayerSetupProps) {
 
     const control = useControlMutation();
 
-    function onSelectLink(url: string) {
+    function onSelectLink(url: string, thumbnail: string) {
         control({
             id: id!,
             statusObject: {
@@ -54,6 +54,7 @@ export function useYoutubePlayerSetup(props: YoutubePlayerSetupProps) {
                 type: "CHANGE_URL",
                 time: 0,
                 url,
+                thumbnail
             }
         })
         setShowVideoSearch(false)

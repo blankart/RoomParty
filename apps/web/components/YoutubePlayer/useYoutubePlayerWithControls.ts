@@ -14,7 +14,18 @@ export function useControlMutation() {
             statusObject: PlayerStatus;
         }
     ) {
-        _control(param);
+        const { type, scrubTime, userName, url, thumbnail } = useRoomsStore.getState()
+        const newStatusObject = Object.assign(
+            {
+                type,
+                time: scrubTime,
+                name: userName,
+                url,
+                thumbnail,
+            }, param.statusObject
+        )
+
+        _control({ ...param, statusObject: newStatusObject });
     }
 
     return control
@@ -43,6 +54,8 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
         {
             enabled: !!id,
             onNext(data) {
+                setWatchState({ thumbnail: data.thumbnail, url: data.url })
+
                 if (data.type === "CHANGE_URL") {
                     setWatchState({ isPlayed: false, scrubTime: 0, url: data.url });
                 }
@@ -84,7 +97,7 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
     }
 
     function setWatchState(
-        newState: Partial<Pick<RoomsStore, "scrubTime" | "isPlayed" | "url" | "type">>
+        newState: Partial<Pick<RoomsStore, "scrubTime" | "isPlayed" | "url" | "type" | "thumbnail">>
     ) {
         if (newState.scrubTime && newState.scrubTime !== scrubTime) {
             youtubePlayerRef?.current?.player?.player?.player?.seekTo(

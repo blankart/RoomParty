@@ -1,13 +1,17 @@
 import "@web/styles/global.css";
-import NextApp from "next/app";
+import NextApp, { AppContext, AppInitialProps } from "next/app";
 import { TRPCProvider, withTRPC } from "@web/api";
 import { ThemeProvider } from "next-themes";
-import {
-  NextGoogleOAuth,
-  NextGoogleOAuthHandler,
-} from "@web/components/GoogleOAuth/GoogleOAuth";
+import { NextGoogleOAuth } from "@web/components/GoogleOAuth/GoogleOAuth";
 
 class App extends NextApp {
+  static getInitialProps: ({
+    Component,
+    ctx,
+  }: AppContext) => Promise<AppInitialProps> = async ({ ctx }) => {
+    return { pageProps: {} };
+  };
+
   componentDidCatch(error: Error): void {
     throw error;
   }
@@ -22,7 +26,6 @@ class App extends NextApp {
           attribute="class"
         >
           <TRPCProvider>
-            <NextGoogleOAuthHandler />
             <Component {...pageProps} />
           </TRPCProvider>
         </ThemeProvider>

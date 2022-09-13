@@ -22,22 +22,46 @@ class Users {
     }
 
     async getGoogleOAuth(accessToken: string) {
-        const { data: userInfo } = await google.oauth2('v2').userinfo.get({
-            alt: 'json',
-            oauth_token: accessToken
-        })
+        try {
+            const { data: userInfo } = await google.oauth2('v2').userinfo.get({
+                alt: 'json',
+                oauth_token: accessToken
+            })
 
-        return userInfo
+            const user = await ModelsService.client.account.findFirst({
+                where: {
+                    provider: 'Google',
+                    providerId: userInfo.id!
+                },
+                include: {
+                    user: true
+                }
+            })
+
+            if (!user) return null
+
+            return user
+        } catch {
+            return null
+        }
     }
 
     async googleOAuth(data: { state: string, code: string, scope: string }) {
         const { tokens } = await this.googleOAuth2Client.getToken(data.code)
-        const userInfo = await this.getGoogleOAuth(tokens.access_token!)
+        const { data: userInfo } = await google.oauth2('v2').userinfo.get({
+            alt: 'json',
+            oauth_token: tokens.access_token!
+        })
         const maybeUser = await ModelsService.client.account.findFirst({
             where: {
                 providerId: userInfo.id!
             },
         })
+
+        const res = {
+            redirect: data.state,
+            token: tokens.access_token
+        }
 
         if (maybeUser) {
             await ModelsService.client.account.update({
@@ -52,7 +76,8 @@ class Users {
                 }
             })
 
-            return `${data.state}?${new URLSearchParams({ token: tokens.access_token! }).toString()}`
+
+            return res
         }
 
         await ModelsService.client.account.create({
@@ -76,7 +101,17 @@ class Users {
             }
         })
 
-        return `${data.state}?${new URLSearchParams({ token: tokens.access_token! }).toString()}`
+        return res
+    }
+
+    async me(id: string) {
+        return await ModelsService.client.account.findFirst({
+            where: { id },
+            select: {
+                id: true,
+                user: true
+            },
+        })
     }
 }
 

@@ -43,8 +43,8 @@ async function main() {
     }))
 
     app.get('/oauth/google', async (req, res) => {
-        const response = await router.createCaller({ req, res }).query('users.googleOAuth')
-        res.redirect(response)
+        const redirect = await router.createCaller({ req, res }).query('users.googleOAuth')
+        res.redirect(redirect)
     })
 
     app.use(

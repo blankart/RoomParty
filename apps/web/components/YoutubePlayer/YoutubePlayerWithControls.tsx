@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import React, { forwardRef } from "react";
+import React from "react";
 import useYoutubePlayerWithControls from "./useYoutubePlayerWithControls";
 import YoutubePlayerSetup from "./YoutubePlayerSetup";
 

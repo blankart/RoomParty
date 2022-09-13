@@ -37,9 +37,6 @@ export default function Rooms() {
 
   return (
     <Container className="flex items-center justify-center gap-8">
-      <Button onClick={() => window.googleClient?.requestCode()}>
-        Click me
-      </Button>
       <div className="border-2 border-slate-600 rounded-lg w-[min(400px,90vw)] min-h-[min(400px,90vh)] p-4 text-center flex flex-col justify-center">
         <h1 className="text-2xl">Create a room</h1>
 

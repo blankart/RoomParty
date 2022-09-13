@@ -5,4 +5,4 @@ export type PlayerStatus = ({
 } | {
     type: 'CHANGE_URL',
     url: string
-}) & { name: string, time: number, sessionId: number, url: string } 
+}) & { name: string, time: number, sessionId: number, url: string, thumbnail?: string } 

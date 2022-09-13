@@ -14,7 +14,7 @@ class Youtube {
         return Youtube.instance
     }
 
-    async search(q: string) {
+    private async getVideosByQ(q: string) {
         const searchFilter = await ytrs.getFilters(q)
 
         const searchType = searchFilter.get('Type')?.get('Video')
@@ -27,6 +27,11 @@ class Youtube {
                 limit: SEARCH_LIMIT
             }
         ) as SearchResponse
+    }
+
+    async search(q: string) {
+        if (!q) q = 'funny'
+        return await this.getVideosByQ(q)
     }
 }
 

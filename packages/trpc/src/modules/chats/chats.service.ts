@@ -5,7 +5,6 @@ import { Chat } from "prisma-client"
 import { checkText } from 'smile2emoji'
 
 const chatsEventEmitter = new EventEmitter()
-
 class Chats {
     constructor() { }
     private static instance?: Chats
@@ -51,32 +50,18 @@ class Chats {
     }
 
     async chatSubscription(data: { id: string, name: string }) {
-        return new Subscription<Chat>(emit => {
+        return new Subscription<Chat>((emit) => {
             const onAdd = (data: Chat) => {
                 emit.data(data)
             }
 
             chatsEventEmitter.on(`${data.id}.send`, onAdd)
-            ModelsService.client.chat.create({
-                data: {
-                    name: data.name,
-                    message: `${data.name} has joined the room.`,
-                    isSystemMessage: true,
-                    room: {
-                        connect: {
-                            id: data.id
-                        }
-                    }
-                }
-            }).then(res => chatsEventEmitter.emit(`${data.id}.send`, this.convertEmoticonsToEmojisInChatsObject(res)))
 
-            return () => {
-                chatsEventEmitter.off(`${data.id}.send`, onAdd)
-
+            Promise.all([
                 ModelsService.client.chat.create({
                     data: {
                         name: data.name,
-                        message: `${data.name} has left the room.`,
+                        message: `${data.name} has joined the room.`,
                         isSystemMessage: true,
                         room: {
                             connect: {
@@ -84,7 +69,44 @@ class Chats {
                             }
                         }
                     }
-                }).then(res => chatsEventEmitter.emit(`${data.id}.send`, this.convertEmoticonsToEmojisInChatsObject(res)))
+                }).then(res => chatsEventEmitter.emit(`${data.id}.send`, this.convertEmoticonsToEmojisInChatsObject(res))),
+
+                ModelsService.client.room.update({
+                    where: { id: data.id },
+                    data: {
+                        online: {
+                            increment: 1
+                        }
+                    }
+                })
+            ])
+
+            return () => {
+                chatsEventEmitter.off(`${data.id}.send`, onAdd)
+
+                Promise.all([
+                    ModelsService.client.chat.create({
+                        data: {
+                            name: data.name,
+                            message: `${data.name} has left the room.`,
+                            isSystemMessage: true,
+                            room: {
+                                connect: {
+                                    id: data.id
+                                }
+                            }
+                        }
+                    }).then(res => chatsEventEmitter.emit(`${data.id}.send`, this.convertEmoticonsToEmojisInChatsObject(res))),
+
+                    ModelsService.client.room.update({
+                        where: { id: data.id },
+                        data: {
+                            online: {
+                                decrement: 1
+                            }
+                        }
+                    })
+                ])
             }
         })
     }

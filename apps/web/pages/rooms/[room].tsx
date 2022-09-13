@@ -7,6 +7,7 @@ import { useRoomsStore } from "@web/store/rooms";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import { useEffect } from "react";
 import shallow from "zustand/shallow";
+import { User } from ".prisma/client";
 
 export default function Room(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -27,6 +28,8 @@ export default function Room(
       scrubTime: props.playerStatus?.time,
       url: props.playerStatus?.url,
       type: props.playerStatus?.type,
+      userName: props.userName,
+      thumbnail: props.playerStatus?.thumbnail,
     });
   }, []);
 
@@ -47,7 +50,12 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (!room) return { notFound: true, props: {} };
 
   try {
-    const res = await createTRPCClient().query("rooms.findById", room);
+    const trpcClient = createTRPCClient(ctx);
+    const res = await trpcClient.query("rooms.findById", room);
+    let user: { id: string; user: User } | null | undefined;
+    try {
+      user = await trpcClient.query("users.me");
+    } catch {}
     return {
       props: {
         id: res.id,
@@ -56,6 +64,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         playerStatus: res.playerStatus as PlayerStatus,
         account: res.account,
         createdAt: res.createdAt,
+        userName: user?.user?.name ?? "",
       },
     };
   } catch (e) {

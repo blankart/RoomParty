@@ -1,8 +1,6 @@
 import useChat from "./useChat";
 import classNames from "classnames";
 import Button from "../Button/Button";
-import { useRoomsStore } from "@web/store/rooms";
-import shallow from "zustand/shallow";
 
 export interface ChatProps {}
 

@@ -14,6 +14,7 @@ export interface RoomsStore {
     scrubTime: number,
     url?: string,
     type?: string,
+    thumbnail?: string,
 
     set: (roomStore?: Partial<RoomsStore>) => void
     addChat: (chat: Chat) => void,

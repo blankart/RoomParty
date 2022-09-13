@@ -1,9 +1,6 @@
-import { trpc } from "@web/api";
 import { useRouter } from "next/router";
 import Script from "next/script";
 import { useEffect, useState } from "react";
-import { setCookie, parseCookies } from "nookies";
-import { ACCESS_TOKEN_KEY } from "trpc";
 
 export function initWebClient(state?: string) {
   window.googleClient = google.accounts.oauth2.initCodeClient({
@@ -35,41 +32,4 @@ export function NextGoogleOAuth() {
       }}
     />
   );
-}
-
-export function NextGoogleOAuthHandler() {
-  const router = useRouter();
-  const [hasAccessToken, setHasAccessToken] = useState(false);
-
-  useEffect(() => {
-    if (!router.isReady) return;
-
-    const accessToken = router.query.token as string;
-    const accessTokenFromCookie = parseCookies(null)[ACCESS_TOKEN_KEY];
-
-    if (accessTokenFromCookie && accessTokenFromCookie === accessToken) {
-      if (accessToken === accessTokenFromCookie) {
-        setHasAccessToken(true);
-      } else if (accessToken) {
-        setCookie(null, ACCESS_TOKEN_KEY, accessToken);
-        setHasAccessToken(true);
-      }
-
-      return;
-    }
-
-    if (!accessTokenFromCookie && accessToken) {
-      setCookie(null, ACCESS_TOKEN_KEY, accessToken);
-      setHasAccessToken(true);
-      return;
-    }
-  }, [router.isReady]);
-
-  const { data, error, isLoading } = trpc.useQuery(["users.me"], {
-    enabled: hasAccessToken,
-  });
-
-  console.log({ data, error, hasAccessToken, isLoading });
-
-  return null;
 }

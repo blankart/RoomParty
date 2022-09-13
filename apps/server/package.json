@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "build": "tsc",
-    "dev": "nodemon -e ts -w . -x ts-node ./src",
+    "dev": "nodemon -e ts -w ../../packages/trpc -w ./src/index.ts -x ts-node ./src",
     "start": "ts-node ./src"
   },
   "dependencies": {

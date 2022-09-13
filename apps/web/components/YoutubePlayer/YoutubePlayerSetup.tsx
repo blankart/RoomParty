@@ -6,6 +6,7 @@ import {
 import classNames from "classnames";
 import Button from "../Button/Button";
 import { useYoutubePlayerSetup } from "./useYoutubePlayerSetup";
+import ClickableCard from "../Card/ClickableCard";
 
 export interface YoutubePlayerSetupProps {}
 
@@ -33,7 +34,8 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
       >
         <AiOutlineLoading
           className={classNames("!w-20 h-auto animate-spin duration-100", {
-            "opacity-0 pointer-events-none": !ctx.isLoading,
+            "opacity-0 pointer-events-none":
+              !ctx.showVideoSearch || !ctx.isLoading,
           })}
         />
         <span
@@ -53,7 +55,7 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
         )}
       >
         <div className="w-full">
-          <AiFillYoutube className="inline-block w-10 h-auto my-2 mr-2" />
+          <AiFillYoutube className="inline-block w-12 h-auto my-2 mr-2" />
           <input
             value={ctx.q}
             onChange={(e) => ctx.setQ(e.target.value)}
@@ -70,83 +72,23 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
 
         <div className="grid grid-cols-4 gap-4 overflow-y-auto">
           {ctx.searchResult?.map((result) => (
-            <button
-              key={result.title}
-              className="overflow-hidden rounded-lg bg-slate-700"
-              onClick={() => ctx.onSelectLink(result.url)}
+            <ClickableCard
+              key={result.id}
+              onClick={() => ctx.onSelectLink(result.url, result.thumbnailSrc)}
+              imgSrc={result.thumbnailSrc}
+              alt={result.title}
             >
-              <img
-                src={result.thumbnailSrc}
-                alt={result.title}
-                className="!m-0 aspect-video"
-              />
-              <div className="p-4">
-                <h2 className="text-[1.2rem] text-start !m-0">
-                  {result.title}
-                </h2>
-                <div className="flex justify-between w-full">
-                  <p className="!m-0 text-sm">{result.uploadedAt}</p>
-                  <p className="!m-0 text-sm">{result.views} views</p>
-                </div>
+              <h2 className="text-[1rem] text-start !m-0 line-clamp-2">
+                {result.title}
+              </h2>
+              <div className="flex justify-between w-full">
+                <p className="!m-0 text-sm">{result.uploadedAt}</p>
+                <p className="!m-0 text-sm">{result.views} views</p>
               </div>
-            </button>
+            </ClickableCard>
           ))}
         </div>
       </div>
     </>
-  );
-
-  return (
-    <div className="w-full">
-      <div className="flex items-center justify-center w-full aspect-video bg-slate-800">
-        <div
-          className={classNames(
-            "rounded-lg border-solid border-slate-400 border-2 p-6 h-[30rem] w-[20rem] duration-100 hover:opacity-90 cursor-pointer flex flex-col items-center justify-center",
-            {
-              "border-red-500": ctx.focused,
-            }
-          )}
-        >
-          <AiFillYoutube
-            className={classNames("w-[5rem] h-auto duration-100", {
-              "text-red-500": ctx.focused,
-            })}
-          />
-          <h2 className="text-[2rem] font-bold text-center uppercase">
-            Watch from Youtube
-          </h2>
-
-          <input
-            ref={ctx.youtubeInputRef}
-            onFocus={() => ctx.setFocused(true)}
-            onBlur={() => ctx.setFocused(false)}
-            placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
-            className="w-full p-2 my-10 text-lg bg-slate-700/40"
-          />
-
-          <Button
-            size="md"
-            fullWidth
-            className="duration-100 bg-transparent border-2 border-slate-400 hover:bg-slate-700 hover:border-slate-700"
-            onClick={() => {
-              if (!ctx.youtubeInputRef.current?.value) return;
-
-              ctx.control({
-                id: ctx.id!,
-                statusObject: {
-                  sessionId: ctx.sessionId,
-                  time: 0,
-                  type: "CHANGE_URL",
-                  name: ctx.userName!,
-                  url: ctx.youtubeInputRef.current.value,
-                },
-              });
-            }}
-          >
-            Watch
-          </Button>
-        </div>
-      </div>
-    </div>
   );
 }

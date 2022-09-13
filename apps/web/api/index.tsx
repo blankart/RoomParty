@@ -1,17 +1,18 @@
 import { createReactQueryHooks } from "@trpc/react";
+import { withTRPC as _withTRPC } from "@trpc/next";
+import { createWSClient, wsLink } from "@trpc/client/links/wsLink";
+import { createTRPCClient as _createTRPCClient } from "@trpc/client";
+
 import React, { useState } from "react";
 import { QueryClient, QueryClientProvider } from "react-query";
-import type { AppRouter } from "trpc";
 import superjson from "superjson";
-import { createTRPCClient as _createTRPCClient } from "@trpc/client";
-import { withTRPC as _withTRPC } from "@trpc/next";
 import { parseCookies } from "nookies";
+
+import { AppRouter } from "trpc";
+import { ACCESS_TOKEN_KEY } from "common-types/constants";
 
 export const trpc = createReactQueryHooks<AppRouter>();
 export const _TRPCProvider = trpc.Provider;
-
-import { createWSClient, wsLink } from "@trpc/client/links/wsLink";
-import { ACCESS_TOKEN_KEY } from "trpc";
 
 interface TRPCProviderProps {
   children?: React.ReactNode;
@@ -22,7 +23,7 @@ const TRPC_URL = `${
 }/trpc`;
 
 export const createQueryClient = () => new QueryClient();
-export const createTRPCClient = () => {
+export const createTRPCClient = (ctx?: any) => {
   let wsClient: any;
   if (process.browser) {
     wsClient = createWSClient({
@@ -38,9 +39,10 @@ export const createTRPCClient = () => {
           links: [wsLink({ client: wsClient })],
         }
       : {}),
+
     headers() {
       return {
-        access_token: parseCookies(null)[ACCESS_TOKEN_KEY],
+        authorization: parseCookies(ctx)?.[ACCESS_TOKEN_KEY],
       };
     },
   });
