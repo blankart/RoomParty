@@ -25,7 +25,7 @@ export const playerRouter = createRouter()
                 type: zod.string(),
                 time: zod.number().optional(),
                 name: zod.string(),
-                sessionId: zod.number(),
+                tabSessionId: zod.number(),
                 url: zod.string(),
                 thumbnail: zod.string().optional()
             })

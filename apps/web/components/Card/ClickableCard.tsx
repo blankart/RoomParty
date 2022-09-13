@@ -1,4 +1,5 @@
 import classNames from "classnames";
+import Link from "next/link";
 
 interface ClickableCardProps {
   onClick?: (...args: any) => any;
@@ -6,17 +7,18 @@ interface ClickableCardProps {
   imgSrc?: string;
   className?: string;
   children?: React.ReactNode;
+  href?: string;
+  as?: string;
+  shallow?: boolean;
 }
 
 export default function ClickableCard(props: ClickableCardProps) {
-  return (
-    <button
-      className={classNames(
-        "overflow-hidden rounded-lg bg-slate-700",
-        props.className
-      )}
-      onClick={props.onClick}
-    >
+  const wrapperClassName = classNames(
+    "overflow-hidden rounded-lg bg-slate-700 duration-100 border-2 border-transparent hover:border-slate-200",
+    props.className
+  );
+  let content = (
+    <>
       {props.imgSrc ? (
         <img
           src={props.imgSrc}
@@ -27,6 +29,26 @@ export default function ClickableCard(props: ClickableCardProps) {
         <div className="!m-0 aspect-video max-h-[150px] bg-slate-800/50 object-cover !w-full" />
       )}
       <div className="p-4">{props.children}</div>
-    </button>
+    </>
   );
+
+  if (!props.href) {
+    content = (
+      <button className={wrapperClassName} onClick={props.onClick}>
+        {content}
+      </button>
+    );
+  } else {
+    content = (
+      <Link href={props.href} as={props.as} passHref shallow={props.shallow}>
+        <a className={classNames(wrapperClassName, "no-underline")}>
+          {content}
+        </a>
+      </Link>
+    );
+
+    content = content;
+  }
+
+  return content;
 }

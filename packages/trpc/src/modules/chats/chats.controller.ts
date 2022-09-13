@@ -1,4 +1,4 @@
-import { createRouter } from "../../trpc";
+import { createRouter, createRouterWithUser } from "../../trpc";
 import zod from 'zod'
 import ChatsService from "./chats.service";
 
@@ -23,12 +23,14 @@ export const chatsRouter = createRouter()
         }
     })
 
+export const chatsWithUserRouter = createRouterWithUser()
     .subscription('chatSubscription', {
         input: zod.object({
             id: zod.string(),
-            name: zod.string()
+            name: zod.string(),
+            localStorageSessionId: zod.number()
         }),
-        async resolve({ input }) {
-            return await ChatsService.chatSubscription(input)
+        async resolve({ input, ctx }) {
+            return await ChatsService.chatSubscription(input, ctx.user)
         }
     })

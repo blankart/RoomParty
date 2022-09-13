@@ -1,43 +1,55 @@
 import { trpc } from "@web/api";
 import Button from "@web/components/Button/Button";
 import ClickableCard from "@web/components/Card/ClickableCard";
+import Container from "@web/components/Container/Container";
 import useMe from "@web/hooks/useMe";
 import { useRouter } from "next/router";
+import { AiOutlineLoading } from "react-icons/ai";
 
 export default function Index() {
   const router = useRouter();
   const { user } = useMe();
-  const { data: rooms } = trpc.useQuery(["rooms.findMyRoom"], {
+  const { data: rooms, isLoading } = trpc.useQuery(["rooms.findMyRoom"], {
     enabled: !!user,
   });
 
   return (
-    <div>
-      {/* <Button
-        onClick={() => {
-          window.googleClient?.requestCode();
-        }}
-      >
-        Sign in
-      </Button> */}
+    <Container className="flex flex-col items-center justify-center h-full gap-2 overflow-y-scroll">
+      {!!user ? (
+        <>
+          {isLoading && (
+            <AiOutlineLoading className="!w-20 h-auto animate-spin duration-100" />
+          )}
 
-      <div className="grid grid-cols-4 gap-4 overflow-y-auto">
-        {rooms?.map((room) => (
-          <ClickableCard
-            key={room.id}
-            imgSrc={room.thumbnail!}
-            alt={room.name}
-            onClick={() =>
-              router.push("/rooms/[room]", `/rooms/${room.id}`, {
-                shallow: true,
-              })
-            }
-          >
-            <h1>{room.name}</h1>
-            <p>{room.online} online</p>
-          </ClickableCard>
-        ))}
-      </div>
-    </div>
+          {!isLoading && (
+            <>
+              <h1>Available rooms:</h1>
+              <div className="flex flex-wrap gap-4 max-h-[min(600px,100vh)] w-[min(1400px,100vw)] items-center justify-center">
+                {rooms?.map((room) => (
+                  <ClickableCard
+                    href={"/rooms/[room]"}
+                    as={`/rooms/${room.id}`}
+                    shallow
+                    className="basis-[300px]"
+                    key={room.id}
+                    imgSrc={room.thumbnail!}
+                    alt={room.name}
+                  >
+                    <h2 className="text-left !m-0 text-[1rem] line-clamp-2">
+                      {room.name}
+                    </h2>
+                    <p className="text-left !m-0">{room.online} online</p>
+                  </ClickableCard>
+                ))}
+              </div>
+            </>
+          )}
+        </>
+      ) : (
+        <Button onClick={() => window.googleClient?.requestCode()}>
+          Login via Google
+        </Button>
+      )}
+    </Container>
   );
 }

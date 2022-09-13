@@ -5,7 +5,7 @@ import superjson from 'superjson'
  * Controllers
  */
 import { ROOMS_ROUTER_NAME, roomsRouter, roomsWithUserRouter, roomsProtectedRouter } from './modules/rooms/rooms.controller'
-import { CHATS_ROUTER_NAME, chatsRouter } from './modules/chats/chats.controller'
+import { CHATS_ROUTER_NAME, chatsRouter, chatsWithUserRouter } from './modules/chats/chats.controller'
 import { PLAYER_ROUTER_NAME, playerRouter } from './modules/player/player.controller'
 import { YOUTUBE_ROUTER_NAME, youtubeRouter } from './modules/youtube/youtube.controller'
 import { USERS_ROUTER_NAME, usersRouter, usersProtectedRouter } from './modules/users/users.controller'
@@ -23,6 +23,7 @@ export const router =
         .merge(routeNameForMerge(ROOMS_ROUTER_NAME), roomsProtectedRouter)
 
         .merge(routeNameForMerge(CHATS_ROUTER_NAME), chatsRouter)
+        .merge(routeNameForMerge(CHATS_ROUTER_NAME), chatsWithUserRouter)
 
         .merge(routeNameForMerge(PLAYER_ROUTER_NAME), playerRouter)
 

@@ -13,11 +13,11 @@ export function useYoutubePlayerSetup(props: YoutubePlayerSetupProps) {
     const [q, debouncedQ, setQ] = useDebouncedState('', 300)
     const [showVideoSearch, setShowVideoSearch] = useState(false)
 
-    const { id, userName, sessionId, url } = useRoomsStore(
+    const { id, userName, tabSessionId, url } = useRoomsStore(
         (s) => ({
             id: s.id,
             userName: s.userName,
-            sessionId: s.sessionId,
+            tabSessionId: s.tabSessionId,
             url: s.url,
         }),
         shallow
@@ -49,7 +49,7 @@ export function useYoutubePlayerSetup(props: YoutubePlayerSetupProps) {
         control({
             id: id!,
             statusObject: {
-                sessionId: sessionId,
+                tabSessionId: tabSessionId,
                 name: userName!,
                 type: "CHANGE_URL",
                 time: 0,
@@ -68,7 +68,7 @@ export function useYoutubePlayerSetup(props: YoutubePlayerSetupProps) {
         id,
         userName,
         control,
-        sessionId,
+        tabSessionId,
         searchResult,
         q,
         setQ,

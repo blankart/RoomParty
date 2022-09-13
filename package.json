@@ -12,7 +12,8 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "prisma:migrate": "env-cmd --file .env.local turbo run migrate --filter=prisma-client --",
-    "prisma:reset": "env-cmd --file .env.local turbo run reset --filter=prisma-client --"
+    "prisma:reset": "env-cmd --file .env.local turbo run reset --filter=prisma-client --",
+    "prisma:deploy": "env-cmd --file .env.local turbo run deploy --filter=prisma-client --"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",

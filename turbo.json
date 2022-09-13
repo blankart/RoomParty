@@ -16,6 +16,9 @@
     },
     "reset": {
       "cache": false
+    },
+    "deploy": {
+      "cache": false
     }
   },
   "globalDependencies": [

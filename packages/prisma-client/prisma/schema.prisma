@@ -33,6 +33,8 @@ model User {
   lastName  String?
   picture   String?
   Account   Account[]
+  Room      Room?     @relation(fields: [roomId], references: [id])
+  roomId    String?
 }
 
 // Room Models
@@ -45,7 +47,8 @@ model Room {
   account      Account? @relation(fields: [accountId], references: [id])
   accountId    String?
   thumbnailUrl String?
-  online       Int      @default(0)
+  onlineGuests Int[]    @default([])
+  onlineUsers  User[]
 }
 
 // Chat Models

@@ -24,7 +24,7 @@ export default function YoutubePlayerWithControls(
   const ctx = useYoutubePlayerWithControls(props);
 
   return (
-    <div className="w-full max-h-screen overflow-scroll bg-slate-900">
+    <div className="w-full max-h-screen overflow-y-auto bg-slate-900">
       <div className="relative w-full aspect-video bg-slate-800">
         <YoutubePlayerSetup />
         <YoutubePlayer

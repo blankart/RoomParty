@@ -92,13 +92,16 @@ class Rooms {
                 id: true,
                 name: true,
                 playerStatus: true,
-                online: true,
+                onlineGuests: true,
+                onlineUsers: {
+                    select: { id: true }
+                },
                 createdAt: true
             }
         }).then(res => res.map(r => ({
             id: r.id,
             name: r.name,
-            online: r.online,
+            online: r.onlineGuests.length + r.onlineUsers.length,
             thumbnail: (r.playerStatus as any)?.thumbnail as string | null | undefined,
             createdAt: r.createdAt
         })).sort((a, b) => a.createdAt.getTime() < b.createdAt.getTime() ? 1 : -1))

@@ -35,7 +35,7 @@ export function useControlMutation() {
 export default function useYoutubePlayerWithControls(props: YoutubePlayerWithControlsProps) {
     const youtubePlayerRef = useRef<any>(null);
 
-    const { id, userName, scrubTime, url, set, sessionId, type } = useRoomsStore(
+    const { id, userName, scrubTime, url, set, tabSessionId, type } = useRoomsStore(
         (s) => ({
             id: s.id,
             userName: s.userName,
@@ -43,7 +43,7 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
             url: s.url,
             scrubTime: s.scrubTime,
             set: s.set,
-            sessionId: s.sessionId,
+            tabSessionId: s.tabSessionId,
             type: s.type,
         }),
         shallow
@@ -60,7 +60,7 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
                     setWatchState({ isPlayed: false, scrubTime: 0, url: data.url });
                 }
 
-                if (data.sessionId === sessionId) return;
+                if (data.tabSessionId === tabSessionId) return;
 
                 if (data.type === "PAUSED") {
                     setWatchState({
@@ -131,7 +131,7 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
             control({
                 id: id!,
                 statusObject: {
-                    sessionId: sessionId,
+                    tabSessionId: tabSessionId,
                     time: youtubePlayerRef?.current?.getCurrentTime() ?? 0,
                     type: "PAUSED",
                     name: userName!,
@@ -145,7 +145,7 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
             control({
                 id: id!,
                 statusObject: {
-                    sessionId: sessionId,
+                    tabSessionId: tabSessionId,
                     type: "PLAYED",
                     time: youtubePlayerRef?.current?.getCurrentTime() ?? 0,
                     name: userName!,
@@ -160,7 +160,7 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
             control({
                 id: id!,
                 statusObject: {
-                    sessionId: sessionId,
+                    tabSessionId: tabSessionId,
                     name: userName!,
                     type: "SEEK_TO",
                     time,
@@ -171,7 +171,7 @@ export default function useYoutubePlayerWithControls(props: YoutubePlayerWithCon
 
     return {
         url,
-        sessionId,
+        tabSessionId,
         id,
         userName,
         youtubePlayerRef,

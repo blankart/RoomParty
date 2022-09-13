@@ -8,9 +8,11 @@ import shallow from "zustand/shallow";
 const CHAT_NAME_KEY = "__tube_hub_user_name";
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 
+const LOCAL_STORAGE_SESSION_KEY = '__tub-hub-local-storage-session-id'
+
 export default function useChat(props: ChatProps) {
     const router = useRouter();
-    const { collapsed, id, set, userName, addChat, chatsLength, showPrompt, name, chats } = useRoomsStore(s => ({
+    const { collapsed, id, set, userName, addChat, chatsLength, showPrompt, name, chats, localStorageSessionId } = useRoomsStore(s => ({
         collapsed: s.collapsed,
         id: s.id,
         set: s.set,
@@ -20,6 +22,7 @@ export default function useChat(props: ChatProps) {
         chatsLength: s.chatsLength,
         showPrompt: s.showPrompt,
         name: s.name,
+        localStorageSessionId: s.localStorageSessionId,
     }),
         shallow
     )
@@ -52,12 +55,26 @@ export default function useChat(props: ChatProps) {
         if (newId !== id) set({ id })
     }, [id, router.query?.id])
 
-    const shouldEnableQueries = !!id && !!userName
 
     function setName(newName: string) {
         set({ userName: newName, showPrompt: false })
         id && localStorage.setItem(getLocalStorageKeyName(id), newName);
     }
+
+    useEffect(() => {
+        if (localStorageSessionId) return
+
+        const sessionId = localStorage.getItem(LOCAL_STORAGE_SESSION_KEY)
+        if (!sessionId) {
+            const newLocalStorageSessionId = Math.floor((Math.random() * 1_000_000) % 1_000_0)
+            localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, String(newLocalStorageSessionId))
+
+            set({ localStorageSessionId: newLocalStorageSessionId })
+            return
+        }
+
+        set({ localStorageSessionId: Number(sessionId) })
+    }, [])
 
     useEffect(() => {
         if (userName) return
@@ -82,7 +99,8 @@ export default function useChat(props: ChatProps) {
         }
     }, [id]);
 
-    trpc.useSubscription(["chats.chatSubscription", { id: id!, name: userName }], {
+    const shouldEnableQueries = !!id && !!userName && !!localStorageSessionId
+    trpc.useSubscription(["chats.chatSubscription", { id: id!, name: userName, localStorageSessionId: localStorageSessionId! }], {
         enabled: shouldEnableQueries,
         onNext: (data) => {
             addChat(data)

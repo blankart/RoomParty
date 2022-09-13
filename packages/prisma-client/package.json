@@ -6,7 +6,8 @@
   "license": "MIT",
   "scripts": {
     "migrate": "prisma migrate dev --name",
-    "reset": "prisma migrate reset --force"
+    "reset": "prisma migrate reset --force",
+    "deploy": "prisma migrate deploy"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",

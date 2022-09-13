@@ -8,7 +8,8 @@ export interface RoomsStore {
     userName: string
     collapsed: boolean,
     showPrompt: boolean
-    sessionId: number,
+    tabSessionId: number,
+    localStorageSessionId?: number,
 
     isPlayed: boolean,
     scrubTime: number,
@@ -29,7 +30,7 @@ export const useRoomsStore = create<RoomsStore>((set, get) => ({
 
     isPlayed: true,
     scrubTime: 0,
-    sessionId: Math.floor((Math.random() * 1_000_000) % 1_000_0),
+    tabSessionId: Math.floor((Math.random() * 1_000_000) % 1_000_0),
 
     chatsLength: () => get().chats?.length ?? 0,
     addChat: (chat) => set(state => ({ ...state, chats: state.chats ? [...state.chats, chat] : [chat] })),

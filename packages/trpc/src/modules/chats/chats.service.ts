@@ -3,6 +3,7 @@ import { EventEmitter } from 'events'
 import { Subscription } from "@trpc/server"
 import { Chat } from "prisma-client"
 import { checkText } from 'smile2emoji'
+import { CurrentUser } from "../../types/user"
 
 const chatsEventEmitter = new EventEmitter()
 class Chats {
@@ -49,7 +50,80 @@ class Chats {
         return newChat
     }
 
-    async chatSubscription(data: { id: string, name: string }) {
+    private async incrementOnlineCount(id: string, localStorageSessionId: number, user: CurrentUser) {
+        const existingRoom = await ModelsService.client.room.findFirst({
+            where: { id }, include: {
+                onlineUsers: {
+                    select: {
+                        id: true
+
+                    }
+                }
+            }
+        })
+        if (!existingRoom) return
+
+        if (!user && !existingRoom.onlineGuests.includes(localStorageSessionId)) {
+            return ModelsService.client.room.update({
+                where: { id: existingRoom.id },
+                data: {
+                    onlineGuests: [...existingRoom.onlineGuests, localStorageSessionId]
+                }
+            })
+        }
+
+        if (user && !existingRoom.onlineUsers.find(({ id }) => id === user.user.id)) {
+            return ModelsService.client.room.update({
+                where: { id: existingRoom.id },
+                data: {
+                    onlineUsers: {
+                        connect: {
+                            id: user.user.id
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    private async decrementOnlineCount(id: string, localStorageSessionId: number, user: CurrentUser) {
+        const existingRoom = await ModelsService.client.room.findFirst({
+            where: { id }, include: {
+                onlineUsers: {
+                    select: {
+                        id: true
+
+                    }
+                }
+            }
+        })
+
+        if (!existingRoom) return
+
+        if (!user && existingRoom.onlineGuests.includes(localStorageSessionId)) {
+            return ModelsService.client.room.update({
+                where: { id: existingRoom.id },
+                data: {
+                    onlineGuests: existingRoom.onlineGuests.filter(lcid => lcid !== localStorageSessionId)
+                }
+            })
+        }
+
+        if (user && existingRoom.onlineUsers.find(({ id }) => id === user.user.id)) {
+            return ModelsService.client.room.update({
+                where: { id: existingRoom.id },
+                data: {
+                    onlineUsers: {
+                        disconnect: {
+                            id: user.user.id
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+    async chatSubscription(data: { id: string, name: string, localStorageSessionId: number }, user: CurrentUser) {
         return new Subscription<Chat>((emit) => {
             const onAdd = (data: Chat) => {
                 emit.data(data)
@@ -71,14 +145,7 @@ class Chats {
                     }
                 }).then(res => chatsEventEmitter.emit(`${data.id}.send`, this.convertEmoticonsToEmojisInChatsObject(res))),
 
-                ModelsService.client.room.update({
-                    where: { id: data.id },
-                    data: {
-                        online: {
-                            increment: 1
-                        }
-                    }
-                })
+                this.incrementOnlineCount(data.id, data.localStorageSessionId, user)
             ])
 
             return () => {
@@ -98,14 +165,7 @@ class Chats {
                         }
                     }).then(res => chatsEventEmitter.emit(`${data.id}.send`, this.convertEmoticonsToEmojisInChatsObject(res))),
 
-                    ModelsService.client.room.update({
-                        where: { id: data.id },
-                        data: {
-                            online: {
-                                decrement: 1
-                            }
-                        }
-                    })
+                    this.decrementOnlineCount(data.id, data.localStorageSessionId, user)
                 ])
             }
         })
