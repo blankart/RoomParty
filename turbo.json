@@ -24,6 +24,7 @@
   "globalDependencies": [
     ".env.local",
     "$PORT",
+    "$SERVER_ENV",
     "$SERVER_PORT",
     "$NEXT_PUBLIC_SERVER_URL",
     "$SERVER_URL",
