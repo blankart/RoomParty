@@ -3,11 +3,14 @@ version: "3"
 services:
   server:
     container_name: server
+    extends:
+      file: base.yml
+      service: base
     build:
       context: .
       dockerfile: ./apps/server/Dockerfile
       args:
-        - DATABASE_URL=$DATABASE_URL
+        - DATABASE_URL
     restart: always
     ports:
       - 8000:8000
