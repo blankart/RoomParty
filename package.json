@@ -20,11 +20,15 @@
     "dev:prisma:migrate": "env-cmd --file .env.local turbo run migrate --filter=prisma-client --",
     "dev:prisma:reset": "env-cmd --file .env.local turbo run reset --filter=prisma-client --",
     "dev:prisma:deploy": "env-cmd --file .env.local turbo run deploy --filter=prisma-client --",
-    "prisma:deploy": "turbo run deploy --filter=prisma-client --",
-    "gcloud:deploy:server": "gcloud app deploy",
+    "dev:prisma:generate": "env-cmd --file .env.local turbo run prisma:generate --filter=prisma-client --",
+    "prisma:deploy": "env-cmd --file .env.production turbo run deploy --filter=prisma-client --",
+    "prisma:generate": "env-cmd --file .env.production turbo run prisma:generate --filter=prisma-client --",
+    "gcloud:deploy:server": "./scripts/server/gcloud-deploy-server.sh",
     "gcloud:build:server": "gcloud builds submit",
-    "dev:docker-compose": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose --env-file .env.local -f docker-compose.yml build --parallel",
-    "dev:docker:start": "docker-compose --env-file .env.local -f docker-compose.yml up -d"
+    "dev:docker:start": "docker-compose --env-file .env.local -f docker-compose.yml up -d",
+    "docker:start": "docker-compose --env-file .env.production -f docker-compose.yml up -d",
+    "dev:docker:build-and-push": "./scripts/server/build-and-push.sh .env.production",
+    "docker:build-and-push": "./scripts/server/build-and-push.sh .env.production"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",

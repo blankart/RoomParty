@@ -1,7 +1,8 @@
-version: "3"
+version: "2"
 
 services:
   server:
+    platform: linux/amd64
     container_name: server
     extends:
       file: base.yml
