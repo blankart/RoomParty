@@ -46,7 +46,11 @@ export default function Index() {
           )}
         </>
       ) : (
-        <Button onClick={() => window.googleClient?.requestCode()}>
+        <Button
+          onClick={() =>
+            window.googleClient?.requestAccessToken({ prompt: "consent" })
+          }
+        >
           Login via Google
         </Button>
       )}

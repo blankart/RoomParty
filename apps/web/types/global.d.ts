@@ -12,7 +12,7 @@ declare global {
   const gapi: GApi;
 
   interface Window {
-    googleClient: google.accounts.oauth2.CodeClient | undefined;
+    googleClient: google.accounts.oauth2.TokenClient | undefined;
   }
 }
 

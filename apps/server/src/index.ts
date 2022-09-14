@@ -22,13 +22,6 @@ async function main() {
     })
   );
 
-  app.get("/oauth/google", async (req, res) => {
-    const redirect = await router
-      .createCaller({ req, res })
-      .query("users.googleOAuth");
-    res.redirect(redirect);
-  });
-
   app.use(
     "/trpc",
     trpcExpress.createExpressMiddleware({

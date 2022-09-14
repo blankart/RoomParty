@@ -3,7 +3,7 @@ import { google } from "googleapis";
 import ModelsService from "../models/models.service";
 
 class Users {
-  constructor(private googleOAuth2Client: OAuth2Client) {}
+  constructor(private googleOAuth2Client: OAuth2Client) { }
   private static instance?: Users;
   static getInstance() {
     if (!Users.instance) {
@@ -19,14 +19,15 @@ class Users {
     return Users.instance;
   }
 
-  async getGoogleOAuth(accessToken: string) {
+  async getUserByGoogleOAuthAccessToken(accessToken: string) {
+    let userInfo, user
     try {
-      const { data: userInfo } = await google.oauth2("v2").userinfo.get({
+      userInfo = (await google.oauth2("v2").userinfo.get({
         alt: "json",
         oauth_token: accessToken,
-      });
+      }))?.data;
 
-      const user = await ModelsService.client.account.findFirst({
+      user = await ModelsService.client.account.findFirst({
         where: {
           provider: "Google",
           providerId: userInfo.id!,
@@ -36,15 +37,13 @@ class Users {
         },
       });
 
-      if (!user) return null;
-
-      return user;
+      return { userInfo, user }
     } catch {
-      return null;
+      return { userInfo, user };
     }
   }
 
-  async googleOAuth(data: { state: string; code: string; scope: string }) {
+  async googleOAuth(data: { code: string; scope: string }) {
     const { tokens } = await this.googleOAuth2Client.getToken(data.code);
     const { data: userInfo } = await google.oauth2("v2").userinfo.get({
       alt: "json",
@@ -57,7 +56,6 @@ class Users {
     });
 
     const res = {
-      redirect: data.state,
       token: tokens.access_token,
     };
 
@@ -99,6 +97,32 @@ class Users {
     });
 
     return res;
+  }
+
+  async googleOAuthWithToken(input: { access_token: string, scope?: string, token_type?: string, expires_in?: number }) {
+    const { user, userInfo } = await this.getUserByGoogleOAuthAccessToken(input.access_token)
+
+    if (user) return true
+    if (!userInfo) return false
+    await ModelsService.client.account.create({
+      data: {
+        provider: "Google",
+        providerId: userInfo.id!,
+        access_token: input.access_token,
+        expires_at: new Date(input.expires_in!).getTime(),
+        token_type: input.token_type,
+        user: {
+          create: {
+            name: userInfo.name,
+            firstName: userInfo.given_name,
+            lastName: userInfo.family_name,
+            picture: userInfo.picture,
+          },
+        },
+      },
+    });
+
+    return true
   }
 
   async me(id: string) {

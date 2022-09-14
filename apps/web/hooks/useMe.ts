@@ -26,13 +26,13 @@ export default function useMe() {
 
       return;
     } else if (accessToken) {
-      setCookie(null, ACCESS_TOKEN_KEY, accessToken), { path: "/" };
+      setCookie(null, ACCESS_TOKEN_KEY, accessToken, { path: "/" });
       setHasAccessToken(true);
       return;
     }
   }, [router.isReady, router.query.token]);
 
-  const { data, error, isLoading, refetch } = trpc.useQuery(["users.me"], {
+  const { data: user, error, isLoading, refetch } = trpc.useQuery(["users.me"], {
     enabled: hasAccessToken && !!parseCookies(null)[ACCESS_TOKEN_KEY],
     refetchOnWindowFocus: false,
     onError() {
@@ -41,5 +41,5 @@ export default function useMe() {
     },
   });
 
-  return { user: data, error, isLoading, refetch };
+  return { user, error, isLoading, refetch };
 }
