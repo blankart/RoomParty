@@ -1,8 +1,16 @@
 {
   "name": "common-types",
   "version": "0.0.0",
-  "private": true,
-  "files": [
-    "env.d.ts"
-  ]
+  "main": "./dist/index.js",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf dist",
+    "build": "yarn clean && tsc"
+  },
+  "devDependencies": {
+    "@types/node": "^17.0.12",
+    "tsconfig": "*",
+    "typescript": "^4.8.3"
+  }
 }

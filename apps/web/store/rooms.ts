@@ -1,38 +1,42 @@
-import { Chat } from 'prisma-client'
-import create from 'zustand'
+import { Chat } from "prisma-client";
+import create from "zustand";
 
 export interface RoomsStore {
-    chats?: Chat[]
-    id?: string;
-    name?: string
-    userName: string
-    collapsed: boolean,
-    showPrompt: boolean
-    tabSessionId: number,
-    localStorageSessionId?: number,
+  chats?: Chat[];
+  id?: string;
+  name?: string;
+  userName: string;
+  collapsed: boolean;
+  showPrompt: boolean;
+  tabSessionId: number;
+  localStorageSessionId?: number;
 
-    isPlayed: boolean,
-    scrubTime: number,
-    url?: string,
-    type?: string,
-    thumbnail?: string,
+  isPlayed: boolean;
+  scrubTime: number;
+  url?: string;
+  type?: string;
+  thumbnail?: string;
 
-    set: (roomStore?: Partial<RoomsStore>) => void
-    addChat: (chat: Chat) => void,
-    chatsLength: () => number,
+  set: (roomStore?: Partial<RoomsStore>) => void;
+  addChat: (chat: Chat) => void;
+  chatsLength: () => number;
 }
 
 export const useRoomsStore = create<RoomsStore>((set, get) => ({
-    chats: [],
-    collapsed: true,
-    showPrompt: false,
-    userName: '',
+  chats: [],
+  collapsed: true,
+  showPrompt: false,
+  userName: "",
 
-    isPlayed: true,
-    scrubTime: 0,
-    tabSessionId: Math.floor((Math.random() * 1_000_000) % 1_000_0),
+  isPlayed: true,
+  scrubTime: 0,
+  tabSessionId: Math.floor((Math.random() * 1_000_000) % 1_000_0),
 
-    chatsLength: () => get().chats?.length ?? 0,
-    addChat: (chat) => set(state => ({ ...state, chats: state.chats ? [...state.chats, chat] : [chat] })),
-    set: (newState) => set(state => ({ ...state, ...newState })),
-}))
+  chatsLength: () => get().chats?.length ?? 0,
+  addChat: (chat) =>
+    set((state) => ({
+      ...state,
+      chats: state.chats ? [...state.chats, chat] : [chat],
+    })),
+  set: (newState) => set((state) => ({ ...state, ...newState })),
+}));

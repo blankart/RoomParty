@@ -1,48 +1,57 @@
-import { Subscription } from "@trpc/server"
-import { EventEmitter } from 'events'
-import { PlayerStatus } from "../../types/player"
-import ModelsService from "../models/models.service"
+import { Subscription } from "@trpc/server";
+import { EventEmitter } from "events";
+import { PlayerStatus } from "../../types/player";
+import ModelsService from "../models/models.service";
 
-const playerStatusEventEmitter = new EventEmitter()
+const playerStatusEventEmitter = new EventEmitter();
 
 class Player {
-    constructor() { }
-    private static instance?: Player
-    static getInstance() {
-        if (!Player.instance) {
-            Player.instance = new Player()
-        }
-
-        return Player.instance
+  constructor() {}
+  private static instance?: Player;
+  static getInstance() {
+    if (!Player.instance) {
+      Player.instance = new Player();
     }
 
-    async statusSubscription(data: { id: string, name: string }) {
-        return new Subscription<PlayerStatus>(emit => {
-            const onAdd = (data: PlayerStatus) => {
-                emit.data(data)
-            }
+    return Player.instance;
+  }
 
-            playerStatusEventEmitter.on(`${data.id}.statusSubscription.control`, onAdd)
+  async statusSubscription(data: { id: string; name: string }) {
+    return new Subscription<PlayerStatus>((emit) => {
+      const onAdd = (data: PlayerStatus) => {
+        emit.data(data);
+      };
 
-            return () => {
-                playerStatusEventEmitter.off(`${data.id}.statusSubscription.control`, onAdd)
-            }
-        })
-    }
+      playerStatusEventEmitter.on(
+        `${data.id}.statusSubscription.control`,
+        onAdd
+      );
 
-    async control(data: { id: string, statusObject: PlayerStatus }) {
-        playerStatusEventEmitter.emit(`${data.id}.statusSubscription.control`, data.statusObject)
-        await ModelsService.client.room.update({
-            where: {
-                id: data.id
-            },
-            data: {
-                playerStatus: data.statusObject
-            }
-        })
-    }
+      return () => {
+        playerStatusEventEmitter.off(
+          `${data.id}.statusSubscription.control`,
+          onAdd
+        );
+      };
+    });
+  }
+
+  async control(data: { id: string; statusObject: PlayerStatus }) {
+    playerStatusEventEmitter.emit(
+      `${data.id}.statusSubscription.control`,
+      data.statusObject
+    );
+    await ModelsService.client.room.update({
+      where: {
+        id: data.id,
+      },
+      data: {
+        playerStatus: data.statusObject,
+      },
+    });
+  }
 }
 
-const PlayerService = Player.getInstance()
+const PlayerService = Player.getInstance();
 
-export default PlayerService
+export default PlayerService;

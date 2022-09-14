@@ -1,1 +1,1 @@
-export const ACCESS_TOKEN_KEY = '__tube-hub-access-token'
+export const ACCESS_TOKEN_KEY = "__tube-hub-access-token";

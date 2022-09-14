@@ -1,13 +1,16 @@
 {
   "name": "prisma-client",
   "version": "1.0.0",
-  "main": "./index.ts",
+  "main": "./dist/index.js",
   "types": "./index.ts",
   "license": "MIT",
   "scripts": {
     "migrate": "prisma migrate dev --name",
     "reset": "prisma migrate reset --force",
-    "deploy": "prisma migrate deploy"
+    "deploy": "prisma migrate deploy",
+    "prisma:generate": "prisma generate",
+    "clean": "rm -rf dist",
+    "build": "yarn clean && tsc"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",

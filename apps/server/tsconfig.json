@@ -1,9 +1,12 @@
 {
   "extends": "tsconfig/node.json",
-  "include": ["./src"],
+  "include": ["src"],
   "exclude": ["dist", "build", "node_modules"],
   "compilerOptions": {
-    "typeRoots": ["./types"]
+    "typeRoots": ["./types"],
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "outDir": "dist"
   },
   "files": ["./types/global.d.ts"]
 }

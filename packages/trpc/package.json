@@ -1,11 +1,13 @@
 {
   "name": "trpc",
   "version": "0.0.0",
-  "main": "./index.ts",
+  "main": "./dist/index.js",
   "types": "./index.ts",
   "license": "MIT",
   "scripts": {
-    "lint": "eslint *.ts*"
+    "lint": "eslint *.ts*",
+    "clean": "rm -rf dist",
+    "build": "yarn clean && tsc"
   },
   "dependencies": {
     "@trpc/server": "^9.27.2",

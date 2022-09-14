@@ -1,9 +1,9 @@
-import { CustomProcessEnv } from 'common-types/env'
+import { CustomProcessEnv } from "common-types/env";
 
 declare global {
-    namespace NodeJS {
-        interface ProcessEnv extends CustomProcessEnv { }
-    }
+  namespace NodeJS {
+    interface ProcessEnv extends CustomProcessEnv {}
+  }
 }
 
-export { }
+export {};

@@ -1,19 +1,19 @@
-import { CustomProcessEnv } from 'common-types/env'
-import type GoogleAccounts from 'google.accounts'
-import type GApi from 'gapi'
+import { CustomProcessEnv } from "common-types";
+import type GoogleAccounts from "google.accounts";
+import type GApi from "gapi";
 
 declare global {
-    namespace NodeJS {
-        interface ProcessEnv extends CustomProcessEnv { }
-    }
+  namespace NodeJS {
+    interface ProcessEnv extends CustomProcessEnv { }
+  }
 
-    const google: GoogleAccounts
+  const google: GoogleAccounts;
 
-    const gapi: GApi
+  const gapi: GApi;
 
-    interface Window {
-        googleClient: google.accounts.oauth2.CodeClient | undefined
-    }
+  interface Window {
+    googleClient: google.accounts.oauth2.CodeClient | undefined;
+  }
 }
 
-export { }
+export { };

@@ -1,40 +1,37 @@
-import ytrs from 'ytsr'
-import { SearchResponse } from '../../types/youtube'
+import ytrs from "ytsr";
+import { SearchResponse } from "../../types/youtube";
 
-const SEARCH_LIMIT = 10
+const SEARCH_LIMIT = 10;
 
 class Youtube {
-    constructor() { }
-    private static instance?: Youtube
-    static getInstance() {
-        if (!Youtube.instance) {
-            Youtube.instance = new Youtube()
-        }
-
-        return Youtube.instance
+  constructor() {}
+  private static instance?: Youtube;
+  static getInstance() {
+    if (!Youtube.instance) {
+      Youtube.instance = new Youtube();
     }
 
-    private async getVideosByQ(q: string) {
-        const searchFilter = await ytrs.getFilters(q)
+    return Youtube.instance;
+  }
 
-        const searchType = searchFilter.get('Type')?.get('Video')
+  private async getVideosByQ(q: string) {
+    const searchFilter = await ytrs.getFilters(q);
 
-        if (!searchType || !searchType.url) return undefined
+    const searchType = searchFilter.get("Type")?.get("Video");
 
-        return await ytrs(
-            searchType.url,
-            {
-                limit: SEARCH_LIMIT
-            }
-        ) as SearchResponse
-    }
+    if (!searchType || !searchType.url) return undefined;
 
-    async search(q: string) {
-        if (!q) q = 'funny'
-        return await this.getVideosByQ(q)
-    }
+    return (await ytrs(searchType.url, {
+      limit: SEARCH_LIMIT,
+    })) as SearchResponse;
+  }
+
+  async search(q: string) {
+    if (!q) q = "funny";
+    return await this.getVideosByQ(q);
+  }
 }
 
-const YoutubeService = Youtube.getInstance()
+const YoutubeService = Youtube.getInstance();
 
-export default YoutubeService
+export default YoutubeService;

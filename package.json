@@ -9,14 +9,22 @@
   "scripts": {
     "build": "turbo run build",
     "build:server": "turbo run build --filter=server --",
-    "dev": "env-cmd --file .env.local turbo run dev --parallel",
+    "start:server": "turbo run start --filter=server --",
+    "start:web": "turbo run start --filter=web --",
+    "start": "turbo run start --parallel",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
-    "prisma:migrate": "env-cmd --file .env.local turbo run migrate --filter=prisma-client --",
-    "prisma:reset": "env-cmd --file .env.local turbo run reset --filter=prisma-client --",
-    "prisma:deploy": "env-cmd --file .env.local turbo run deploy --filter=prisma-client --",
-    "heroku-postbuild": "if [ $SERVER_ENV ]; then yarn run prod-server; else echo no environment detected, please set SERVER_ENV; fi",
-    "prod-server": "yarn run build:server"
+    "dev:build": "env-cmd --file .env.local turbo run dev:build",
+    "dev:start": "env-cmd --file .env.local turbo run start",
+    "dev": "env-cmd --file .env.local turbo run dev --parallel",
+    "dev:prisma:migrate": "env-cmd --file .env.local turbo run migrate --filter=prisma-client --",
+    "dev:prisma:reset": "env-cmd --file .env.local turbo run reset --filter=prisma-client --",
+    "dev:prisma:deploy": "env-cmd --file .env.local turbo run deploy --filter=prisma-client --",
+    "prisma:deploy": "turbo run deploy --filter=prisma-client --",
+    "gcloud:deploy:server": "gcloud app deploy",
+    "gcloud:build:server": "gcloud builds submit",
+    "dev:docker-compose": "COMPOSE_DOCKER_CLI_BUILD=1 DOCKER_BUILDKIT=1 docker-compose --env-file .env.local -f docker-compose.yml build --parallel",
+    "dev:docker:start": "docker-compose --env-file .env.local -f docker-compose.yml up -d"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",

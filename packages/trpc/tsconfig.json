@@ -3,7 +3,10 @@
   "include": ["."],
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "typeRoots": ["./types"]
+    "typeRoots": ["./types"],
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "outDir": "dist"
   },
   "files": ["./types/global.d.ts"]
 }

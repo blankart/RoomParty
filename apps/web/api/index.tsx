@@ -9,7 +9,7 @@ import superjson from "superjson";
 import { parseCookies } from "nookies";
 
 import { AppRouter } from "trpc";
-import { ACCESS_TOKEN_KEY } from "common-types/constants";
+import { ACCESS_TOKEN_KEY } from "common-types";
 
 export const trpc = createReactQueryHooks<AppRouter>();
 export const _TRPCProvider = trpc.Provider;

@@ -8,133 +8,158 @@ import shallow from "zustand/shallow";
 const CHAT_NAME_KEY = "__tube_hub_user_name";
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 
-const LOCAL_STORAGE_SESSION_KEY = '__tub-hub-local-storage-session-id'
+const LOCAL_STORAGE_SESSION_KEY = "__tub-hub-local-storage-session-id";
 
 export default function useChat(props: ChatProps) {
-    const router = useRouter();
-    const { collapsed, id, set, userName, addChat, chatsLength, showPrompt, name, chats, localStorageSessionId } = useRoomsStore(s => ({
-        collapsed: s.collapsed,
-        id: s.id,
-        set: s.set,
-        userName: s.userName,
-        chats: s.chats,
-        addChat: s.addChat,
-        chatsLength: s.chatsLength,
-        showPrompt: s.showPrompt,
-        name: s.name,
-        localStorageSessionId: s.localStorageSessionId,
+  const router = useRouter();
+  const {
+    collapsed,
+    id,
+    set,
+    userName,
+    addChat,
+    chatsLength,
+    showPrompt,
+    name,
+    chats,
+    localStorageSessionId,
+  } = useRoomsStore(
+    (s) => ({
+      collapsed: s.collapsed,
+      id: s.id,
+      set: s.set,
+      userName: s.userName,
+      chats: s.chats,
+      addChat: s.addChat,
+      chatsLength: s.chatsLength,
+      showPrompt: s.showPrompt,
+      name: s.name,
+      localStorageSessionId: s.localStorageSessionId,
     }),
-        shallow
-    )
+    shallow
+  );
 
-    function scrollChatsToBottom() {
-        chatsRef.current?.scrollTo({
-            behavior: 'smooth',
-            top: Number.MAX_SAFE_INTEGER
-        })
-    }
-    useEffect(() => {
-        scrollChatsToBottom()
-        if (inputRef.current && !inputRef.current?.value?.trim()) {
-            inputRef.current.value = ''
-        }
-    }, [chatsLength()])
-
-
-    const chatsRef = useRef<HTMLDivElement>(null)
-
-    trpc.useQuery(['chats.chats', id!], {
-        enabled: !!id,
-        onSuccess(chats) {
-            set({ chats })
-        },
-    })
-
-    useEffect(() => {
-        const newId = id ?? (router.query?.id as string | undefined)
-        if (newId !== id) set({ id })
-    }, [id, router.query?.id])
-
-
-    function setName(newName: string) {
-        set({ userName: newName, showPrompt: false })
-        id && localStorage.setItem(getLocalStorageKeyName(id), newName);
-    }
-
-    useEffect(() => {
-        if (localStorageSessionId) return
-
-        const sessionId = localStorage.getItem(LOCAL_STORAGE_SESSION_KEY)
-        if (!sessionId) {
-            const newLocalStorageSessionId = Math.floor((Math.random() * 1_000_000) % 1_000_0)
-            localStorage.setItem(LOCAL_STORAGE_SESSION_KEY, String(newLocalStorageSessionId))
-
-            set({ localStorageSessionId: newLocalStorageSessionId })
-            return
-        }
-
-        set({ localStorageSessionId: Number(sessionId) })
-    }, [])
-
-    useEffect(() => {
-        if (userName) return
-        if (!id) return
-        const storedName =
-            (id && localStorage.getItem(getLocalStorageKeyName(id))) ?? "";
-        if (!storedName) {
-            set({ showPrompt: true })
-            return;
-        } else {
-            set({ userName: storedName })
-        }
-
-        if (!id) return;
-        for (const key in localStorage) {
-            const maybeMatchedId = key?.match(
-                new RegExp(`${CHAT_NAME_KEY}\\.(.*)$`)
-            )?.[1];
-            if (key.startsWith(CHAT_NAME_KEY) && maybeMatchedId !== id) {
-                localStorage.removeItem(key);
-            }
-        }
-    }, [id]);
-
-    const shouldEnableQueries = !!id && !!userName && !!localStorageSessionId
-    trpc.useSubscription(["chats.chatSubscription", { id: id!, name: userName, localStorageSessionId: localStorageSessionId! }], {
-        enabled: shouldEnableQueries,
-        onNext: (data) => {
-            addChat(data)
-        },
+  function scrollChatsToBottom() {
+    chatsRef.current?.scrollTo({
+      behavior: "smooth",
+      top: Number.MAX_SAFE_INTEGER,
     });
+  }
+  useEffect(() => {
+    scrollChatsToBottom();
+    if (inputRef.current && !inputRef.current?.value?.trim()) {
+      inputRef.current.value = "";
+    }
+  }, [chatsLength()]);
 
-    const { mutate: sendChat } = trpc.useMutation(["chats.send"]);
+  const chatsRef = useRef<HTMLDivElement>(null);
 
-    const inputRef = useRef<HTMLTextAreaElement>(null);
-    const nameInputRef = useRef<HTMLInputElement>(null);
+  trpc.useQuery(["chats.chats", id!], {
+    enabled: !!id,
+    onSuccess(chats) {
+      set({ chats });
+    },
+  });
 
-    function onSend() {
-        if (!inputRef.current?.value?.trim() || !id) return
-        sendChat({ name: userName, message: inputRef.current.value, id });
-        inputRef.current.value = ''
-        inputRef.current.focus();
+  useEffect(() => {
+    const newId = id ?? (router.query?.id as string | undefined);
+    if (newId !== id) set({ id });
+  }, [id, router.query?.id]);
+
+  function setName(newName: string) {
+    set({ userName: newName, showPrompt: false });
+    id && localStorage.setItem(getLocalStorageKeyName(id), newName);
+  }
+
+  useEffect(() => {
+    if (localStorageSessionId) return;
+
+    const sessionId = localStorage.getItem(LOCAL_STORAGE_SESSION_KEY);
+    if (!sessionId) {
+      const newLocalStorageSessionId = Math.floor(
+        (Math.random() * 1_000_000) % 1_000_0
+      );
+      localStorage.setItem(
+        LOCAL_STORAGE_SESSION_KEY,
+        String(newLocalStorageSessionId)
+      );
+
+      set({ localStorageSessionId: newLocalStorageSessionId });
+      return;
     }
 
-    function onSetName() {
-        if (!nameInputRef.current?.value) return
-        setName(nameInputRef.current?.value)
+    set({ localStorageSessionId: Number(sessionId) });
+  }, []);
+
+  useEffect(() => {
+    if (userName) return;
+    if (!id) return;
+    const storedName =
+      (id && localStorage.getItem(getLocalStorageKeyName(id))) ?? "";
+    if (!storedName) {
+      set({ showPrompt: true });
+      return;
+    } else {
+      set({ userName: storedName });
     }
 
-    return {
-        chatsRef,
-        onSetName,
-        nameInputRef,
-        inputRef,
-        onSend,
-        shouldEnableQueries,
-        chats,
-        collapsed,
-        showPrompt,
-        set,
-        name
+    if (!id) return;
+    for (const key in localStorage) {
+      const maybeMatchedId = key?.match(
+        new RegExp(`${CHAT_NAME_KEY}\\.(.*)$`)
+      )?.[1];
+      if (key.startsWith(CHAT_NAME_KEY) && maybeMatchedId !== id) {
+        localStorage.removeItem(key);
+      }
     }
+  }, [id]);
+
+  const shouldEnableQueries = !!id && !!userName && !!localStorageSessionId;
+  trpc.useSubscription(
+    [
+      "chats.chatSubscription",
+      {
+        id: id!,
+        name: userName,
+        localStorageSessionId: localStorageSessionId!,
+      },
+    ],
+    {
+      enabled: shouldEnableQueries,
+      onNext: (data) => {
+        addChat(data);
+      },
+    }
+  );
+
+  const { mutate: sendChat } = trpc.useMutation(["chats.send"]);
+
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  function onSend() {
+    if (!inputRef.current?.value?.trim() || !id) return;
+    sendChat({ name: userName, message: inputRef.current.value, id });
+    inputRef.current.value = "";
+    inputRef.current.focus();
+  }
+
+  function onSetName() {
+    if (!nameInputRef.current?.value) return;
+    setName(nameInputRef.current?.value);
+  }
+
+  return {
+    chatsRef,
+    onSetName,
+    nameInputRef,
+    inputRef,
+    onSend,
+    shouldEnableQueries,
+    chats,
+    collapsed,
+    showPrompt,
+    set,
+    name,
+  };
 }

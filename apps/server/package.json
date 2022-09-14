@@ -5,7 +5,7 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon -e ts -w ../../packages/trpc -w ./src/index.ts -x ts-node ./src",
-    "start": "ts-node ./src"
+    "start": "node ./dist"
   },
   "dependencies": {
     "@trpc/server": "^9.27.2",
