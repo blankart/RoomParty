@@ -2,13 +2,14 @@ import { ACCESS_TOKEN_KEY } from "common-types";
 import { trpc } from "@web/api";
 import { useRouter } from "next/router";
 import Script from "next/script";
-import { parseCookies, setCookie } from "nookies";
+import { setCookie } from "nookies";
 import { useEffect, useState } from "react";
 
-interface CodeClientCallback {
-  code: string;
+interface TokenClientCallback {
+  access_token: string;
+  token_type: string;
+  expires_in: number;
   scope: string;
-  state: string;
 }
 
 export function NextGoogleOAuth() {
@@ -39,12 +40,7 @@ export function NextGoogleOAuth() {
       client_id: process.env.NEXT_PUBLIC_GOOGLE_WEB_OAUTH_CLIENT_ID!,
       state,
       callback(t) {
-        const tokenResponse = t as unknown as {
-          access_token: string;
-          token_type: string;
-          expires_in: number;
-          scope: string;
-        };
+        const tokenResponse = t as unknown as TokenClientCallback;
         googleOAuthWithToken(tokenResponse);
       },
     });

@@ -28,7 +28,8 @@
     "dev:docker:start": "docker-compose --env-file .env.local -f docker-compose.yml up -d",
     "docker:start": "docker-compose --env-file .env.production -f docker-compose.yml up -d",
     "dev:docker:build-and-push": "./scripts/server/build-and-push.sh .env.production",
-    "docker:build-and-push": "./scripts/server/build-and-push.sh .env.production"
+    "docker:build-and-push": "./scripts/server/build-and-push.sh .env.production",
+    "docker:build-push-and-deploy": "./scripts/server/build-push-and-deploy.sh .env.production"
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
