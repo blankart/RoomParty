@@ -10,7 +10,8 @@
     "deploy": "prisma migrate deploy",
     "prisma:generate": "prisma generate",
     "clean": "rm -rf dist",
-    "build": "yarn clean && tsc"
+    "build": "yarn clean && tsc",
+    "dev": "yarn clean && tsc-watch --noClear"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",
