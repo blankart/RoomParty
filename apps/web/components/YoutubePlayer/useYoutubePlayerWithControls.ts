@@ -1,4 +1,4 @@
-import { PlayerStatus } from "trpc";
+import type { PlayerStatus } from "@rooms2watch/trpc";
 import { trpc } from "@web/api";
 import { useRef } from "react";
 import { RoomsStore, useRoomsStore } from "@web/store/rooms";

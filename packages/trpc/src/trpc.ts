@@ -2,7 +2,6 @@ import * as trpc from "@trpc/server";
 import { inferAsyncReturnType } from "@trpc/server";
 
 import * as trpcExpress from "@trpc/server/adapters/express";
-import { parseCookies } from "nookies";
 import UsersService from "./modules/users/users.service";
 import getAccessToken from "./utils/getAccessToken";
 

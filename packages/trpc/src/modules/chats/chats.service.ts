@@ -1,13 +1,13 @@
 import ModelsService from "../models/models.service";
 import { EventEmitter } from "events";
 import { Subscription } from "@trpc/server";
-import { Chat } from "prisma-client";
+import type { Chat } from "@rooms2watch/prisma-client";
 import { checkText } from "smile2emoji";
 import { CurrentUser } from "../../types/user";
 
 const chatsEventEmitter = new EventEmitter();
 class Chats {
-  constructor() {}
+  constructor() { }
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {

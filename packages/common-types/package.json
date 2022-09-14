@@ -1,5 +1,5 @@
 {
-  "name": "common-types",
+  "name": "@rooms2watch/common-types",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./index.ts",
@@ -10,7 +10,7 @@
   },
   "devDependencies": {
     "@types/node": "^17.0.12",
-    "tsconfig": "*",
+    "@rooms2watch/tsconfig": "*",
     "typescript": "^4.8.3"
   }
 }

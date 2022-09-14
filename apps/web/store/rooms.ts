@@ -1,4 +1,4 @@
-import { Chat } from "prisma-client";
+import type { Chat } from "@rooms2watch/prisma-client";
 import create from "zustand";
 
 export interface RoomsStore {

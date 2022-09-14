@@ -1,4 +1,4 @@
-import { router, createContext } from "trpc";
+import { router, createContext } from "@rooms2watch/trpc";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import express from "express";
 import cors from "cors";

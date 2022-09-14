@@ -1,7 +1,7 @@
 import { createProtectedRouter, createRouter } from "../../trpc";
 import zod from "zod";
 import UsersService from "./users.service";
-import { ACCESS_TOKEN_KEY } from "common-types";
+import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
 
 export const USERS_ROUTER_NAME = "users";
 

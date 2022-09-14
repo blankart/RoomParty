@@ -2,7 +2,7 @@ import { trpc } from "@web/api";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { setCookie, parseCookies, destroyCookie } from "nookies";
-import { ACCESS_TOKEN_KEY } from "common-types";
+import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
 
 export default function useMe() {
   const router = useRouter();

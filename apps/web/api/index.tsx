@@ -8,8 +8,8 @@ import { QueryClient, QueryClientProvider } from "react-query";
 import superjson from "superjson";
 import { parseCookies } from "nookies";
 
-import { AppRouter } from "trpc";
-import { ACCESS_TOKEN_KEY } from "common-types";
+import type { AppRouter } from "@rooms2watch/trpc";
+import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
 
 export const trpc = createReactQueryHooks<AppRouter>();
 export const _TRPCProvider = trpc.Provider;

@@ -1,5 +1,5 @@
 {
-  "name": "prisma-client",
+  "name": "@rooms2watch/prisma-client",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./index.ts",
@@ -22,7 +22,7 @@
     "eslint-config-custom": "*",
     "ts-node": "^10.9.1",
     "tsc-watch": "^5.0.3",
-    "tsconfig": "*",
+    "@rooms2watch/tsconfig": "*",
     "typescript": "^4.8.3"
   }
 }

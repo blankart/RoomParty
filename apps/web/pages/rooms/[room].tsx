@@ -1,13 +1,16 @@
-import { PlayerStatus } from "trpc";
+import type { PlayerStatus } from "@rooms2watch/trpc";
 import { createTRPCClient } from "@web/api";
 import Chat from "@web/components/Chat/Chat";
 import Container from "@web/components/Container/Container";
 import YoutubePlayerWithControls from "@web/components/YoutubePlayer/YoutubePlayerWithControls";
 import { useRoomsStore } from "@web/store/rooms";
-import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import type {
+  GetServerSidePropsContext,
+  InferGetServerSidePropsType,
+} from "next";
 import { useEffect } from "react";
 import shallow from "zustand/shallow";
-import { User } from ".prisma/client";
+import type { User } from "@rooms2watch/prisma-client";
 
 export default function Room(
   props: InferGetServerSidePropsType<typeof getServerSideProps>

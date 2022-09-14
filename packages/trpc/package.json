@@ -1,5 +1,5 @@
 {
-  "name": "trpc",
+  "name": "@rooms2watch/trpc",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./index.ts",
@@ -15,7 +15,7 @@
     "googleapis": "^107.0.0",
     "nookies": "^2.5.2",
     "pg-boss": "^8.0.0",
-    "prisma-client": "*",
+    "@rooms2watch/prisma-client": "*",
     "smile2emoji": "^3.1.1",
     "superjson": "^1.9.1",
     "ytsr": "^3.8.0",
@@ -25,9 +25,9 @@
     "@types/node": "^17.0.12",
     "common-types": "*",
     "eslint": "7.32.0",
-    "eslint-config-custom": "*",
+    "@rooms2watch/eslint-config-custom": "*",
     "tsc-watch": "^5.0.3",
-    "tsconfig": "*",
+    "@rooms2watch/tsconfig": "*",
     "typescript": "^4.8.3"
   }
 }

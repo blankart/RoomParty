@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_KEY } from "common-types";
+import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
 import { trpc } from "@web/api";
 import { useRouter } from "next/router";
 import Script from "next/script";

@@ -1,5 +1,5 @@
 {
-  "name": "web",
+  "name": "@rooms2watch/web",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -26,7 +26,7 @@
     "react-player": "^2.10.1",
     "react-query": "^3.39.2",
     "superjson": "^1.9.1",
-    "trpc": "*",
+    "@rooms2watch/trpc": "*",
     "zustand": "^4.1.1"
   },
   "devDependencies": {
@@ -41,15 +41,15 @@
     "@types/numeral": "^2.0.2",
     "@types/react": "18.0.17",
     "autoprefixer": "^10.4.8",
-    "common-config": "*",
+    "@rooms2watch/common-types": "*",
     "common-types": "*",
     "eslint": "7.32.0",
-    "eslint-config-custom": "*",
+    "@rooms2watch/eslint-config-custom": "*",
     "next-transpile-modules": "9.0.0",
     "postcss": "^8.4.16",
-    "prisma-client": "*",
+    "@rooms2watch/prisma-client": "*",
     "tailwindcss": "^3.1.8",
-    "tsconfig": "*",
+    "@rooms2watch/tsconfig": "*",
     "typescript": "^4.5.3"
   }
 }

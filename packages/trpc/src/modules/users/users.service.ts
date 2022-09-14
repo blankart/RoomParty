@@ -38,7 +38,8 @@ class Users {
       });
 
       return { userInfo, user }
-    } catch {
+    } catch (e) {
+      console.log('getUserByGoogleOAuthAccessToken error: ', e)
       return { userInfo, user };
     }
   }
