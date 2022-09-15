@@ -8,7 +8,8 @@
     "migrate": "prisma migrate dev --name",
     "reset": "prisma migrate reset --force",
     "deploy": "prisma migrate deploy",
-    "prisma:generate": "prisma generate",
+    "generate": "prisma generate",
+    "pull": "prisma db pull",
     "clean": "rm -rf dist",
     "build": "yarn clean && tsc",
     "dev": "yarn clean && tsc-watch --noClear"

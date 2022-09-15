@@ -3,11 +3,9 @@ import { inferAsyncReturnType } from "@trpc/server";
 import * as trpcExpress from "@trpc/server/adapters/express";
 
 import ModelsService from "./modules/models/models.service";
-import UsersService from "./modules/users/users.service";
 import getAccessToken from "./utils/getAccessToken";
 
 import type { JwtPayloadDecoded, JwtVerifier } from '@rooms2watch/auth-providers'
-import { CurrentUser } from "./types/user";
 
 export const createContext = (jwt: JwtVerifier) => ({
   req,

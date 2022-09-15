@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -10,20 +7,19 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Account Models
 model Account {
   id            String  @id @default(cuid())
   provider      String
-  providerId    String
   refresh_token String?
   access_token  String?
   expires_at    Int?
   token_type    String?
   scope         String?
   id_token      String?
-  Room          Room[]
-  user          User    @relation(fields: [userId], references: [id])
+  providerId    String
   userId        String
+  user          User    @relation(fields: [userId], references: [id])
+  Room          Room[]
 }
 
 model User {
@@ -32,32 +28,30 @@ model User {
   firstName String?
   lastName  String?
   picture   String?
-  Account   Account[]
-  Room      Room?     @relation(fields: [roomId], references: [id])
   roomId    String?
+  Room      Room?     @relation(fields: [roomId], references: [id])
+  Account   Account[]
 }
 
-// Room Models
 model Room {
   id           String   @id @default(cuid())
   name         String
-  chats        Chat[]
-  playerStatus Json?
   createdAt    DateTime @default(now())
-  account      Account? @relation(fields: [accountId], references: [id])
+  playerStatus Json?
   accountId    String?
   thumbnailUrl String?
   onlineGuests Int[]    @default([])
+  account      Account? @relation(fields: [accountId], references: [id])
+  chats        Chat[]
   onlineUsers  User[]
 }
 
-// Chat Models
 model Chat {
   id              String   @id @default(cuid())
   name            String
   message         String
-  room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  roomId          String
   createdAt       DateTime @default(now())
+  roomId          String
   isSystemMessage Boolean? @default(false)
+  room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
 }
