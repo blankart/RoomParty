@@ -11,9 +11,9 @@
     "dev": "yarn clean && tsc-watch --noClear"
   },
   "dependencies": {
+    "@rooms2watch/auth-providers": "*",
     "@rooms2watch/prisma-client": "*",
     "@trpc/server": "^9.27.2",
-    "googleapis": "^107.0.0",
     "nookies": "^2.5.2",
     "pg-boss": "^8.0.0",
     "smile2emoji": "^3.1.1",

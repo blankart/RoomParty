@@ -4,15 +4,14 @@ import ws from "ws";
 import passport from 'passport'
 import expressSession from 'express-session'
 import jwt from 'jsonwebtoken'
+import { randomUUID } from "crypto";
 
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 
 import { router, createContext } from "@rooms2watch/trpc";
-import { initializeGoogleOAuth20Provider } from '@rooms2watch/auth-providers'
-import { randomUUID } from "crypto";
+import { initializeGoogleOAuth20Provider, JwtPayload } from '@rooms2watch/auth-providers'
 import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
-import { CurrentUser } from "@rooms2watch/trpc/src/types/user";
 
 const allowList = [process.env.WEB_BASE_URL];
 
@@ -25,14 +24,14 @@ function jwtSignerWithRedirect(redirectUrl: string) {
   }
 }
 
-async function jwtVerifier(token: string): Promise<{ providerId: string, provider: string }> {
+async function jwtVerifier(token: string): Promise<JwtPayload> {
   return new Promise((resolve, reject) => {
     jwt.verify(token, 'SECRET', function (err, decoded) {
       if (err) {
         return reject(err)
       }
 
-      resolve(decoded as { providerId: string, provider: string })
+      resolve(decoded as JwtPayload)
     })
   })
 }

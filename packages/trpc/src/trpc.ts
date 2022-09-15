@@ -1,12 +1,15 @@
 import * as trpc from "@trpc/server";
 import { inferAsyncReturnType } from "@trpc/server";
-
 import * as trpcExpress from "@trpc/server/adapters/express";
+
 import ModelsService from "./modules/models/models.service";
 import UsersService from "./modules/users/users.service";
 import getAccessToken from "./utils/getAccessToken";
 
-export const createContext = (jwt: any) => ({
+import type { JwtPayloadDecoded, JwtVerifier } from '@rooms2watch/auth-providers'
+import { CurrentUser } from "./types/user";
+
+export const createContext = (jwt: JwtVerifier) => ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
@@ -22,8 +25,16 @@ type Context = inferAsyncReturnType<ReturnType<typeof createContext>>;
 export const createRouter = () => trpc.router<Context>();
 
 export const createRouterWithUser = () =>
-  trpc.router<Context>().middleware(async ({ ctx, next }) => {
-    const { user } = await UsersService.getUserByGoogleOAuthAccessToken(getAccessToken(ctx));
+  trpc.router<Context>().middleware(async ({ ctx: { jwt, ...ctx }, next }) => {
+    let decoded: undefined | JwtPayloadDecoded
+    let user = null
+    try {
+      decoded = await jwt(getAccessToken(ctx))
+    } catch { }
+
+    if (decoded) {
+      user = await ModelsService.client.account.findFirst({ where: { providerId: decoded.providerId, provider: decoded.provider }, include: { user: true } })
+    }
 
     return next({
       ctx: { ...ctx, user },
@@ -32,7 +43,7 @@ export const createRouterWithUser = () =>
 
 export const createProtectedRouter = () =>
   trpc.router<Context>().middleware(async ({ ctx: { jwt, ...ctx }, next }) => {
-    let decoded
+    let decoded: undefined | JwtPayloadDecoded
     try {
       decoded = await jwt(getAccessToken(ctx))
     } catch { }

@@ -1,15 +1,14 @@
 import type { PassportStatic } from 'passport'
-import type { Express, Request, Response } from 'express'
+import type { Express } from 'express'
 import { Strategy as GoogleOAuth2Strategy } from 'passport-google-oauth20'
-
-type JwtSigner = (redirectUrl: string) => (req: Request, res: Response) => any
+import { AuthNextCallback, JwtSigner } from '../types'
 
 export const OAUTH_URL_REDIRECT_ROUTE = '/oauth2/redirect/google'
 
 type GoogleOAuth20StrategyParams = ConstructorParameters<typeof GoogleOAuth2Strategy>
 
 type GoogleOAuth20ProviderCallbackParamsShifted =
-    Parameters<GoogleOAuth20StrategyParams[1]> extends [infer Req, infer AccessToken, infer RefresToken, infer Options, infer Profile, infer Done] ? [Req, AccessToken, RefresToken, Profile, Done] : never
+    Parameters<GoogleOAuth20StrategyParams[1]> extends [infer Req, infer AccessToken, infer RefresToken, infer Options, infer Profile, infer Done] ? [Req, AccessToken, RefresToken, Profile, AuthNextCallback] : never
 
 type InitializeGoogleOAuth20ProviderOptions = Omit<GoogleOAuth20StrategyParams[0], 'callbackURL'> & { serverUrl: string; webCallbackUrl: string }
 
