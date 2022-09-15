@@ -10,34 +10,17 @@ import * as trpcExpress from "@trpc/server/adapters/express";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 
 import { router, createContext } from "@rooms2watch/trpc";
-import { initializeGoogleOAuth20Provider, JwtPayload } from '@rooms2watch/auth-providers'
-import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
+import { createAuthProviderJwt, initializeGoogleOAuth20Provider } from '@rooms2watch/auth-providers'
 
 const allowList = [process.env.WEB_BASE_URL];
 
-function jwtSignerWithRedirect(redirectUrl: string) {
-  return function (req: express.Request, res: express.Response) {
-    const user = req.user as { provider: 'Google', providerId: string }
-    const token = jwt.sign(user, 'SECRET', { expiresIn: '24h' })
-    res.cookie(ACCESS_TOKEN_KEY, `Bearer ${token}`)
-    return res.redirect(redirectUrl)
-  }
-}
-
-async function jwtVerifier(token: string): Promise<JwtPayload> {
-  return new Promise((resolve, reject) => {
-    jwt.verify(token, 'SECRET', function (err, decoded) {
-      if (err) {
-        return reject(err)
-      }
-
-      resolve(decoded as JwtPayload)
-    })
-  })
-}
-
 async function main() {
   const app = express();
+
+  const { signer, verifier } = createAuthProviderJwt(jwt, {
+    secret: process.env.SERVER_JWT_SECRET!,
+    jwtOptions: { expiresIn: '1d' }
+  })
 
   app.use(
     cors(function (req, res) {
@@ -55,12 +38,11 @@ async function main() {
     "/trpc",
     trpcExpress.createExpressMiddleware({
       router,
-      createContext: createContext(jwtVerifier),
+      createContext: createContext(verifier),
     })
   );
-
   app.use(expressSession({
-    secret: 'SECRET',
+    secret: process.env.SERVER_SESSION_SECRET!,
     genid() {
       return randomUUID()
     },
@@ -95,7 +77,7 @@ async function main() {
         skipUserProfile: false,
         userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
       },
-      jwtSignerWithRedirect
+      signer
     )
   }
 

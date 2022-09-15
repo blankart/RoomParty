@@ -21,4 +21,7 @@ export interface CustomProcessEnv {
 
   NEXT_PUBLIC_GOOGLE_WEB_OAUTH_CLIENT_ID?: string;
   GOOGLE_WEB_OAUTH_CLIENT_ID?: string;
+
+  SERVER_SESSION_SECRET?: string;
+  SERVER_JWT_SECRET?: string;
 }
