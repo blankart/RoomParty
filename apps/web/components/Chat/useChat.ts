@@ -4,11 +4,9 @@ import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import { useRoomsStore } from "@web/store/rooms";
 import shallow from "zustand/shallow";
+import { CHAT_LOCAL_STORAGE_SESSION_KEY, CHAT_NAME_KEY } from "@rooms2watch/common-types";
 
-const CHAT_NAME_KEY = "__tube_hub_user_name";
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
-
-const LOCAL_STORAGE_SESSION_KEY = "__tub-hub-local-storage-session-id";
 
 export default function useChat(props: ChatProps) {
   const router = useRouter();
@@ -74,13 +72,13 @@ export default function useChat(props: ChatProps) {
   useEffect(() => {
     if (localStorageSessionId) return;
 
-    const sessionId = localStorage.getItem(LOCAL_STORAGE_SESSION_KEY);
+    const sessionId = localStorage.getItem(CHAT_LOCAL_STORAGE_SESSION_KEY);
     if (!sessionId) {
       const newLocalStorageSessionId = Math.floor(
         (Math.random() * 1_000_000) % 1_000_0
       );
       localStorage.setItem(
-        LOCAL_STORAGE_SESSION_KEY,
+        CHAT_LOCAL_STORAGE_SESSION_KEY,
         String(newLocalStorageSessionId)
       );
 

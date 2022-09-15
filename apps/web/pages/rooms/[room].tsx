@@ -11,6 +11,7 @@ import type {
 import { useEffect } from "react";
 import shallow from "zustand/shallow";
 import type { User } from "@rooms2watch/prisma-client";
+import { parseCookies } from "nookies";
 
 export default function Room(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -53,7 +54,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (!room) return { notFound: true, props: {} };
 
   try {
-    const trpcClient = createTRPCClient();
+    const trpcClient = createTRPCClient(ctx);
     const res = await trpcClient.query("rooms.findById", room);
     let user: { id: string; user: User } | null | undefined;
     try {

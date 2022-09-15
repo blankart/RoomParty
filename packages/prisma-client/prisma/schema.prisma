@@ -8,18 +8,12 @@ datasource db {
 }
 
 model Account {
-  id            String  @id @default(cuid())
-  provider      String
-  refresh_token String?
-  access_token  String?
-  expires_at    Int?
-  token_type    String?
-  scope         String?
-  id_token      String?
-  providerId    String
-  userId        String
-  user          User    @relation(fields: [userId], references: [id])
-  Room          Room[]
+  id         String @id @default(cuid())
+  provider   String
+  providerId String
+  userId     String
+  user       User   @relation(fields: [userId], references: [id])
+  Room       Room[]
 }
 
 model User {

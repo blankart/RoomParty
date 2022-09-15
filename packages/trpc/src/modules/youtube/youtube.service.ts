@@ -4,7 +4,7 @@ import { SearchResponse } from "../../types/youtube";
 const SEARCH_LIMIT = 10;
 
 class Youtube {
-  constructor() {}
+  constructor() { }
   private static instance?: Youtube;
   static getInstance() {
     if (!Youtube.instance) {
@@ -27,7 +27,7 @@ class Youtube {
   }
 
   async search(q: string) {
-    if (!q) q = "funny";
+    if (!q) q = "funny dogs";
     return await this.getVideosByQ(q);
   }
 }

@@ -11,11 +11,14 @@ import { applyWSSHandler } from "@trpc/server/adapters/ws";
 
 import { router, createContext } from "@rooms2watch/trpc";
 import { createAuthProviderJwt, initializeGoogleOAuth20Provider } from '@rooms2watch/auth-providers'
+import { createPrismaClient } from '@rooms2watch/prisma-client'
 
 const allowList = [process.env.WEB_BASE_URL];
 
 async function main() {
   const app = express();
+
+  const prismaClient = createPrismaClient()
 
   const { signer, verifier } = createAuthProviderJwt(jwt, {
     secret: process.env.SERVER_JWT_SECRET!,
@@ -77,6 +80,7 @@ async function main() {
         skipUserProfile: false,
         userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
       },
+      prismaClient,
       signer
     )
   }

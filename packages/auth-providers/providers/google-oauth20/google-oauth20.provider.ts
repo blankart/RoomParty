@@ -2,6 +2,7 @@ import type { PassportStatic } from 'passport'
 import type { Express } from 'express'
 import { Strategy as GoogleOAuth2Strategy } from 'passport-google-oauth20'
 import { AuthNextCallback, JwtSigner } from '../../types'
+import { CustomPrismaClient } from '@rooms2watch/prisma-client'
 
 export const OAUTH_URL_REDIRECT_ROUTE = '/oauth2/redirect/google'
 
@@ -16,10 +17,30 @@ export default function initializeGoogleOAuth20Provider(
     expressApp: Express,
     passportInstance: PassportStatic,
     options: InitializeGoogleOAuth20ProviderOptions,
+    prismaClient: CustomPrismaClient,
     jwtSigner: JwtSigner
 ) {
     async function googleOAuth20ProviderCallback(...params: GoogleOAuth20ProviderCallbackParamsShifted) {
         const [req, accessToken, refreshToken, profile, done] = params
+        const maybeUser = await prismaClient.account.findFirst({ where: { providerId: profile.id, provider: 'Google' } })
+
+        if (!maybeUser) {
+            await prismaClient.account.create({
+                data: {
+                    provider: 'Google',
+                    providerId: profile.id,
+                    user: {
+                        create: {
+                            name: profile.displayName ?? profile.name?.givenName,
+                            firstName: profile.name?.givenName,
+                            lastName: profile.name?.familyName,
+                            picture: profile.profileUrl
+                        }
+                    }
+                }
+            })
+        }
+
         return done(null, { providerId: profile.id, provider: 'Google' })
     }
 
