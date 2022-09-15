@@ -1,0 +1,12 @@
+{
+  "extends": "@rooms2watch/tsconfig/base.json",
+  "include": ["."],
+  "exclude": ["node_modules", "dist"],
+  "compilerOptions": {
+    "typeRoots": ["./types"],
+    "noEmit": false,
+    "emitDeclarationOnly": false,
+    "outDir": "dist"
+  },
+  "files": ["./types/global.d.ts"]
+}

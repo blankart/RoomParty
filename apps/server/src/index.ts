@@ -1,11 +1,41 @@
-import { router, createContext } from "@rooms2watch/trpc";
-import * as trpcExpress from "@trpc/server/adapters/express";
 import express from "express";
 import cors from "cors";
 import ws from "ws";
+import passport from 'passport'
+import expressSession from 'express-session'
+import jwt from 'jsonwebtoken'
+
+import * as trpcExpress from "@trpc/server/adapters/express";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 
+import { router, createContext } from "@rooms2watch/trpc";
+import { initializeGoogleOAuth20Provider } from '@rooms2watch/auth-providers'
+import { randomUUID } from "crypto";
+import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
+import { CurrentUser } from "@rooms2watch/trpc/src/types/user";
+
 const allowList = [process.env.WEB_BASE_URL];
+
+function jwtSignerWithRedirect(redirectUrl: string) {
+  return function (req: express.Request, res: express.Response) {
+    const user = req.user as { provider: 'Google', providerId: string }
+    const token = jwt.sign(user, 'SECRET', { expiresIn: '24h' })
+    res.cookie(ACCESS_TOKEN_KEY, `Bearer ${token}`)
+    return res.redirect(redirectUrl)
+  }
+}
+
+async function jwtVerifier(token: string): Promise<{ providerId: string, provider: string }> {
+  return new Promise((resolve, reject) => {
+    jwt.verify(token, 'SECRET', function (err, decoded) {
+      if (err) {
+        return reject(err)
+      }
+
+      resolve(decoded as { providerId: string, provider: string })
+    })
+  })
+}
 
 async function main() {
   const app = express();
@@ -26,9 +56,49 @@ async function main() {
     "/trpc",
     trpcExpress.createExpressMiddleware({
       router,
-      createContext,
+      createContext: createContext(jwtVerifier),
     })
   );
+
+  app.use(expressSession({
+    secret: 'SECRET',
+    genid() {
+      return randomUUID()
+    },
+  }))
+  app.use(passport.initialize())
+  app.use(passport.session())
+
+  passport.serializeUser(function (user, done) {
+    done(null, user as any);
+  });
+
+  passport.deserializeUser(function (user, done) {
+    done(null, user as any);
+  });
+
+  if (
+    process.env.GOOGLE_OAUTH_CLIENT_ID &&
+    process.env.GOOGLE_OAUTH_CLIENT_SECRET &&
+    process.env.SERVER_URL &&
+    process.env.WEB_BASE_URL
+  ) {
+    initializeGoogleOAuth20Provider(
+      app,
+      passport,
+      {
+        clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
+        clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
+        serverUrl: process.env.SERVER_URL,
+        webCallbackUrl: process.env.WEB_BASE_URL,
+        passReqToCallback: true,
+        state: false,
+        skipUserProfile: false,
+        userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
+      },
+      jwtSignerWithRedirect
+    )
+  }
 
   const port = process.env.SERVER_PORT || process.env.PORT || 8000;
   const server = app.listen(port, () => {

@@ -3,8 +3,8 @@ import { withTRPC as _withTRPC } from "@trpc/next";
 import { createWSClient, wsLink } from "@trpc/client/links/wsLink";
 import { createTRPCClient as _createTRPCClient } from "@trpc/client";
 
-import React, { useState } from "react";
-import { QueryClient, QueryClientProvider } from "react-query";
+import React from "react";
+import { QueryClient } from "react-query";
 import superjson from "superjson";
 import { parseCookies } from "nookies";
 
@@ -23,7 +23,7 @@ const TRPC_URL = `${
 }/trpc`;
 
 export const createQueryClient = () => new QueryClient();
-export const createTRPCClient = (ctx?: any) => {
+export const createTRPCClient = () => {
   let wsClient: any;
   if (process.browser) {
     wsClient = createWSClient({
@@ -39,24 +39,7 @@ export const createTRPCClient = (ctx?: any) => {
           links: [wsLink({ client: wsClient })],
         }
       : {}),
-
-    headers() {
-      return {
-        authorization: parseCookies(ctx)?.[ACCESS_TOKEN_KEY],
-      };
-    },
   });
-};
-
-export const TRPCProvider: React.FC<TRPCProviderProps> = ({ children }) => {
-  const [queryClient] = useState(createQueryClient);
-  const [trpcClient] = useState(createTRPCClient);
-
-  return (
-    <_TRPCProvider client={trpcClient} queryClient={queryClient}>
-      <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
-    </_TRPCProvider>
-  );
 };
 
 export function withTRPC(C: any) {
@@ -65,7 +48,13 @@ export function withTRPC(C: any) {
       return {
         url: TRPC_URL,
         transformer: superjson,
+        headers() {
+          return {
+            authorization: parseCookies(null)?.[ACCESS_TOKEN_KEY],
+          };
+        },
       };
     },
+    ssr: false,
   })(C);
 }

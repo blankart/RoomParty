@@ -42,7 +42,7 @@
     "@types/react": "18.0.17",
     "autoprefixer": "^10.4.8",
     "@rooms2watch/common-types": "*",
-    "common-types": "*",
+    "@rooms2watch/common-types": "*",
     "eslint": "7.32.0",
     "@rooms2watch/eslint-config-custom": "*",
     "next-transpile-modules": "9.0.0",

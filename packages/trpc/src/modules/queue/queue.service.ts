@@ -3,13 +3,13 @@ import PgBoss from "pg-boss";
 type UnqueuedWork = {
   method: "send";
   params:
-    | [
-        string,
-        (...args: any[]) => any,
-        Record<string, any>,
-        Record<string, any>,
-        string
-      ];
+  | [
+    string,
+    (...args: any[]) => any,
+    Record<string, any>,
+    Record<string, any>,
+    string
+  ];
 };
 
 class Queue {
@@ -45,23 +45,11 @@ class Queue {
     this.unqueuedWorks.push(data);
   }
 
-  private getQueueCallback(id: string) {
-    const self = this;
-    return {
-      with(func: (...args: any) => any) {
-        self.pgBossInstance.work(id, func);
-      },
-    };
-  }
-
   private removeUnqueuedWork(id: string) {
     this.unqueuedWorks = this.unqueuedWorks.filter((uw) => uw.params[0] !== id);
   }
 
-  queue<
-    T extends Parameters<PgBoss["sendOnce"]>,
-    F extends (...args: any) => any
-  >(
+  queue<T extends Parameters<PgBoss["sendOnce"]>, F extends (...args: any) => any>(
     name: T[0],
     func: F,
     data: Parameters<F>[0]["data"],
@@ -81,8 +69,14 @@ class Queue {
   }
 
   private initialize() {
-    this.pgBossInstance.addListener("onStart", this.onStart.bind(this));
-    this.pgBossInstance.start().then(() => this.pgBossInstance.emit("onStart"));
+    const onStartCallback = this.onStart.bind(this)
+    this.pgBossInstance.addListener("onStart", onStartCallback);
+    this.pgBossInstance.start().then(() => {
+      this.pgBossInstance.emit("onStart")
+      setTimeout(() => {
+        this.pgBossInstance.removeListener('onStart', onStartCallback)
+      }, 1_000)
+    });
   }
 }
 

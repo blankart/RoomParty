@@ -2,20 +2,22 @@ import * as trpc from "@trpc/server";
 import { inferAsyncReturnType } from "@trpc/server";
 
 import * as trpcExpress from "@trpc/server/adapters/express";
+import ModelsService from "./modules/models/models.service";
 import UsersService from "./modules/users/users.service";
 import getAccessToken from "./utils/getAccessToken";
 
-export const createContext = ({
+export const createContext = (jwt: any) => ({
   req,
   res,
 }: trpcExpress.CreateExpressContextOptions) => {
   return {
     req,
     res,
+    jwt
   };
 };
 
-type Context = inferAsyncReturnType<typeof createContext>;
+type Context = inferAsyncReturnType<ReturnType<typeof createContext>>;
 
 export const createRouter = () => trpc.router<Context>();
 
@@ -29,9 +31,15 @@ export const createRouterWithUser = () =>
   });
 
 export const createProtectedRouter = () =>
-  trpc.router<Context>().middleware(async ({ ctx, next }) => {
-    // Google Auth
-    const { user } = await UsersService.getUserByGoogleOAuthAccessToken(getAccessToken(ctx));
+  trpc.router<Context>().middleware(async ({ ctx: { jwt, ...ctx }, next }) => {
+    let decoded
+    try {
+      decoded = await jwt(getAccessToken(ctx))
+    } catch { }
+    if (!decoded) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
+
+    const user = await ModelsService.client.account.findFirst({ where: { providerId: decoded.providerId, provider: decoded.provider }, include: { user: true } })
+
     if (!user) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
 
     return next({

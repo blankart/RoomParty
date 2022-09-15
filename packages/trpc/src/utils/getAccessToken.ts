@@ -6,8 +6,8 @@ export default function getAccessToken(
   ctx: trpcExpress.CreateExpressContextOptions
 ) {
   let access_token: string | undefined =
-    ctx.req.headers?.["authorization"] ||
-    (ctx.req.query?.["access_token"] as string) ||
+    ctx.req?.headers?.["authorization"] ||
+    (ctx.req?.query?.["access_token"] as string) ||
     parseCookies(ctx)?.[ACCESS_TOKEN_KEY];
 
   access_token = access_token?.startsWith("Bearer ")

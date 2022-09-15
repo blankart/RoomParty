@@ -53,7 +53,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   if (!room) return { notFound: true, props: {} };
 
   try {
-    const trpcClient = createTRPCClient(ctx);
+    const trpcClient = createTRPCClient();
     const res = await trpcClient.query("rooms.findById", room);
     let user: { id: string; user: User } | null | undefined;
     try {

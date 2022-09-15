@@ -7,6 +7,21 @@ class Users {
   private static instance?: Users;
   static getInstance() {
     if (!Users.instance) {
+      if (
+        !process.env.GOOGLE_OAUTH_CLIENT_ID ||
+        !process.env.GOOGLE_OAUTH_CLIENT_SECRET ||
+        !process.env.SERVER_URL
+      ) {
+        const missingCredentials = [] as string[]
+        if (!process.env.GOOGLE_OAUTH_CLIENT_ID) missingCredentials.push('GOOGLE_OAUTH_CLIENT_ID')
+        if (!process.env.GOOGLE_OAUTH_CLIENT_SECRET) missingCredentials.push('GOOGLE_OAUTH_CLIENT_SECRET')
+        if (!process.env.SERVER_URL) missingCredentials.push('SERVER_URL')
+
+        throw new Error(
+          `[ERROR] Users.getInstance: Failed to initialize \`googleOAuth2Client\`. Missing the following credential/s: ${missingCredentials.join(',')}.`
+        )
+      }
+
       const googleOAuth2Client = new google.auth.OAuth2(
         process.env.GOOGLE_OAUTH_CLIENT_ID,
         process.env.GOOGLE_OAUTH_CLIENT_SECRET,
@@ -39,7 +54,7 @@ class Users {
 
       return { userInfo, user }
     } catch (e) {
-      console.log('getUserByGoogleOAuthAccessToken error: ', e)
+      console.error('getUserByGoogleOAuthAccessToken error: ')
       return { userInfo, user };
     }
   }

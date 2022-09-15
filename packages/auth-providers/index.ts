@@ -1,0 +1,1 @@
+export { default as initializeGoogleOAuth20Provider } from './google-oauth20/google-oauth20.provider'
