@@ -45,7 +45,7 @@ function getEndingLink() {
     });
   }
   const client = createWSClient({
-    url: process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? "ws://localhost:80001",
+    url: process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? "ws://localhost:8001",
   });
   return wsLink<AppRouter>({
     client,

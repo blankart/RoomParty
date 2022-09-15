@@ -1,5 +1,5 @@
 import type { PlayerStatus } from "@rooms2watch/trpc";
-import { createTRPCClient } from "@web/api";
+import { createTRPCClient, trpc } from "@web/api";
 import Chat from "@web/components/Chat/Chat";
 import Container from "@web/components/Container/Container";
 import YoutubePlayerWithControls from "@web/components/YoutubePlayer/YoutubePlayerWithControls";
@@ -12,6 +12,7 @@ import { useEffect } from "react";
 import shallow from "zustand/shallow";
 import type { User } from "@rooms2watch/prisma-client";
 import { parseCookies } from "nookies";
+import { useRouter } from "next/router";
 
 export default function Room(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
