@@ -1,5 +1,5 @@
 import type { PlayerStatus } from "@rooms2watch/trpc";
-import { createTRPCClient, trpc } from "@web/api";
+import { createTRPCClient } from "@web/api";
 import Chat from "@web/components/Chat/Chat";
 import Container from "@web/components/Container/Container";
 import YoutubePlayerWithControls from "@web/components/YoutubePlayer/YoutubePlayerWithControls";
@@ -11,7 +11,6 @@ import type {
 import { Suspense, useEffect } from "react";
 import shallow from "zustand/shallow";
 import type { User } from "@rooms2watch/prisma-client";
-import useMe from "@web/hooks/useMe";
 
 export default function Room(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -24,8 +23,6 @@ export default function Room(
     shallow
   );
 
-  useMe();
-
   useEffect(() => {
     set({
       id: props.id,
@@ -36,6 +33,7 @@ export default function Room(
       type: props.playerStatus?.type,
       userName: props.userName,
       thumbnail: props.playerStatus?.thumbnail,
+      owner: props.owner,
     });
   }, []);
 
@@ -70,7 +68,7 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
         name: res.name,
         chats: res.chats,
         playerStatus: res.playerStatus as PlayerStatus,
-        account: res.account,
+        owner: res.owner?.userId,
         createdAt: res.createdAt,
         userName: user?.user?.name ?? "",
       },

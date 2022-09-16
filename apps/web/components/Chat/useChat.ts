@@ -5,6 +5,8 @@ import { useEffect, useRef } from "react";
 import { useRoomsStore } from "@web/store/rooms";
 import shallow from "zustand/shallow";
 import { CHAT_LOCAL_STORAGE_SESSION_KEY, CHAT_NAME_KEY } from "@rooms2watch/common-types";
+import useMe from "@web/hooks/useMe";
+import randomColor from 'randomcolor'
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 
@@ -20,9 +22,11 @@ export default function useChat(props: ChatProps) {
     showPrompt,
     name,
     chats,
+    owner,
     localStorageSessionId,
   } = useRoomsStore(
     (s) => ({
+      owner: s.owner,
       collapsed: s.collapsed,
       id: s.id,
       set: s.set,
@@ -112,6 +116,10 @@ export default function useChat(props: ChatProps) {
     }
   }, [id]);
 
+  const { user } = useMe()
+
+  console.log(userName)
+
   const shouldEnableQueries = !!id && !!userName && !!localStorageSessionId;
   trpc.useSubscription(
     [
@@ -130,14 +138,14 @@ export default function useChat(props: ChatProps) {
     }
   );
 
-  const { mutate: sendChat } = trpc.useMutation(["chats.send"]);
+  const { mutate: send } = trpc.useMutation(["chats.send"]);
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   function onSend() {
     if (!inputRef.current?.value?.trim() || !id) return;
-    sendChat({ name: userName, message: inputRef.current.value, id });
+    send({ name: userName, message: inputRef.current.value, id, userId: user?.user?.id });
     inputRef.current.value = "";
     inputRef.current.focus();
   }
@@ -159,5 +167,6 @@ export default function useChat(props: ChatProps) {
     showPrompt,
     set,
     name,
+    owner,
   };
 }

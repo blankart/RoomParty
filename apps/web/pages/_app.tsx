@@ -6,7 +6,7 @@ function App({ Component, pageProps }: any) {
   return (
     <>
       <ThemeProvider
-        forcedTheme={(Component as any).thene || undefined}
+        forcedTheme={(Component as any).theme || "dark"}
         attribute="class"
       >
         <Component {...pageProps} />

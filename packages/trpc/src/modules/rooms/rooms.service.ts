@@ -8,7 +8,7 @@ enum ROOMS_SERVICE_QUEUE {
 }
 
 class Rooms {
-  constructor() {}
+  constructor() { }
   private static instance?: Rooms;
   static getInstance() {
     if (!Rooms.instance) {
@@ -26,9 +26,9 @@ class Rooms {
         },
         include: {
           chats: true,
-          account: {
+          owner: {
             select: {
-              id: true,
+              userId: true,
             },
           },
         },
@@ -63,18 +63,11 @@ class Rooms {
             isSystemMessage: true,
           },
         },
-        ...(user ? { account: { connect: { id: user.id } } } : {}),
-      },
-      include: {
-        account: {
-          select: {
-            id: true,
-          },
-        },
+        ...(user ? { owner: { connect: { id: user.id } } } : {}),
       },
     });
 
-    if (!room.account?.id) {
+    if (user?.id) {
       const startAfter = new Date();
       const ONE_DAY_IN_MS = 1_000 * 60 * 60 * 24;
       startAfter.setTime(startAfter.getTime() + ONE_DAY_IN_MS);
@@ -95,7 +88,7 @@ class Rooms {
     return await ModelsService.client.room
       .findMany({
         where: {
-          account: {
+          owner: {
             id,
           },
         },
@@ -107,12 +100,18 @@ class Rooms {
           onlineUsers: {
             select: { id: true },
           },
+          owner: {
+            select: {
+              userId: true
+            }
+          },
           createdAt: true,
         },
       })
       .then((res) =>
         res
           .map((r) => ({
+            owner: r.owner?.userId,
             id: r.id,
             name: r.name,
             online: r.onlineGuests.length + r.onlineUsers.length,

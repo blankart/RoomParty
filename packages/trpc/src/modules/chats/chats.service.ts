@@ -36,7 +36,7 @@ class Chats {
       );
   }
 
-  async send(data: { name: string; message: string; id: string }) {
+  async send(data: { name: string; message: string; id: string, userId?: string }) {
     const newChat = await ModelsService.client.chat.create({
       data: {
         name: data.name,
@@ -46,6 +46,13 @@ class Chats {
             id: data.id,
           },
         },
+        ...(data.userId ? {
+          user: {
+            connect: {
+              id: data.userId
+            }
+          }
+        } : {})
       },
     });
 

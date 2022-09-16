@@ -8,7 +8,7 @@ export default function Rooms() {
   const router = useRouter();
   const { mutate: createRoom } = trpc.useMutation(["rooms.create"], {
     onSuccess(data) {
-      router.push("/rooms/[room]", `/rooms/${data.id}`, { shallow: true });
+      router.push("/rooms/[room]", `/rooms/${data.id}`);
     },
   });
 

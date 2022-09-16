@@ -22,22 +22,27 @@ model User {
   firstName String?
   lastName  String?
   picture   String?
+  accounts  Account[]
   roomId    String?
   Room      Room?     @relation(fields: [roomId], references: [id])
-  Account   Account[]
+  Chat      Chat[]
 }
 
 model Room {
-  id           String   @id @default(cuid())
-  name         String
-  createdAt    DateTime @default(now())
-  playerStatus Json?
-  accountId    String?
-  thumbnailUrl String?
-  onlineGuests Int[]    @default([])
-  account      Account? @relation(fields: [accountId], references: [id])
-  chats        Chat[]
-  onlineUsers  User[]
+  id            String        @id @default(cuid())
+  name          String
+  createdAt     DateTime      @default(now())
+  playerStatus  Json?
+  owner         Account?      @relation(fields: [accountId], references: [id])
+  thumbnailUrl  String?
+  chats         Chat[]
+  private       Boolean       @default(false)
+  password      String?
+  videoPlatform VideoPlatform @default(Youtube)
+  description   String?
+  onlineGuests  Int[]         @default([])
+  onlineUsers   User[]
+  accountId     String?
 }
 
 model Chat {
@@ -48,4 +53,10 @@ model Chat {
   roomId          String
   isSystemMessage Boolean? @default(false)
   room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user            User?    @relation(fields: [userId], references: [id])
+  userId          String?
+}
+
+enum VideoPlatform {
+  Youtube
 }
