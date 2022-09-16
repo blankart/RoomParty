@@ -14,6 +14,7 @@ import { createAuthProviderJwt, initializeGoogleOAuth20Provider } from '@rooms2w
 import { createPrismaClient } from '@rooms2watch/prisma-client'
 
 const allowList = [process.env.WEB_BASE_URL];
+const port = process.env.SERVER_PORT || process.env.PORT || 8000;
 
 async function main() {
   const app = express();
@@ -42,14 +43,31 @@ async function main() {
     trpcExpress.createExpressMiddleware({
       router,
       createContext: createContext(verifier),
+      batching: {
+        enabled: true,
+      }
     })
   );
+
+  const server = app.listen(port, () => {
+    console.log(`listening on port ${port}.`);
+  });
+
+  const wss = new ws.Server({
+    server,
+  });
+  const handler = applyWSSHandler({
+    wss,
+    router,
+    createContext: createContext as any,
+  });
   app.use(expressSession({
     secret: process.env.SERVER_SESSION_SECRET!,
     genid() {
       return randomUUID()
     },
   }))
+
   app.use(passport.initialize())
   app.use(passport.session())
 
@@ -85,19 +103,6 @@ async function main() {
     )
   }
 
-  const port = process.env.SERVER_PORT || process.env.PORT || 8000;
-  const server = app.listen(port, () => {
-    console.log(`listening on port ${port}.`);
-  });
-
-  const wss = new ws.Server({
-    server,
-  });
-  const handler = applyWSSHandler({
-    wss,
-    router,
-    createContext: createContext as any,
-  });
 
   wss.on("connection", (ws) => {
     console.log(`➕➕ Connection (${wss.clients.size})`);

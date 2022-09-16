@@ -8,11 +8,10 @@ import type {
   GetServerSidePropsContext,
   InferGetServerSidePropsType,
 } from "next";
-import { useEffect } from "react";
+import { Suspense, useEffect } from "react";
 import shallow from "zustand/shallow";
 import type { User } from "@rooms2watch/prisma-client";
-import { parseCookies } from "nookies";
-import { useRouter } from "next/router";
+import useMe from "@web/hooks/useMe";
 
 export default function Room(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -24,6 +23,8 @@ export default function Room(
     }),
     shallow
   );
+
+  useMe();
 
   useEffect(() => {
     set({
@@ -42,8 +43,10 @@ export default function Room(
     <Container className="relative flex">
       {!!id ? (
         <>
-          <YoutubePlayerWithControls />
-          <Chat />
+          <Suspense>
+            <YoutubePlayerWithControls />
+            <Chat />
+          </Suspense>
         </>
       ) : null}
     </Container>

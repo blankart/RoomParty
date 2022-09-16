@@ -35,8 +35,6 @@ export default function useMe() {
 
   const { data: user, error, isLoading, refetch } = trpc.useQuery(["users.me"], {
     enabled: hasAccessToken && !!parseCookies(null)[ACCESS_TOKEN_KEY],
-    refetchOnWindowFocus: false,
-    ssr: false,
     onError() {
       // destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });
       setHasAccessToken(false);

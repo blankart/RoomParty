@@ -48,7 +48,8 @@ export default function Index() {
       ) : (
         <Button
           onClick={() =>
-            window.googleClient?.requestAccessToken({ prompt: "consent" })
+            ((window as any).location =
+              process.env.NEXT_PUBLIC_SERVER_URL! + "/oauth2/redirect/google")
           }
         >
           Login via Google

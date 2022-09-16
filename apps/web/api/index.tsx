@@ -2,10 +2,10 @@ import { createReactQueryHooks } from "@trpc/react";
 import { withTRPC as _withTRPC } from "@trpc/next";
 import { createWSClient, wsLink } from "@trpc/client/links/wsLink";
 import { httpBatchLink } from "@trpc/client/links/httpBatchLink";
+import { splitLink } from "@trpc/client/links/splitLink";
+import { loggerLink } from "@trpc/client/links/loggerLink";
 import { createTRPCClient as _createTRPCClient } from "@trpc/client";
 
-import React from "react";
-import { QueryClient } from "react-query";
 import superjson from "superjson";
 import { parseCookies } from "nookies";
 
@@ -13,59 +13,97 @@ import type { AppRouter } from "@rooms2watch/trpc";
 import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
 
 export const trpc = createReactQueryHooks<AppRouter>();
-export const _TRPCProvider = trpc.Provider;
 
 const TRPC_URL = `${
   process.env.NEXT_PUBLIC_SERVER_URL ?? "http://localhost:8000"
 }/trpc`;
 
-export const createQueryClient = () => new QueryClient();
-export const createTRPCClient = (ctx?: any) => {
-  return trpc.createClient({
-    url: TRPC_URL,
-    transformer: superjson,
-    ...(process.browser
-      ? {
-          links: [getEndingLink()],
-        }
-      : {}),
-
-    headers() {
-      return {
-        authorization: parseCookies(ctx)?.[ACCESS_TOKEN_KEY],
-      };
-    },
-  });
-};
+export let token = "";
 
 function getEndingLink() {
-  if (typeof window === "undefined") {
-    return httpBatchLink({
-      url: TRPC_URL,
-    });
-  }
-  const client = createWSClient({
-    url: process.env.NEXT_PUBLIC_WEBSOCKET_URL ?? "ws://localhost:8001",
+  const batchLink = httpBatchLink({
+    url: TRPC_URL,
+    maxBatchSize: 10,
   });
-  return wsLink<AppRouter>({
-    client,
+  if (typeof window === "undefined") {
+    return batchLink;
+  }
+
+  return splitLink({
+    condition(op) {
+      return op.type === "subscription";
+    },
+
+    true: wsLink({
+      client: createWSClient({
+        url: process.env.NEXT_PUBLIC_WEBSOCKET_URL!,
+      }),
+    }),
+
+    false: batchLink,
   });
 }
 
+export const createTRPCClient = (ctx?: any) => {
+  if (parseCookies(ctx ?? null)?.[ACCESS_TOKEN_KEY]) {
+    token = parseCookies(ctx ?? null)?.[ACCESS_TOKEN_KEY];
+  }
+
+  const headers: Record<string, any> = { authorization: token };
+  if (ctx?.req) {
+    delete ctx.req.headers?.connection;
+    Object.assign(headers, {
+      ...ctx.req.headers,
+      "x-ssr": "1",
+    });
+  }
+
+  return trpc.createClient({
+    transformer: superjson,
+    links: [getEndingLink()],
+    headers,
+  });
+};
+
 export function withTRPC(C: any) {
   return _withTRPC<AppRouter>({
-    config() {
+    config({ ctx }) {
+      if (parseCookies(ctx ?? null)?.[ACCESS_TOKEN_KEY]) {
+        token = parseCookies(ctx ?? null)?.[ACCESS_TOKEN_KEY];
+      }
+
+      const headers: Record<string, any> = { authorization: token };
+      if (ctx?.req) {
+        delete ctx.req.headers?.connection;
+        Object.assign(headers, {
+          ...ctx.req.headers,
+          "x-ssr": "1",
+        });
+      }
+
       return {
-        url: TRPC_URL,
+        links: [
+          loggerLink({
+            enabled: (opts) =>
+              (process.env.NODE_ENV === "development" &&
+                typeof window !== "undefined") ||
+              (opts.direction === "down" && opts.result instanceof Error),
+          }),
+          getEndingLink(),
+        ],
         transformer: superjson,
-        links: [getEndingLink()],
-        headers() {
-          return {
-            authorization: parseCookies(null)?.[ACCESS_TOKEN_KEY],
-          };
+        queryClientConfig: {
+          defaultOptions: {
+            queries: {
+              retry: 3,
+              staleTime: 60,
+              refetchOnMount: false,
+            },
+          },
         },
+        headers,
       };
     },
-    ssr: false,
+    ssr: true,
   })(C);
 }

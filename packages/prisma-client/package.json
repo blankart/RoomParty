@@ -19,11 +19,12 @@
     "prisma": "^4.3.1"
   },
   "devDependencies": {
-    "@types/node": "^18.7.16",
-    "eslint-config-custom": "*",
+    "@types/node": "^18.7.18",
+    "@rooms2watch/tsconfig": "*",
+    "@rooms2watch/common-types": "*",
+    "@rooms2watch/eslint-config-custom": "*",
     "ts-node": "^10.9.1",
     "tsc-watch": "^5.0.3",
-    "@rooms2watch/tsconfig": "*",
     "typescript": "^4.8.3"
   }
 }

@@ -34,7 +34,7 @@
   },
   "devDependencies": {
     "env-cmd": "^10.1.0",
-    "eslint-config-custom": "*",
+    "@rooms2watch/eslint-config-custom": "*",
     "prettier": "latest",
     "turbo": "latest"
   },

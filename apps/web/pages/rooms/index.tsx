@@ -20,7 +20,7 @@ export default function Rooms() {
     {
       enabled: !!joinRoomInputRef.current?.value,
       onSuccess(data) {
-        router.push("/rooms/[room]", `/rooms/${data.id}`, { shallow: true });
+        router.push("/rooms/[room]", `/rooms/${data.id}`);
       },
     }
   );

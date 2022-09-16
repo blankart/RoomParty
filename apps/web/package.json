@@ -9,7 +9,8 @@
     "lint": "next lint"
   },
   "dependencies": {
-    "@tanstack/react-query": "^4.2.3",
+    "@rooms2watch/trpc": "*",
+    "@tanstack/react-query": "^4.3.4",
     "@trpc/client": "^9.27.2",
     "@trpc/next": "^9.27.2",
     "@trpc/react": "^9.27.2",
@@ -26,11 +27,14 @@
     "react-player": "^2.10.1",
     "react-query": "^3.39.2",
     "superjson": "^1.9.1",
-    "@rooms2watch/trpc": "*",
     "zustand": "^4.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
+    "@rooms2watch/common-types": "*",
+    "@rooms2watch/eslint-config-custom": "*",
+    "@rooms2watch/prisma-client": "*",
+    "@rooms2watch/tsconfig": "*",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.7",
@@ -41,15 +45,10 @@
     "@types/numeral": "^2.0.2",
     "@types/react": "18.0.17",
     "autoprefixer": "^10.4.8",
-    "@rooms2watch/common-types": "*",
-    "@rooms2watch/common-types": "*",
     "eslint": "7.32.0",
-    "@rooms2watch/eslint-config-custom": "*",
     "next-transpile-modules": "9.0.0",
     "postcss": "^8.4.16",
-    "@rooms2watch/prisma-client": "*",
     "tailwindcss": "^3.1.8",
-    "@rooms2watch/tsconfig": "*",
     "typescript": "^4.5.3"
   }
 }

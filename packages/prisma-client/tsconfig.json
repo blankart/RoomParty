@@ -7,5 +7,6 @@
     "noEmit": false,
     "emitDeclarationOnly": false,
     "outDir": "dist"
-  }
+  },
+  "files": ["./types/global.d.ts"]
 }
