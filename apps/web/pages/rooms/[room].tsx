@@ -10,6 +10,7 @@ import type {
 import { Suspense, useEffect } from "react";
 import shallow from "zustand/shallow";
 import type { User } from "@rooms2watch/prisma-client";
+import Error from "next/error";
 
 export default function Room(
   props: InferGetServerSidePropsType<typeof getServerSideProps>
@@ -36,6 +37,10 @@ export default function Room(
     });
   }, []);
 
+  if (!props.id) {
+    return <Error statusCode={404} />;
+  }
+
   return (
     <div className="flex flex-col w-full h-screen prose lg:flex-row max-w-none">
       {!!id ? (
@@ -52,7 +57,7 @@ export default function Room(
 
 export async function getServerSideProps(ctx: GetServerSidePropsContext) {
   const room = ctx.params?.room as string | undefined;
-  if (!room) return { notFound: true, props: {} };
+  if (!room) return { props: {} };
 
   try {
     const trpcClient = createTRPCClient(ctx);
@@ -73,8 +78,8 @@ export async function getServerSideProps(ctx: GetServerSidePropsContext) {
       },
     };
   } catch (e) {
+    console.log(e);
     return {
-      notFound: true,
       props: {},
     };
   }

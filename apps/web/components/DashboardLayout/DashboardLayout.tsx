@@ -5,6 +5,9 @@ import Link from "next/link";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
+import { destroyCookie } from "nookies";
+import { ACCESS_TOKEN_KEY } from "@web/../../packages/common-types";
+import { trpc } from "@web/api";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
@@ -13,9 +16,15 @@ interface DashboardLayoutProps {
 export default function DashboardLayout(props: DashboardLayoutProps) {
   const { user, isLoading } = useMe();
   const router = useRouter();
+  const context = trpc.useContext();
 
   if (router.asPath.match(/\/rooms\/.*/)) {
     return <>{props.children}</>;
+  }
+
+  function handleSignout() {
+    destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });
+    context.setQueryData(["users.me"], () => null);
   }
 
   return (
@@ -75,15 +84,28 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
             <>
               {!!user ? (
                 <>
-                  <div
-                    className="tooltip tooltip-left tooltip-primary"
-                    data-tip={user?.user?.name}
-                  >
-                    <div className="avatar online">
-                      <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
-                        <img src={user?.user?.picture!} className="!m-0" />
+                  <div className="dropdown dropdown-left">
+                    <label
+                      tabIndex={0}
+                      className="tooltip tooltip-left tooltip-primary"
+                      data-tip={user?.user?.name}
+                    >
+                      <div className="avatar online">
+                        <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                          <img src={user?.user?.picture!} className="!m-0" />
+                        </div>
                       </div>
-                    </div>
+                    </label>
+                    <ul
+                      tabIndex={0}
+                      className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52"
+                    >
+                      <li>
+                        <button className="text-sm" onClick={handleSignout}>
+                          Logout
+                        </button>
+                      </li>
+                    </ul>
                   </div>
                 </>
               ) : (

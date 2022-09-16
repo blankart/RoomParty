@@ -1,6 +1,5 @@
 import type Jwt from "jsonwebtoken";
 import type { Request, Response } from "express";
-import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
 import type { JwtPayload, JwtPayloadDecoded } from "../types";
 
 export type CreateAuthProviderJwtOptions = {
@@ -23,8 +22,7 @@ export default function createAuthProviderJwt(
       return function (req: Request, res: Response) {
         const user = req.user as JwtPayload;
         const token = jwt.sign(user, options.secret, options.jwtOptions);
-        res.cookie(ACCESS_TOKEN_KEY, `Bearer ${token}`);
-        return res.redirect(redirectUrl);
+        return res.redirect(redirectUrl + `?${new URLSearchParams({ access_token: token }).toString()}`);
       };
     },
 

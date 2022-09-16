@@ -66,25 +66,6 @@ class FavoritedRooms {
     }
 
     async findMyFavorites(user: CurrentUser) {
-        console.log(
-            await ModelsService.client.favoritedRoom.findMany({
-                where: {
-                    userId: user?.user.id
-                },
-                include: {
-                    room: {
-                        select: {
-                            id: true,
-                            name: true,
-                            thumbnailUrl: true,
-                            onlineGuests: true,
-                            onlineUsers: true,
-                            playerStatus: true
-                        }
-                    }
-                }
-            })
-        )
         return (await ModelsService.client.favoritedRoom.findMany({
             where: {
                 userId: user?.user.id
