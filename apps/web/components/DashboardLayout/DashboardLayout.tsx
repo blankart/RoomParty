@@ -15,7 +15,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
   const router = useRouter();
 
   if (router.asPath.match(/\/rooms\/.*/)) {
-    return props.children;
+    return <>{props.children}</>;
   }
 
   return (
