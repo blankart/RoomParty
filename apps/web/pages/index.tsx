@@ -3,6 +3,8 @@ import { FaYoutube } from "react-icons/fa";
 import { trpc } from "@web/api";
 import { useRouter } from "next/router";
 import { useRef } from "react";
+import useMe from "@web/hooks/useMe";
+import Link from "next/link";
 
 export default function Index() {
   const router = useRouter();
@@ -11,6 +13,8 @@ export default function Index() {
       router.push("/rooms/[room]", `/rooms/${data.id}`);
     },
   });
+
+  const { user } = useMe();
 
   const createRoomInputRef = useRef<HTMLInputElement>(null);
   const joinRoomInputRef = useRef<HTMLInputElement>(null);
@@ -34,8 +38,15 @@ export default function Index() {
     if (!joinRoomInputRef.current?.value) return;
     refetch();
   }
+
+  const { data: favoritedRooms } = trpc.useQuery(
+    ["favorited-rooms.findMyFavorites"],
+    {
+      enabled: !!user,
+    }
+  );
   return (
-    <div className="flex flex-col items-center justify-center w-full h-screen overflow-y-auto prose max-w-none">
+    <div className="block w-full h-screen overflow-y-auto prose max-w-none">
       <div className="hidden md:grid hero bg-base-100">
         <div className="text-center hero-content">
           <div className="max-w-md">
@@ -46,7 +57,7 @@ export default function Index() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col gap-4 md:flex-row">
+      <div className="flex flex-col justify-center w-[100vw] gap-4 mt-10 md:mt-[150px] md:flex-row">
         <div className="card w-[min(400px,100vw)] min-h-[200px] shadow-lg bg-base-100 m-2">
           <div className="flex flex-col card-body">
             <h1 className="card-title">
@@ -93,6 +104,36 @@ export default function Index() {
           </div>
         </div>
       </div>
+
+      {!!favoritedRooms?.length && (
+        <>
+          <div className="flex flex-col gap-4 max-w-[min(600px,100vw)] mx-auto p-4 mb-10">
+            <h2>Your Favorite Rooms</h2>
+            {favoritedRooms.map((favoritedRoom) => (
+              <div key={favoritedRoom.id} className="flex gap-4">
+                <div className="w-[100px]">
+                  {favoritedRoom.thumbnailUrl ? (
+                    <img
+                      src={favoritedRoom.thumbnailUrl}
+                      className="object-cover w-20 h-20"
+                    />
+                  ) : (
+                    <div className="w-20 h-20 bg-secondary" />
+                  )}
+                </div>
+                <div className="flex flex-col justify-center flex-1">
+                  <Link href={`/rooms/${favoritedRoom.id}`} passHref>
+                    <a className="text-xl no-underline link link-secondary">
+                      {favoritedRoom.name}&apos;s room
+                    </a>
+                  </Link>
+                  <p className="!m-0">{favoritedRoom.online} online users</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }

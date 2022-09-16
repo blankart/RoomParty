@@ -13,7 +13,7 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
     <>
       <button
         className={classNames(
-          "btn btn-info btn-sm rounded-full absolute z-10 bottom-12 right-4 duration-100",
+          "btn btn-info btn-xs rounded-full absolute z-10 bottom-12 right-4 duration-100",
           {
             "opacity-0 pointer-events-none": ctx.showVideoSearch,
           }
@@ -47,7 +47,7 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
 
       <div
         className={classNames(
-          "absolute inset-0 w-full p-10 overflow-y-auto bg-base-100 duration-100",
+          "absolute inset-0 w-full p-10 overflow-y-auto bg-base-100/90 duration-100",
           {
             "opacity-0 pointer-events-none": !ctx.showVideoSearch,
           }
@@ -69,7 +69,7 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
           <AiFillCloseCircle className="w-6 h-auto" />
         </button>
 
-        <div className="grid grid-cols-4 gap-4 overflow-y-auto">
+        <div className="grid grid-cols-1 gap-4 overflow-y-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
           {ctx.searchResult?.map((result) => (
             <ClickableCard
               key={result.id}

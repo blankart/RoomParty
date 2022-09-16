@@ -6,7 +6,7 @@ import ModelsService from "../models/models.service";
 const playerStatusEventEmitter = new EventEmitter();
 
 class Player {
-  constructor() {}
+  constructor() { }
   private static instance?: Player;
   static getInstance() {
     if (!Player.instance) {
@@ -46,6 +46,7 @@ class Player {
         id: data.id,
       },
       data: {
+        ...(data.statusObject?.thumbnail ? { thumbnailUrl: data.statusObject?.thumbnail } : {}),
         playerStatus: data.statusObject,
       },
     });

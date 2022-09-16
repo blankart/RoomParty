@@ -4,7 +4,7 @@ import { SearchResponse } from "../../types/youtube";
 const SEARCH_LIMIT = 10;
 
 class Youtube {
-  constructor() { }
+  constructor() {}
   private static instance?: Youtube;
   static getInstance() {
     if (!Youtube.instance) {

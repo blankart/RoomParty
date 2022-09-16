@@ -17,7 +17,7 @@ export const chatsRouter = createRouter()
       name: zod.string(),
       message: zod.string(),
       id: zod.string(),
-      userId: zod.string().optional()
+      userId: zod.string().optional(),
     }),
     async resolve({ input }) {
       return await ChatsService.send(input);

@@ -25,7 +25,7 @@ export default function YoutubePlayerWithControls(
 
   return (
     <div className="flex-1 w-full max-h-screen overflow-y-auto bg-base-100">
-      <div className="relative w-full h-full aspect-[none] lg:h-auto lg:aspect-video bg-base-100">
+      <div className="relative w-full h-full bg-base-100">
         <YoutubePlayerSetup />
         <YoutubePlayer
           onStart={ctx.onStart}

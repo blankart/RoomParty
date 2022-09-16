@@ -8,7 +8,7 @@ enum ROOMS_SERVICE_QUEUE {
 }
 
 class Rooms {
-  constructor() { }
+  constructor() {}
   private static instance?: Rooms;
   static getInstance() {
     if (!Rooms.instance) {
@@ -102,8 +102,8 @@ class Rooms {
           },
           owner: {
             select: {
-              userId: true
-            }
+              userId: true,
+            },
           },
           createdAt: true,
         },

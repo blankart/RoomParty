@@ -1,4 +1,7 @@
-import { createPrismaClient, CustomPrismaClient } from "@rooms2watch/prisma-client";
+import {
+  createPrismaClient,
+  CustomPrismaClient,
+} from "@rooms2watch/prisma-client";
 
 class Models {
   private static instance?: Models;

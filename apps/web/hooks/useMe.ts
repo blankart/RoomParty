@@ -32,8 +32,12 @@ export default function useMe() {
     }
   }, [router.isReady, router.query.token]);
 
-
-  const { data: user, error, isLoading, refetch } = trpc.useQuery(["users.me"], {
+  const {
+    data: user,
+    error,
+    isLoading,
+    refetch,
+  } = trpc.useQuery(["users.me"], {
     enabled: hasAccessToken && !!parseCookies(null)[ACCESS_TOKEN_KEY],
     onError() {
       // destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });

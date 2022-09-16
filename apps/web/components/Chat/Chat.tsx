@@ -1,10 +1,10 @@
 import classNames from "classnames";
 
 import useChat from "./useChat";
-import Button from "../Button/Button";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 import { IoMdExit } from "react-icons/io";
 import Link from "next/link";
+import { FaStar } from "react-icons/fa";
 
 export interface ChatProps {}
 
@@ -59,15 +59,40 @@ export default function Chat(props: ChatProps) {
               <h1 className="text-sm font-normal !m-0">
                 Welcome to <b>{ctx.name}</b>&apos;s room!
               </h1>
-              <div
-                className="tooltip tooltip-primary tooltip-left"
-                data-tip="Exit Room"
-              >
-                <Link href="/" passHref>
-                  <a className="btn btn-ghost btn-sm">
-                    <IoMdExit className="w-5 h-auto" />
-                  </a>
-                </Link>
+              <div className="flex gap-2">
+                {ctx.showFavoriteButton && (
+                  <div
+                    className="tooltip tooltip-primary tooltip-left"
+                    data-tip={
+                      !ctx.isRoomFavorited
+                        ? "Add to Favorites"
+                        : "Remove to Favorites"
+                    }
+                  >
+                    <button
+                      className="btn btn-ghost btn-sm"
+                      onClick={ctx.onToggleFavorites}
+                    >
+                      <FaStar
+                        className={classNames(
+                          "w-4 h-auto",
+                          ctx.isRoomFavorited && "text-amber-500"
+                        )}
+                      />
+                    </button>
+                  </div>
+                )}
+
+                <div
+                  className="tooltip tooltip-primary tooltip-left"
+                  data-tip="Exit Room"
+                >
+                  <Link href="/" passHref>
+                    <a className="btn btn-ghost btn-sm">
+                      <IoMdExit className="w-5 h-auto" />
+                    </a>
+                  </Link>
+                </div>
               </div>
             </div>
           </section>

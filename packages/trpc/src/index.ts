@@ -28,6 +28,10 @@ import {
   usersRouter,
   usersProtectedRouter,
 } from "./modules/users/users.controller";
+import {
+  FAVORITED_ROOMS_ROUTER_NAME,
+  favoritedRoomsProtectedRouter,
+} from "./modules/favorited-rooms/favorited-rooms.controller";
 
 function routeNameForMerge<T extends string>(route: T): `${T}.` {
   return (route + ".") as `${T}.`;
@@ -47,6 +51,8 @@ export const router = createRouter()
   .merge(routeNameForMerge(YOUTUBE_ROUTER_NAME), youtubeRouter)
 
   .merge(routeNameForMerge(USERS_ROUTER_NAME), usersRouter)
-  .merge(routeNameForMerge(USERS_ROUTER_NAME), usersProtectedRouter);
+  .merge(routeNameForMerge(USERS_ROUTER_NAME), usersProtectedRouter)
+
+  .merge(routeNameForMerge(FAVORITED_ROOMS_ROUTER_NAME), favoritedRoomsProtectedRouter)
 
 export type AppRouter = typeof router;

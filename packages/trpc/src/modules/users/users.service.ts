@@ -1,7 +1,7 @@
 import ModelsService from "../models/models.service";
 
 class Users {
-  constructor() { }
+  constructor() {}
   private static instance?: Users;
   static getInstance() {
     if (!Users.instance) {

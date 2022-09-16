@@ -4,7 +4,10 @@ import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import { useRoomsStore } from "@web/store/rooms";
 import shallow from "zustand/shallow";
-import { CHAT_LOCAL_STORAGE_SESSION_KEY, CHAT_NAME_KEY } from "@rooms2watch/common-types";
+import {
+  CHAT_LOCAL_STORAGE_SESSION_KEY,
+  CHAT_NAME_KEY,
+} from "@rooms2watch/common-types";
 import useMe from "@web/hooks/useMe";
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
@@ -115,7 +118,7 @@ export default function useChat(props: ChatProps) {
     }
   }, [id]);
 
-  const { user } = useMe()
+  const { user } = useMe();
 
   const shouldEnableQueries = !!id && !!userName && !!localStorageSessionId;
   trpc.useSubscription(
@@ -136,13 +139,19 @@ export default function useChat(props: ChatProps) {
   );
 
   const { mutate: send } = trpc.useMutation(["chats.send"]);
+  const trpcContext = trpc.useContext()
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
   function onSend() {
     if (!inputRef.current?.value?.trim() || !id) return;
-    send({ name: userName, message: inputRef.current.value, id, userId: user?.user?.id });
+    send({
+      name: userName,
+      message: inputRef.current.value,
+      id,
+      userId: user?.user?.id,
+    });
     inputRef.current.value = "";
     inputRef.current.focus();
   }
@@ -150,6 +159,20 @@ export default function useChat(props: ChatProps) {
   function onSetName() {
     if (!nameInputRef.current?.value) return;
     setName(nameInputRef.current?.value);
+  }
+
+  const { mutateAsync: toggle } = trpc.useMutation(['favorited-rooms.toggle'])
+  const { data: isRoomFavorited } = trpc.useQuery(['favorited-rooms.isRoomFavorited', {
+    roomId: id!
+  }], {
+    enabled: !!user && !!id
+  })
+  const showFavoriteButton = !!id && !!user && !!owner && user.user.id !== owner
+
+
+  async function onToggleFavorites() {
+    !!id && await toggle({ roomId: id })
+    trpcContext.invalidateQueries(['favorited-rooms.isRoomFavorited', { roomId: id! }])
   }
 
   return {
@@ -165,5 +188,9 @@ export default function useChat(props: ChatProps) {
     set,
     name,
     owner,
+    user,
+    showFavoriteButton,
+    onToggleFavorites,
+    isRoomFavorited
   };
 }

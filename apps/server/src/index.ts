@@ -1,17 +1,20 @@
 import express from "express";
 import cors from "cors";
 import ws from "ws";
-import passport from 'passport'
-import expressSession from 'express-session'
-import jwt from 'jsonwebtoken'
+import passport from "passport";
+import expressSession from "express-session";
+import jwt from "jsonwebtoken";
 import { randomUUID } from "crypto";
 
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 
 import { router, createContext } from "@rooms2watch/trpc";
-import { createAuthProviderJwt, initializeGoogleOAuth20Provider } from '@rooms2watch/auth-providers'
-import { createPrismaClient } from '@rooms2watch/prisma-client'
+import {
+  createAuthProviderJwt,
+  initializeGoogleOAuth20Provider,
+} from "@rooms2watch/auth-providers";
+import { createPrismaClient } from "@rooms2watch/prisma-client";
 
 const allowList = [process.env.WEB_BASE_URL];
 const port = process.env.SERVER_PORT || process.env.PORT || 8000;
@@ -19,12 +22,12 @@ const port = process.env.SERVER_PORT || process.env.PORT || 8000;
 async function main() {
   const app = express();
 
-  const prismaClient = createPrismaClient()
+  const prismaClient = createPrismaClient();
 
   const { signer, verifier } = createAuthProviderJwt(jwt, {
     secret: process.env.SERVER_JWT_SECRET!,
-    jwtOptions: { expiresIn: '1d' }
-  })
+    jwtOptions: { expiresIn: "1d" },
+  });
 
   app.use(
     cors(function (req, res) {
@@ -45,7 +48,7 @@ async function main() {
       createContext: createContext(verifier),
       batching: {
         enabled: true,
-      }
+      },
     })
   );
 
@@ -61,15 +64,17 @@ async function main() {
     router,
     createContext: createContext as any,
   });
-  app.use(expressSession({
-    secret: process.env.SERVER_SESSION_SECRET!,
-    genid() {
-      return randomUUID()
-    },
-  }))
+  app.use(
+    expressSession({
+      secret: process.env.SERVER_SESSION_SECRET!,
+      genid() {
+        return randomUUID();
+      },
+    })
+  );
 
-  app.use(passport.initialize())
-  app.use(passport.session())
+  app.use(passport.initialize());
+  app.use(passport.session());
 
   passport.serializeUser(function (user, done) {
     done(null, user as any);
@@ -96,13 +101,12 @@ async function main() {
         passReqToCallback: true,
         state: false,
         skipUserProfile: false,
-        userProfileURL: 'https://www.googleapis.com/oauth2/v3/userinfo',
+        userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       },
       prismaClient,
       signer
-    )
+    );
   }
-
 
   wss.on("connection", (ws) => {
     console.log(`➕➕ Connection (${wss.clients.size})`);

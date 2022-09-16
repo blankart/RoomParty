@@ -7,7 +7,7 @@ import { CurrentUser } from "../../types/user";
 
 const chatsEventEmitter = new EventEmitter();
 class Chats {
-  constructor() { }
+  constructor() {}
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {
@@ -36,7 +36,12 @@ class Chats {
       );
   }
 
-  async send(data: { name: string; message: string; id: string, userId?: string }) {
+  async send(data: {
+    name: string;
+    message: string;
+    id: string;
+    userId?: string;
+  }) {
     const newChat = await ModelsService.client.chat.create({
       data: {
         name: data.name,
@@ -46,13 +51,15 @@ class Chats {
             id: data.id,
           },
         },
-        ...(data.userId ? {
-          user: {
-            connect: {
-              id: data.userId
+        ...(data.userId
+          ? {
+              user: {
+                connect: {
+                  id: data.userId,
+                },
+              },
             }
-          }
-        } : {})
+          : {}),
       },
     });
 

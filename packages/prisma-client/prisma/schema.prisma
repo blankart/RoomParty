@@ -17,33 +17,43 @@ model Account {
 }
 
 model User {
-  id        String    @id @default(cuid())
-  name      String?
-  firstName String?
-  lastName  String?
-  picture   String?
-  accounts  Account[]
-  roomId    String?
-  Room      Room?     @relation(fields: [roomId], references: [id])
-  Chat      Chat[]
+  id            String          @id @default(cuid())
+  name          String?
+  firstName     String?
+  lastName      String?
+  picture       String?
+  accounts      Account[]
+  roomId        String?
+  Room          Room?           @relation(fields: [roomId], references: [id])
+  Chat          Chat[]
+  FavoritedRoom FavoritedRoom[]
+}
+
+model FavoritedRoom {
+  id     String @id @default(cuid())
+  room   Room   @relation(fields: [roomId], references: [id])
+  roomId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
 
 model Room {
-  id            String        @id @default(cuid())
+  id            String          @id @default(cuid())
   name          String
-  createdAt     DateTime      @default(now())
+  createdAt     DateTime        @default(now())
   playerStatus  Json?
-  owner         Account?      @relation(fields: [accountId], references: [id])
+  owner         Account?        @relation(fields: [accountId], references: [id])
   thumbnailUrl  String?
   chats         Chat[]
-  private       Boolean       @default(false)
+  private       Boolean         @default(false)
   password      String?
-  videoPlatform VideoPlatform @default(Youtube)
+  videoPlatform VideoPlatform   @default(Youtube)
   description   String?
-  onlineGuests  Int[]         @default([])
+  onlineGuests  Int[]           @default([])
   onlineUsers   User[]
   accountId     String?
-  draft         Boolean       @default(true)
+  draft         Boolean         @default(true)
+  FavoritedRoom FavoritedRoom[]
 }
 
 model Chat {

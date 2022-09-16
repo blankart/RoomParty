@@ -49,9 +49,9 @@ export default function Rooms() {
               ))}
             </div>
           ) : (
-            <div className="min-h-[min(800px,80vh)] w-full flex flex-col justify-center items-center">
+            <div className="min-h-[min(800px,80vh)] w-full flex flex-col justify-center items-center p-4">
               <FaSadTear className="w-20 h-auto" />
-              <h2>
+              <h2 className="text-lg text-center md:text-2xl">
                 No rooms created yet.{" "}
                 <Link href="/">
                   <a className="font-bold link link-primary">Create one?</a>

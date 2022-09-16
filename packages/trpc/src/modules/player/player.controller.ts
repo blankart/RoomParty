@@ -3,8 +3,6 @@ import zod, { z } from "zod";
 import PlayerService from "./player.service";
 import { PlayerStatus } from "../../types/player";
 
-type As<T extends z.ZodType, A> = T | z.ZodEffects<T, A, A | string>;
-
 export const PLAYER_ROUTER_NAME = "player";
 
 export const playerRouter = createRouter()

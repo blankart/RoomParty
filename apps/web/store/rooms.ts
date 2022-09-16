@@ -10,7 +10,7 @@ export interface RoomsStore {
   showPrompt: boolean;
   tabSessionId: number;
   localStorageSessionId?: number;
-  owner?: string
+  owner?: string;
 
   isPlayed: boolean;
   scrubTime: number;
