@@ -40,7 +40,7 @@ export default function useMe() {
   } = trpc.useQuery(["users.me"], {
     enabled: hasAccessToken && !!parseCookies(null)[ACCESS_TOKEN_KEY],
     onError() {
-      // destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });
+      destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });
       setHasAccessToken(false);
     },
   });
