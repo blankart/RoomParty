@@ -96,8 +96,7 @@ export function withTRPC(C: any) {
           defaultOptions: {
             queries: {
               retry: 3,
-              staleTime: 60,
-              refetchOnMount: false,
+              refetchOnWindowFocus: false,
             },
           },
         },

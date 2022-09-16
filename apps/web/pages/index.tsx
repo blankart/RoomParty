@@ -1,60 +1,98 @@
+import { BsPlayCircleFill } from "react-icons/bs";
+import { FaYoutube } from "react-icons/fa";
 import { trpc } from "@web/api";
-import Button from "@web/components/Button/Button";
-import ClickableCard from "@web/components/Card/ClickableCard";
-import Container from "@web/components/Container/Container";
-import useMe from "@web/hooks/useMe";
 import { useRouter } from "next/router";
-import { AiOutlineLoading } from "react-icons/ai";
+import { useRef } from "react";
 
 export default function Index() {
   const router = useRouter();
-  const { user } = useMe();
-  const { data: rooms, isLoading } = trpc.useQuery(["rooms.findMyRoom"], {
-    enabled: !!user,
+  const { mutate: createRoom } = trpc.useMutation(["rooms.create"], {
+    onSuccess(data) {
+      router.push("/rooms/[room]", `/rooms/${data.id}`);
+    },
   });
 
-  return (
-    <Container className="flex flex-col items-center justify-center h-full gap-2 overflow-y-scroll">
-      {!!user ? (
-        <>
-          {isLoading && (
-            <AiOutlineLoading className="!w-20 h-auto animate-spin duration-100" />
-          )}
+  const createRoomInputRef = useRef<HTMLInputElement>(null);
+  const joinRoomInputRef = useRef<HTMLInputElement>(null);
 
-          {!isLoading && (
-            <>
-              <h1>Available rooms:</h1>
-              <div className="flex flex-wrap gap-4 max-h-[min(600px,100vh)] w-[min(1400px,100vw)] items-center justify-center">
-                {rooms?.map((room) => (
-                  <ClickableCard
-                    href={"/rooms/[room]"}
-                    as={`/rooms/${room.id}`}
-                    shallow
-                    className="basis-[300px]"
-                    key={room.id}
-                    imgSrc={room.thumbnail!}
-                    alt={room.name}
-                  >
-                    <h2 className="text-left !m-0 text-[1rem] line-clamp-2">
-                      {room.name}
-                    </h2>
-                    <p className="text-left !m-0">{room.online} online</p>
-                  </ClickableCard>
-                ))}
+  const { refetch } = trpc.useQuery(
+    ["rooms.findById", joinRoomInputRef.current?.value!],
+    {
+      enabled: !!joinRoomInputRef.current?.value,
+      onSuccess(data) {
+        router.push("/rooms/[room]", `/rooms/${data.id}`);
+      },
+    }
+  );
+
+  function onCreateRoom() {
+    if (!createRoomInputRef.current?.value) return;
+    createRoom({ name: createRoomInputRef.current.value });
+  }
+
+  function onJoinRoom() {
+    if (!joinRoomInputRef.current?.value) return;
+    refetch();
+  }
+  return (
+    <div className="flex flex-col items-center justify-center w-full h-screen overflow-y-auto prose max-w-none">
+      <div className="hidden md:grid hero bg-base-100">
+        <div className="text-center hero-content">
+          <div className="max-w-md">
+            <h1 className="text-3xl font-bold md:text-5xl">
+              <BsPlayCircleFill className="inline mr-4" />
+              rooms2watch
+            </h1>
+          </div>
+        </div>
+      </div>
+      <div className="flex flex-col gap-4 md:flex-row">
+        <div className="card w-[min(400px,100vw)] min-h-[200px] shadow-lg bg-base-100 m-2">
+          <div className="flex flex-col card-body">
+            <h1 className="card-title">
+              <BsPlayCircleFill className="inline mr-2" />
+              Create a room
+            </h1>
+            <div className="flex flex-col justify-center flex-1 gap-3">
+              <h3>
+                Create a room and watch <FaYoutube className="inline" />{" "}
+                together with your friends!
+              </h3>
+              <div className="flex flex-col">
+                <input
+                  ref={createRoomInputRef}
+                  type="text"
+                  placeholder="Enter your room name"
+                  className="input input-bordered input-primary"
+                />
               </div>
-            </>
-          )}
-        </>
-      ) : (
-        <Button
-          onClick={() =>
-            ((window as any).location =
-              process.env.NEXT_PUBLIC_SERVER_URL! + "/oauth2/redirect/google")
-          }
-        >
-          Login via Google
-        </Button>
-      )}
-    </Container>
+              <button className="btn btn-primary" onClick={onCreateRoom}>
+                Create a room
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div className="divider md:divider-horizontal">OR</div>
+
+        <div className="card w-[min(400px,100vw)] min-h-[200px] shadow-lg bg-base-100 m-2">
+          <div className="flex flex-col card-body">
+            <h1 className="card-title">Join an existing room</h1>
+            <div className="flex flex-col justify-center flex-1 gap-3">
+              <h3>Join an existing room by entering the room ID below!</h3>
+              <input
+                ref={joinRoomInputRef}
+                type="text"
+                placeholder="Enter room ID"
+                className="w-full input input-bordered input-primary"
+              />
+              <button className="btn btn-secondary" onClick={onJoinRoom}>
+                Join room
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 }

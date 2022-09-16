@@ -34,7 +34,7 @@ export default function initializeGoogleOAuth20Provider(
                             name: profile.displayName ?? profile.name?.givenName,
                             firstName: profile.name?.givenName,
                             lastName: profile.name?.familyName,
-                            picture: profile.profileUrl
+                            picture: profile.photos?.[0]?.value ?? profile.profileUrl
                         }
                     }
                 }

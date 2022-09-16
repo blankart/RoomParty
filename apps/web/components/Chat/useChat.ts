@@ -6,7 +6,6 @@ import { useRoomsStore } from "@web/store/rooms";
 import shallow from "zustand/shallow";
 import { CHAT_LOCAL_STORAGE_SESSION_KEY, CHAT_NAME_KEY } from "@rooms2watch/common-types";
 import useMe from "@web/hooks/useMe";
-import randomColor from 'randomcolor'
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 
@@ -117,8 +116,6 @@ export default function useChat(props: ChatProps) {
   }, [id]);
 
   const { user } = useMe()
-
-  console.log(userName)
 
   const shouldEnableQueries = !!id && !!userName && !!localStorageSessionId;
   trpc.useSubscription(

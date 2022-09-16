@@ -1,6 +1,7 @@
 import "@web/styles/global.css";
 import { withTRPC } from "@web/api";
 import { ThemeProvider } from "next-themes";
+import DashboardLayout from "@web/components/DashboardLayout/DashboardLayout";
 
 function App({ Component, pageProps }: any) {
   return (
@@ -9,7 +10,9 @@ function App({ Component, pageProps }: any) {
         forcedTheme={(Component as any).theme || "dark"}
         attribute="class"
       >
-        <Component {...pageProps} />
+        <DashboardLayout>
+          <Component {...pageProps} />
+        </DashboardLayout>
       </ThemeProvider>
     </>
   );

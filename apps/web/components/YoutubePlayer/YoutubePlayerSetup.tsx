@@ -1,12 +1,8 @@
-import {
-  AiFillYoutube,
-  AiFillCloseCircle,
-  AiOutlineLoading,
-} from "react-icons/ai";
+import { AiFillYoutube, AiFillCloseCircle } from "react-icons/ai";
 import classNames from "classnames";
-import Button from "../Button/Button";
 import { useYoutubePlayerSetup } from "./useYoutubePlayerSetup";
 import ClickableCard from "../Card/ClickableCard";
+import { FaSpinner } from "react-icons/fa";
 
 export interface YoutubePlayerSetupProps {}
 
@@ -15,14 +11,17 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
 
   return (
     <>
-      <Button
-        className={classNames("absolute z-10 bottom-12 right-4 duration-100", {
-          "opacity-0 pointer-events-none": ctx.showVideoSearch,
-        })}
+      <button
+        className={classNames(
+          "btn btn-info btn-sm rounded-full absolute z-10 bottom-12 right-4 duration-100",
+          {
+            "opacity-0 pointer-events-none": ctx.showVideoSearch,
+          }
+        )}
         onClick={() => ctx.setShowVideoSearch(true)}
       >
         Change Video
-      </Button>
+      </button>
 
       <div
         className={classNames(
@@ -32,7 +31,7 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
           }
         )}
       >
-        <AiOutlineLoading
+        <FaSpinner
           className={classNames("!w-20 h-auto animate-spin duration-100", {
             "opacity-0 pointer-events-none":
               !ctx.showVideoSearch || !ctx.isLoading,
@@ -48,23 +47,23 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
 
       <div
         className={classNames(
-          "absolute inset-0 w-full p-10 overflow-y-auto bg-slate-900/95 duration-100",
+          "absolute inset-0 w-full p-10 overflow-y-auto bg-base-100 duration-100",
           {
             "opacity-0 pointer-events-none": !ctx.showVideoSearch,
           }
         )}
       >
         <div className="w-full">
-          <AiFillYoutube className="inline-block w-12 h-auto my-2 mr-2" />
+          <AiFillYoutube className="inline-block w-10 h-auto my-2 mr-2" />
           <input
             value={ctx.q}
             onChange={(e) => ctx.setQ(e.target.value)}
-            className="w-[min(600px,100%)] p-2 mb-10 text-lg bg-slate-700/40 mx-auto"
+            className="input input-primary input-sm w-[min(600px,100%)] p-2 mb-10 text-lg mx-auto"
           />
         </div>
 
         <button
-          className="absolute top-10 right-10"
+          className="absolute btn btn-ghost top-10 right-10"
           onClick={() => ctx.setShowVideoSearch(false)}
         >
           <AiFillCloseCircle className="w-6 h-auto" />

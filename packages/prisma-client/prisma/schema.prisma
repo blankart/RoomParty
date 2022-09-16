@@ -43,6 +43,7 @@ model Room {
   onlineGuests  Int[]         @default([])
   onlineUsers   User[]
   accountId     String?
+  draft         Boolean       @default(true)
 }
 
 model Chat {

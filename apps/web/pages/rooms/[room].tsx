@@ -1,7 +1,6 @@
 import type { PlayerStatus } from "@rooms2watch/trpc";
 import { createTRPCClient } from "@web/api";
 import Chat from "@web/components/Chat/Chat";
-import Container from "@web/components/Container/Container";
 import YoutubePlayerWithControls from "@web/components/YoutubePlayer/YoutubePlayerWithControls";
 import { useRoomsStore } from "@web/store/rooms";
 import type {
@@ -38,7 +37,7 @@ export default function Room(
   }, []);
 
   return (
-    <Container className="relative flex">
+    <div className="flex flex-col w-full h-screen prose lg:flex-row max-w-none">
       {!!id ? (
         <>
           <Suspense>
@@ -47,7 +46,7 @@ export default function Room(
           </Suspense>
         </>
       ) : null}
-    </Container>
+    </div>
   );
 }
 
