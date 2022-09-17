@@ -13,19 +13,12 @@ interface DashboardLayoutProps {
 }
 
 export default function DashboardLayout(props: DashboardLayoutProps) {
-  const { user, isLoading } = useMe();
+  const { user, isLoading, handleSignout } = useMe();
   const router = useRouter();
-  const context = trpc.useContext();
 
   if (router.asPath.match(/\/rooms\/.*/)) {
     return <>{props.children}</>;
   }
-
-  function handleSignout() {
-    destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });
-    context.setQueryData(["users.me"], () => null);
-  }
-
   return (
     <div className="flex flex-col w-full h-screen overflow-y-auto prose max-w-none">
       <div className="p-4 navbar bg-base-100">
@@ -89,11 +82,11 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                       className="tooltip tooltip-left tooltip-primary"
                       data-tip={user?.user?.name}
                     >
-                      <div className="avatar online">
+                      <button className="avatar online">
                         <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
                           <img src={user?.user?.picture!} className="!m-0" />
                         </div>
-                      </div>
+                      </button>
                     </label>
                     <ul
                       tabIndex={0}

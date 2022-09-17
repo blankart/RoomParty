@@ -1,17 +1,34 @@
 import { trpc } from "@web/api";
+import { useMe } from "@web/context/AuthContext";
 import Link from "next/link";
 import { FaSadTear, FaSpinner } from "react-icons/fa";
 
 export default function Rooms() {
-  const { data: user } = trpc.useQuery(["users.me"]);
-  const { data: myRooms, isLoading } = trpc.useQuery(["rooms.findMyRoom"], {
+  const {
+    user,
+    isLoading: isUserLoading,
+    hasAccessToken,
+    hasUserInitialized,
+  } = useMe();
+
+  const {
+    data: myRooms,
+    isLoading,
+    isStale,
+  } = trpc.useQuery(["rooms.findMyRoom"], {
     enabled: !!user,
   });
+
+  const shouldShowLoadingIndicator =
+    !hasUserInitialized ||
+    (hasAccessToken && isUserLoading) ||
+    (!user && !isStale) ||
+    isLoading;
 
   return (
     <div className="w-full h-screen overflow-y-auto prose max-w-none !block">
       <h1 className="mt-10 text-center">My Rooms</h1>
-      {isLoading ? (
+      {shouldShowLoadingIndicator ? (
         <div className="flex flex-wrap gap-4 p-4 max-w-[min(1300px,100vw)] justify-center mx-auto h-[400px]">
           <FaSpinner className="w-12 h-auto animate-spin" />
         </div>

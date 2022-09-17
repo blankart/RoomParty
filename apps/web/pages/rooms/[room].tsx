@@ -1,5 +1,5 @@
 import type { PlayerStatus } from "@rooms2watch/trpc";
-import { createTRPCClient } from "@web/api";
+import { createTRPCClient, trpc } from "@web/api";
 import Chat from "@web/components/Chat/Chat";
 import YoutubePlayerWithControls from "@web/components/YoutubePlayer/YoutubePlayerWithControls";
 import { useRoomsStore } from "@web/store/rooms";
@@ -11,10 +11,10 @@ import { Suspense, useEffect } from "react";
 import shallow from "zustand/shallow";
 import type { User } from "@rooms2watch/prisma-client";
 import Error from "next/error";
+import { useMe } from "@web/context/AuthContext";
+import { useRouter } from "next/router";
 
-export default function Room(
-  props: InferGetServerSidePropsType<typeof getServerSideProps>
-) {
+export default function Room() {
   const { set, id } = useRoomsStore(
     (s) => ({
       set: s.set,
@@ -22,22 +22,47 @@ export default function Room(
     }),
     shallow
   );
+  const router = useRouter();
+  const roomId = router.query.room as string;
+  const {
+    user,
+    isLoading: isUserLoading,
+    isIdle,
+    hasUserInitialized,
+  } = useMe();
+  const {
+    data: room,
+    isLoading,
+    error,
+  } = trpc.useQuery(["rooms.findById", roomId!], {
+    enabled: !!roomId && router.isReady,
+  });
 
   useEffect(() => {
+    if (!room) return;
+    const playerStatus = room.playerStatus as PlayerStatus | undefined;
     set({
-      id: props.id,
-      name: props.name,
-      chats: props.chats,
-      scrubTime: props.playerStatus?.time,
-      url: props.playerStatus?.url,
-      type: props.playerStatus?.type,
-      userName: props.userName,
-      thumbnail: props.playerStatus?.thumbnail,
-      owner: props.owner,
+      id: room.id,
+      name: room.name,
+      chats: room.chats,
+      scrubTime: playerStatus?.time,
+      url: playerStatus?.url,
+      type: playerStatus?.type,
+      userName: user?.user?.name ?? "",
+      thumbnail: playerStatus?.thumbnail,
+      owner: room.owner?.userId,
     });
-  }, []);
+  }, [room, user]);
 
-  if (!props.id) {
+  if (isLoading || isUserLoading || !hasUserInitialized) {
+    return null;
+  }
+
+  if (!roomId && !isLoading) {
+    return <Error statusCode={404} />;
+  }
+
+  if (error) {
     return <Error statusCode={404} />;
   }
 
@@ -53,34 +78,4 @@ export default function Room(
       ) : null}
     </div>
   );
-}
-
-export async function getServerSideProps(ctx: GetServerSidePropsContext) {
-  const room = ctx.params?.room as string | undefined;
-  if (!room) return { props: {} };
-
-  try {
-    const trpcClient = createTRPCClient(ctx);
-    const res = await trpcClient.query("rooms.findById", room);
-    let user: { id: string; user: User } | null | undefined;
-    try {
-      user = await trpcClient.query("users.me");
-    } catch {}
-    return {
-      props: {
-        id: res.id,
-        name: res.name,
-        chats: res.chats,
-        playerStatus: res.playerStatus as PlayerStatus,
-        owner: res.owner?.userId,
-        createdAt: res.createdAt,
-        userName: user?.user?.name ?? "",
-      },
-    };
-  } catch (e) {
-    console.log(e);
-    return {
-      props: {},
-    };
-  }
 }

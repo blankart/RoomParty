@@ -97,8 +97,14 @@ export default function useChat(props: ChatProps) {
     set({ localStorageSessionId: Number(sessionId) });
   }, []);
 
+  const { user, isLoading, isIdle } = useMe();
+
   useEffect(() => {
-    if (userName) return;
+    if (isLoading && isIdle) return
+    if (userName || user) {
+      set({ showPrompt: false });
+      return
+    };
     if (!id) return;
     const storedName =
       (id && localStorage.getItem(getLocalStorageKeyName(id))) ?? "";
@@ -118,9 +124,8 @@ export default function useChat(props: ChatProps) {
         localStorage.removeItem(key);
       }
     }
-  }, [id]);
+  }, [id, userName, isLoading, user, isIdle]);
 
-  const { user } = useMe();
 
   const shouldEnableQueries = !!id && !!userName && !!localStorageSessionId;
   trpc.useSubscription(

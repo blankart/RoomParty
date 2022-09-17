@@ -6,11 +6,13 @@ import { AiOutlineCheckCircle } from "react-icons/ai";
 
 import Modal from "../Modal/Modal";
 import useChat from "./useChat";
+import { useMe } from "@web/context/AuthContext";
 
 export interface ChatProps {}
 
 export default function Chat(props: ChatProps) {
   const ctx = useChat(props);
+  const { isLoading, isIdle } = useMe();
 
   return (
     <>
@@ -94,38 +96,42 @@ export default function Chat(props: ChatProps) {
               "blur-sm": !ctx.shouldEnableQueries,
             })}
           >
-            {ctx.chats?.map((chat) => (
-              <div
-                key={chat.id}
-                className="p-1 break-all hover:bg-slate-600/20"
-              >
-                {chat.isSystemMessage ? (
-                  <>
-                    <span className="block py-2 text-sm italic text-center opacity-50">
-                      {chat.message}
-                    </span>
-                  </>
-                ) : (
-                  <div>
-                    <b>
-                      {chat.name}
-                      {chat.userId === ctx.owner && (
-                        <span
-                          className="ml-1 tooltip tooltip-primary"
-                          data-tip="Host"
-                        >
-                          <AiOutlineCheckCircle
-                            title="Host"
-                            className="inline mb-1"
-                          />
+            {!isLoading && !isIdle && (
+              <>
+                {ctx.chats?.map((chat) => (
+                  <div
+                    key={chat.id}
+                    className="p-1 break-all hover:bg-slate-600/20"
+                  >
+                    {chat.isSystemMessage ? (
+                      <>
+                        <span className="block py-2 text-sm italic text-center opacity-50">
+                          {chat.message}
                         </span>
-                      )}
-                    </b>
-                    : {chat.message}
+                      </>
+                    ) : (
+                      <div>
+                        <b>
+                          {chat.name}
+                          {chat.userId === ctx.owner && (
+                            <span
+                              className="ml-1 tooltip tooltip-primary"
+                              data-tip="Host"
+                            >
+                              <AiOutlineCheckCircle
+                                title="Host"
+                                className="inline mb-1"
+                              />
+                            </span>
+                          )}
+                        </b>
+                        : {chat.message}
+                      </div>
+                    )}
                   </div>
-                )}
-              </div>
-            ))}
+                ))}
+              </>
+            )}
           </div>
           <div className="flex flex-col w-full p-2 gap-y-2">
             <textarea
