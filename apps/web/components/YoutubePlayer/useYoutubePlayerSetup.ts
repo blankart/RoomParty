@@ -83,5 +83,6 @@ export function useYoutubePlayerSetup(props: YoutubePlayerSetupProps) {
     showVideoSearch,
     setShowVideoSearch,
     isLoading,
+    debouncedQ
   };
 }

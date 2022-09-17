@@ -69,24 +69,37 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
           <AiFillCloseCircle className="w-6 h-auto" />
         </button>
 
-        <div className="grid grid-cols-1 gap-4 overflow-y-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-          {ctx.searchResult?.map((result) => (
-            <ClickableCard
-              key={result.id}
-              onClick={() => ctx.onSelectLink(result.url, result.thumbnailSrc)}
-              imgSrc={result.thumbnailSrc}
-              alt={result.title}
-            >
-              <h2 className="text-[1rem] text-start !m-0 line-clamp-2">
-                {result.title}
-              </h2>
-              <div className="flex justify-between w-full">
-                <p className="!m-0 text-sm">{result.uploadedAt}</p>
-                <p className="!m-0 text-sm">{result.views} views</p>
+        {!ctx.isLoading && (
+          <>
+            {ctx.searchResult?.length ? (
+              <div className="grid grid-cols-1 gap-4 overflow-y-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+                {ctx.searchResult.map((result) => (
+                  <ClickableCard
+                    key={result.id}
+                    onClick={() =>
+                      ctx.onSelectLink(result.url, result.thumbnailSrc)
+                    }
+                    imgSrc={result.thumbnailSrc}
+                    alt={result.title}
+                  >
+                    <h2 className="text-[1rem] text-start !m-0 line-clamp-2">
+                      {result.title}
+                    </h2>
+                    <div className="flex justify-between w-full">
+                      <p className="!m-0 text-sm">{result.uploadedAt}</p>
+                      <p className="!m-0 text-sm">{result.views} views</p>
+                    </div>
+                  </ClickableCard>
+                ))}
               </div>
-            </ClickableCard>
-          ))}
-        </div>
+            ) : (
+              <>
+                No results found for <i>{ctx.debouncedQ}</i>. Try another
+                search.
+              </>
+            )}
+          </>
+        )}
       </div>
     </>
   );
