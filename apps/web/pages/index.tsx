@@ -56,6 +56,7 @@ export default function Index() {
       enabled: !!user,
     }
   );
+
   return (
     <div className="block w-full h-screen overflow-y-auto prose max-w-none">
       <div className="hidden md:grid hero bg-base-100">
