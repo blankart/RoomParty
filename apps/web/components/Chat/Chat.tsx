@@ -49,43 +49,40 @@ export default function Chat(props: ChatProps) {
           Let me them know that you want to watch videos with them by copying
           the link below:
         </p>
-        <p className="!m-0 text-center italic text-md font-bold py-4 rounded-md ring-accent ring-1 relative break-all p-2">
-          {process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/
-          {ctx.router.query.roomIdentificationId}
-          <button
-            className="mx-2 btn btn-xs btn-circle btn-ghost"
-            onClick={() => {
-              navigator.clipboard.writeText(
-                `${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${ctx.router.query.roomIdentificationId}`
-              );
-            }}
-          >
-            <FaCopy />
-          </button>
-        </p>
+        <div
+          className="tooltip tooltip-accent"
+          data-tip={`${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${ctx.router.query.roomIdentificationId}`}
+        >
+          <p className="!m-0 text-center italic text-md font-bold py-4 rounded-md ring-accent ring-1 relative break-all p-2">
+            {process.env.NEXT_PUBLIC_WEB_BASE_URL?.substring(0, 20) + "..."}
+            /rooms/
+            {ctx.router.query.roomIdentificationId}
+            <button
+              className="mx-2 btn btn-xs btn-circle btn-ghost"
+              onClick={() => {
+                navigator.clipboard.writeText(
+                  `${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${ctx.router.query.roomIdentificationId}`
+                );
+              }}
+            >
+              <FaCopy />
+            </button>
+          </p>
+        </div>
+
         <div className="divider divider-vertical">or</div>
-        <p className="!m-0 py-4 text-sm">
+        <p className="!m-0 py-4 text-sm break-all">
           Enter this room ID after visiting{" "}
           <a
             href={process.env.NEXT_PUBLIC_WEB_BASE_URL}
             target="_blank"
             className="font-bold link link-accent"
           >
-            {process.env.NEXT_PUBLIC_WEB_BASE_URL}
+            {process.env.NEXT_PUBLIC_WEB_BASE_URL}:
           </a>
         </p>
-        <p className="text-4xl font-bold text-center !m-0">
+        <p className="text-4xl font-bold text-center !m-0 p-2 ring-1 ring-accent rounded-md">
           {ctx.router.query.roomIdentificationId}
-          <button
-            className="mx-3 mb-2 align-middle btn-sm btn btn-circle btn-ghost"
-            onClick={() => {
-              navigator.clipboard.writeText(
-                `${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${ctx.router.query.roomIdentificationId}`
-              );
-            }}
-          >
-            <FaCopy className="" />
-          </button>
         </p>
       </Modal>
 
