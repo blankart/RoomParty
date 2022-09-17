@@ -60,10 +60,12 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
           )}
         </div>
         <div className="navbar-center">
-          <a className="text-xl normal-case btn btn-ghost">
-            <BsPlayCircleFill className="inline mr-2" />
-            rooms2watch
-          </a>
+          <Link href="/" passHref>
+            <a className="text-xl normal-case btn btn-ghost">
+              <BsPlayCircleFill className="inline mr-2" />
+              rooms2watch
+            </a>
+          </Link>
         </div>
         <div className="navbar-end">
           {isLoading ? (
@@ -83,17 +85,20 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                       data-tip={user?.user?.name}
                     >
                       <button className="avatar online">
-                        <div className="w-10 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <div className="rounded-full w-7 md:w-10 ring ring-primary ring-offset-base-100 ring-offset-2">
                           <img src={user?.user?.picture!} className="!m-0" />
                         </div>
                       </button>
                     </label>
                     <ul
                       tabIndex={0}
-                      className="p-2 shadow dropdown-content menu bg-base-100 rounded-box w-52"
+                      className="p-2 px-10 py-1 shadow dropdown-content menu bg-base-100 rounded-box"
                     >
                       <li>
-                        <button className="text-sm" onClick={handleSignout}>
+                        <button
+                          className="text-xs md:text-sm btn-xs md:btn-md"
+                          onClick={handleSignout}
+                        >
                           Logout
                         </button>
                       </li>
@@ -101,16 +106,21 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                   </div>
                 </>
               ) : (
-                <button
-                  className="btn btn-circle btn-outline"
-                  onClick={() => {
-                    (window as any).location =
-                      process.env.NEXT_PUBLIC_SERVER_URL +
-                      "/oauth2/redirect/google";
-                  }}
+                <div
+                  className="tooltip tooltip-left tooltip-primary"
+                  data-tip="Login with Google"
                 >
-                  <FaGoogle />
-                </button>
+                  <button
+                    className="btn btn-sm btn-circle btn-outline"
+                    onClick={() => {
+                      (window as any).location =
+                        process.env.NEXT_PUBLIC_SERVER_URL +
+                        "/oauth2/redirect/google";
+                    }}
+                  >
+                    <FaGoogle />
+                  </button>
+                </div>
               )}
             </>
           )}

@@ -198,6 +198,7 @@ export default function useChat(props: ChatProps) {
     user,
     showFavoriteButton,
     onToggleFavorites,
-    isRoomFavorited
+    isRoomFavorited,
+    userName,
   };
 }

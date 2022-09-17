@@ -96,7 +96,7 @@ export default function Chat(props: ChatProps) {
               "blur-sm": !ctx.shouldEnableQueries,
             })}
           >
-            {!isLoading && !isIdle && (
+            {!isLoading && ctx.userName && (
               <>
                 {ctx.chats?.map((chat) => (
                   <div

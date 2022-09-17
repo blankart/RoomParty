@@ -27,7 +27,7 @@ export default function Rooms() {
 
   return (
     <div className="w-full h-screen overflow-y-auto prose max-w-none !block">
-      <h1 className="mt-10 text-center">My Rooms</h1>
+      <h1 className="mt-10 text-center">Explore My Rooms</h1>
       {shouldShowLoadingIndicator ? (
         <div className="flex flex-wrap gap-4 p-4 max-w-[min(1300px,100vw)] justify-center mx-auto h-[400px]">
           <FaSpinner className="w-12 h-auto animate-spin" />
