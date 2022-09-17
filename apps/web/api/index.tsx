@@ -95,6 +95,7 @@ export function withTRPC(C: any) {
         queryClientConfig: {
           defaultOptions: {
             queries: {
+              ssr: false,
               retry: 3,
               refetchOnWindowFocus: false,
             },
@@ -103,6 +104,6 @@ export function withTRPC(C: any) {
         headers,
       };
     },
-    ssr: true,
+    ssr: false,
   })(C);
 }
