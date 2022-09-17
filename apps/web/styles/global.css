@@ -6,3 +6,7 @@ html {
   @apply overflow-hidden bg-slate-900;
   color-scheme: dark;
 }
+
+body {
+  padding-bottom: env(safe-area-inset-bottom);
+}
