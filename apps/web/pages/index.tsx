@@ -58,7 +58,7 @@ export default function Index() {
         </div>
       </div>
       <div className="flex flex-col justify-center w-[100vw] gap-4 mt-10 md:mt-[150px] md:flex-row">
-        <div className="card w-[min(400px,100vw)] min-h-[200px] shadow-lg bg-base-100 m-2">
+        <div className="card w-[min(400px,100vw)] min-h-[200px] shadow-lg bg-base-100">
           <div className="flex flex-col card-body">
             <h1 className="card-title">
               <BsPlayCircleFill className="inline mr-2" />
@@ -86,7 +86,7 @@ export default function Index() {
 
         <div className="divider md:divider-horizontal">OR</div>
 
-        <div className="card w-[min(400px,100vw)] min-h-[200px] shadow-lg bg-base-100 m-2">
+        <div className="card w-[min(400px,100vw)] min-h-[200px] shadow-lg bg-base-100">
           <div className="flex flex-col card-body">
             <h1 className="card-title">Join an existing room</h1>
             <div className="flex flex-col justify-center flex-1 gap-3">
