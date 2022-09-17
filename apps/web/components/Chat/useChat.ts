@@ -16,7 +16,8 @@ import { ChatProps } from "./Chat";
 import randomColor from "randomcolor";
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
-const getLocalStorageColorName = (id: string) => `${getLocalStorageKeyName(id)}.chat-color`;
+const getLocalStorageColorName = (id: string) =>
+  `${getLocalStorageKeyName(id)}.chat-color`;
 
 export default function useChat(props: ChatProps) {
   const router = useRouter();
@@ -53,11 +54,15 @@ export default function useChat(props: ChatProps) {
     useLocalStorage<string | undefined>(
       getLocalStorageKeyName(roomStore?.id ?? "")
     );
-  const [userNameChatColorFromLocalStorage, setUserNameChatColorFromLocalStorage] = useLocalStorage<string>(getLocalStorageColorName(roomStore?.id ?? ''))
+  const [
+    userNameChatColorFromLocalStorage,
+    setUserNameChatColorFromLocalStorage,
+  ] = useLocalStorage<string>(getLocalStorageColorName(roomStore?.id ?? ""));
 
   useEffect(() => {
-    !userNameChatColorFromLocalStorage && setUserNameChatColorFromLocalStorage(randomColor())
-  }, [])
+    !userNameChatColorFromLocalStorage &&
+      setUserNameChatColorFromLocalStorage(randomColor());
+  }, []);
 
   const { isFetching } = trpc.useQuery(["chats.chats", roomStore.id!], {
     enabled: !!roomStore.id,
@@ -112,8 +117,8 @@ export default function useChat(props: ChatProps) {
 
   function onSend() {
     if (!inputRef.current?.value?.trim() || !roomStore.id) return;
-    let color = userNameChatColorFromLocalStorage
-    if (!color) color = randomColor()
+    let color = userNameChatColorFromLocalStorage;
+    if (!color) color = randomColor();
     send({
       name: roomStore.userName,
       message: inputRef.current.value,
@@ -121,7 +126,7 @@ export default function useChat(props: ChatProps) {
       userId: user?.user?.id,
       color,
     });
-    setUserNameChatColorFromLocalStorage(color)
+    setUserNameChatColorFromLocalStorage(color);
     inputRef.current.value = "";
     inputRef.current.focus();
   }
@@ -157,7 +162,7 @@ export default function useChat(props: ChatProps) {
   }, [roomStore.id, router.query?.id]);
 
   useEffect(() => {
-    if (!roomStore.id) return
+    if (!roomStore.id) return;
     if (sessionId) {
       roomStore.set({ localStorageSessionId: sessionId });
       return;
@@ -168,16 +173,19 @@ export default function useChat(props: ChatProps) {
 
     setSessionId(newLocalStorageSessionId);
     roomStore.set({ localStorageSessionId: newLocalStorageSessionId });
-    removeUnusedLocalStorageItems()
+    removeUnusedLocalStorageItems();
   }, []);
 
   function removeUnusedLocalStorageItems() {
-    if (!roomStore.id) return
+    if (!roomStore.id) return;
     for (const key in localStorage) {
       const maybeMatchedId = key?.match(
         new RegExp(`${CHAT_NAME_KEY}\\.(.*)$`)
       )?.[1];
-      if (key.startsWith(CHAT_NAME_KEY) && !maybeMatchedId?.startsWith(roomStore.id)) {
+      if (
+        key.startsWith(CHAT_NAME_KEY) &&
+        !maybeMatchedId?.startsWith(roomStore.id)
+      ) {
         localStorage.removeItem(key);
       }
     }

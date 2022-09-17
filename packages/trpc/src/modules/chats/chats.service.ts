@@ -8,13 +8,13 @@ import ModelsService from "../models/models.service";
 import EmitterInstance from "../../utils/Emitter";
 
 interface EmitterTypes {
-  SEND: Chat
+  SEND: Chat;
 }
 
 export const ChatsEmitter = EmitterInstance.for<EmitterTypes>("CHATS");
 
 class Chats {
-  constructor() { }
+  constructor() {}
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {
@@ -55,7 +55,7 @@ class Chats {
     message: string;
     id: string;
     userId?: string;
-    color: string
+    color: string;
   }) {
     const newChat = await ModelsService.client.chat.create({
       data: {
@@ -68,13 +68,13 @@ class Chats {
         },
         ...(data.userId
           ? {
-            color: data.color,
-            user: {
-              connect: {
-                id: data.userId,
+              color: data.color,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });

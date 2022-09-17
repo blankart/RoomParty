@@ -75,6 +75,7 @@ export default function Chat(props: ChatProps) {
           <a
             href={process.env.NEXT_PUBLIC_WEB_BASE_URL}
             target="_blank"
+            rel="noreferrer"
             className="font-bold link link-accent"
           >
             {process.env.NEXT_PUBLIC_WEB_BASE_URL}

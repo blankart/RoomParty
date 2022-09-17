@@ -16,12 +16,11 @@ export const DARK_THEME = "business";
 export default function DashboardLayout(props: DashboardLayoutProps) {
   const { user, isLoading, handleSignout } = useMe();
   const router = useRouter();
+  const { theme, setTheme } = useTheme();
 
   if (router.asPath.match(/\/rooms\/.*/)) {
     return <>{props.children}</>;
   }
-
-  const { theme, setTheme } = useTheme();
 
   return (
     <div className="flex flex-col w-full h-screen overflow-y-auto prose max-w-none">
