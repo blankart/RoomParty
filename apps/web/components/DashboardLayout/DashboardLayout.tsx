@@ -23,7 +23,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <div className="flex flex-col w-full h-screen overflow-y-auto prose max-w-none">
+    <div className="absolute inset-0 flex flex-col w-full overflow-y-auto prose max-w-none">
       <div className="p-4 navbar bg-base-100">
         <div className="navbar-start">
           {!!user && (
