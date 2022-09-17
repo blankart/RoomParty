@@ -62,7 +62,7 @@ export default function Room() {
   }
 
   return (
-    <div className="absolute inset-0 flex flex-col w-full h-screen prose lg:flex-row max-w-none">
+    <div className="absolute inset-0 flex flex-col prose lg:flex-row max-w-none">
       {!!id ? (
         <>
           <Suspense>
