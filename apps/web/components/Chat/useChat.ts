@@ -60,7 +60,7 @@ export default function useChat(props: ChatProps) {
 
   const chatsRef = useRef<HTMLDivElement>(null);
 
-  trpc.useQuery(["chats.chats", id!], {
+  const { isFetching } = trpc.useQuery(["chats.chats", id!], {
     enabled: !!id,
     onSuccess(chats) {
       set({ chats });
@@ -200,5 +200,7 @@ export default function useChat(props: ChatProps) {
     onToggleFavorites,
     isRoomFavorited,
     userName,
+    isLoading,
+    isFetching
   };
 }

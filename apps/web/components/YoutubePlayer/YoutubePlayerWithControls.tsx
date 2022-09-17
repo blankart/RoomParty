@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import React from "react";
+import React, { Suspense } from "react";
 import useYoutubePlayerWithControls from "./useYoutubePlayerWithControls";
 import YoutubePlayerSetup from "./YoutubePlayerSetup";
 
@@ -26,21 +26,23 @@ export default function YoutubePlayerWithControls(
   return (
     <div className="flex-1 w-full max-h-screen overflow-y-auto bg-base-100">
       <div className="relative w-full h-full bg-base-100">
-        <YoutubePlayerSetup />
-        <YoutubePlayer
-          onStart={ctx.onStart}
-          onPause={ctx.onPause}
-          onPlay={ctx.onPlay}
-          onSeek={ctx.onSeek}
-          progressInterval={YOUTUBE_PLAYER_PROGRESS_INTERVAL}
-          stopOnUnmount
-          controls
-          youtubePlayerRef={ctx.youtubePlayerRef}
-          width="100%"
-          height="100%"
-          url={ctx.url}
-          config={YOUTUBE_PLAYER_CONFIG}
-        />
+        <Suspense>
+          <YoutubePlayerSetup />
+          <YoutubePlayer
+            onStart={ctx.onStart}
+            onPause={ctx.onPause}
+            onPlay={ctx.onPlay}
+            onSeek={ctx.onSeek}
+            progressInterval={YOUTUBE_PLAYER_PROGRESS_INTERVAL}
+            stopOnUnmount
+            controls
+            youtubePlayerRef={ctx.youtubePlayerRef}
+            width="100%"
+            height="100%"
+            url={ctx.url}
+            config={YOUTUBE_PLAYER_CONFIG}
+          />
+        </Suspense>
       </div>
     </div>
   );

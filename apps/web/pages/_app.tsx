@@ -9,8 +9,8 @@ function App({ Component, pageProps }: any) {
     <>
       <AuthContextProvider>
         <ThemeProvider
-          forcedTheme={(Component as any).theme || "dark"}
-          attribute="class"
+          defaultTheme="system"
+          forcedTheme={(Component as any).forcedTheme || undefined}
         >
           <DashboardLayout>
             <Component {...pageProps} />

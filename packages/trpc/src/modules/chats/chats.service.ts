@@ -1,13 +1,20 @@
-import ModelsService from "../models/models.service";
-import { EventEmitter } from "events";
 import { Subscription } from "@trpc/server";
-import type { Chat } from "@rooms2watch/prisma-client";
 import { checkText } from "smile2emoji";
-import { CurrentUser } from "../../types/user";
 
-const chatsEventEmitter = new EventEmitter();
+import type { Chat } from "@rooms2watch/prisma-client";
+
+import type { CurrentUser } from "../../types/user";
+import ModelsService from "../models/models.service";
+import EmitterInstance from "../../utils/Emitter";
+
+interface EmitterTypes {
+  'SEND': Chat
+}
+
+export const ChatsEmitter = EmitterInstance.for<EmitterTypes>('CHATS')
+
 class Chats {
-  constructor() {}
+  constructor() { }
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {
@@ -28,11 +35,16 @@ class Chats {
           id,
         },
         select: {
-          chats: true,
+          chats: {
+            take: 20,
+            orderBy: {
+              createdAt: 'desc'
+            },
+          },
         },
       })
       .then((res) =>
-        (res?.chats ?? []).map((c) => ({ ...c, message: checkText(c.message) }))
+        (res?.chats ?? []).reverse().map(this.convertEmoticonsToEmojisInChatsObject)
       );
   }
 
@@ -53,20 +65,17 @@ class Chats {
         },
         ...(data.userId
           ? {
-              user: {
-                connect: {
-                  id: data.userId,
-                },
+            user: {
+              connect: {
+                id: data.userId,
               },
-            }
+            },
+          }
           : {}),
       },
     });
 
-    chatsEventEmitter.emit(
-      `${data.id}.send`,
-      this.convertEmoticonsToEmojisInChatsObject(newChat)
-    );
+    ChatsEmitter.channel('SEND').emit(data.id, this.convertEmoticonsToEmojisInChatsObject(newChat))
 
     return newChat;
   }
@@ -169,7 +178,7 @@ class Chats {
         emit.data(data);
       };
 
-      chatsEventEmitter.on(`${data.id}.send`, onAdd);
+      ChatsEmitter.channel('SEND').on(data.id, onAdd)
 
       Promise.all([
         ModelsService.client.chat
@@ -186,17 +195,14 @@ class Chats {
             },
           })
           .then((res) =>
-            chatsEventEmitter.emit(
-              `${data.id}.send`,
-              this.convertEmoticonsToEmojisInChatsObject(res)
-            )
+            ChatsEmitter.channel('SEND').emit(data.id, this.convertEmoticonsToEmojisInChatsObject(res))
           ),
 
         this.incrementOnlineCount(data.id, data.localStorageSessionId, user),
       ]);
 
       return () => {
-        chatsEventEmitter.off(`${data.id}.send`, onAdd);
+        ChatsEmitter.channel('SEND').off(data.id, onAdd)
 
         Promise.all([
           ModelsService.client.chat
@@ -213,10 +219,7 @@ class Chats {
               },
             })
             .then((res) =>
-              chatsEventEmitter.emit(
-                `${data.id}.send`,
-                this.convertEmoticonsToEmojisInChatsObject(res)
-              )
+              ChatsEmitter.channel('SEND').emit(data.id, this.convertEmoticonsToEmojisInChatsObject(res))
             ),
 
           this.decrementOnlineCount(data.id, data.localStorageSessionId, user),

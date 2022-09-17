@@ -1,5 +1,5 @@
 import { BsPlayCircleFill } from "react-icons/bs";
-import { FaYoutube } from "react-icons/fa";
+import { FaStar, FaYoutube } from "react-icons/fa";
 import { trpc } from "@web/api";
 import { useRouter } from "next/router";
 import { useRef } from "react";
@@ -14,6 +14,11 @@ export default function Index() {
     },
   });
 
+  const { refetchQueries } = trpc.useContext();
+
+  const { mutateAsync: toggleFavorite } = trpc.useMutation([
+    "favorited-rooms.toggle",
+  ]);
   const { user } = useMe();
 
   const createRoomInputRef = useRef<HTMLInputElement>(null);
@@ -28,6 +33,11 @@ export default function Index() {
       },
     }
   );
+
+  async function handleToggleFavorite(id: string) {
+    await toggleFavorite({ roomId: id });
+    refetchQueries(["favorited-rooms.findMyFavorites"]);
+  }
 
   function onCreateRoom() {
     if (!createRoomInputRef.current?.value) return;
@@ -57,8 +67,8 @@ export default function Index() {
           </div>
         </div>
       </div>
-      <div className="flex flex-col justify-center w-[100vw] gap-4 mt-10 md:mt-[150px] md:flex-row">
-        <div className="card w-[min(400px,100vw)] min-h-[200px] shadow-lg bg-base-100">
+      <div className="flex flex-col justify-center w-[100vw] gap-4 mt-10 md:mt-[150px] md:flex-row items-center">
+        <div className="card w-full md:w-[min(400px,100%)] min-h-[200px] shadow-lg bg-base-100 m-4">
           <div className="flex flex-col card-body">
             <h1 className="card-title">
               <BsPlayCircleFill className="inline mr-2" />
@@ -66,7 +76,7 @@ export default function Index() {
             </h1>
             <div className="flex flex-col justify-center flex-1 gap-3">
               <h3>
-                Create a room and watch <FaYoutube className="inline" />{" "}
+                Create a room and watch <FaYoutube className="inline mb-1" />{" "}
                 together with your friends!
               </h3>
               <div className="flex flex-col">
@@ -86,7 +96,7 @@ export default function Index() {
 
         <div className="divider md:divider-horizontal">OR</div>
 
-        <div className="card w-[min(400px,100vw)] min-h-[200px] shadow-lg bg-base-100">
+        <div className="card w-full md:w-[min(400px,100%)] min-h-[200px] shadow-lg bg-base-100 m-4">
           <div className="flex flex-col card-body">
             <h1 className="card-title">Join an existing room</h1>
             <div className="flex flex-col justify-center flex-1 gap-3">
@@ -122,11 +132,24 @@ export default function Index() {
                   )}
                 </div>
                 <div className="flex flex-col justify-center flex-1">
-                  <Link href={`/rooms/${favoritedRoom.id}`} passHref>
-                    <a className="text-xl no-underline link link-secondary">
-                      {favoritedRoom.name}&apos;s room
-                    </a>
-                  </Link>
+                  <div className="space-x-2">
+                    <Link href={`/rooms/${favoritedRoom.id}`} passHref>
+                      <a className="inline text-xl no-underline link link-secondary">
+                        {favoritedRoom.name}
+                      </a>
+                    </Link>
+                    <span className="inline rounded-full badge badge-success badge-sm">
+                      {favoritedRoom.videoPlatform}
+                    </span>
+                    <span className="tooltip" data-tip="Remove to Favorites">
+                      <button
+                        className="btn btn-sm btn-ghost btn-circle"
+                        onClick={() => handleToggleFavorite(favoritedRoom.id)}
+                      >
+                        <FaStar className="text-amber-500" />
+                      </button>
+                    </span>
+                  </div>
                   <p className="!m-0">{favoritedRoom.online} online users</p>
                 </div>
               </div>

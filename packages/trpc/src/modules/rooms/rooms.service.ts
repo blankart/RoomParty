@@ -2,13 +2,14 @@ import ChatsService from "../chats/chats.service";
 import ModelsService from "../models/models.service";
 import QueueService from "../queue/queue.service";
 import { CurrentUser } from "../../types/user";
+import { TRPCError } from "@trpc/server";
 
 enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",
 }
 
 class Rooms {
-  constructor() {}
+  constructor() { }
   private static instance?: Rooms;
   static getInstance() {
     if (!Rooms.instance) {
@@ -25,7 +26,12 @@ class Rooms {
           id,
         },
         include: {
-          chats: true,
+          chats: {
+            take: 20,
+            orderBy: {
+              createdAt: 'desc'
+            }
+          },
           owner: {
             select: {
               userId: true,
@@ -37,7 +43,7 @@ class Rooms {
         if (!res) return res;
         return {
           ...res,
-          chats: res.chats.map(
+          chats: res.chats.reverse().map(
             ChatsService.convertEmoticonsToEmojisInChatsObject
           ),
         };
@@ -97,6 +103,7 @@ class Rooms {
           name: true,
           playerStatus: true,
           onlineGuests: true,
+          videoPlatform: true,
           onlineUsers: {
             select: { id: true },
           },
@@ -112,6 +119,7 @@ class Rooms {
         res
           .map((r) => ({
             owner: r.owner?.userId,
+            videoPlatform: r.videoPlatform,
             id: r.id,
             name: r.name,
             online: r.onlineGuests.length + r.onlineUsers.length,
@@ -125,6 +133,18 @@ class Rooms {
             a.createdAt.getTime() < b.createdAt.getTime() ? 1 : -1
           )
       );
+  }
+
+  async deleteMyRoom(id: string, user: CurrentUser) {
+    const willDeleteRoom = await ModelsService.client.room.findFirst({
+      where: { id, owner: { id: user?.id } }
+    })
+
+    if (!willDeleteRoom) throw new TRPCError({ code: 'UNAUTHORIZED' })
+
+    return await ModelsService.client.room.delete({
+      where: { id }
+    })
   }
 }
 

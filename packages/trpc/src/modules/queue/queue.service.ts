@@ -3,13 +3,13 @@ import PgBoss from "pg-boss";
 type UnqueuedWork = {
   method: "send";
   params:
-    | [
-        string,
-        (...args: any[]) => any,
-        Record<string, any>,
-        Record<string, any>,
-        string
-      ];
+  | [
+    string,
+    (...args: any[]) => any,
+    Record<string, any>,
+    Record<string, any>,
+    string
+  ];
 };
 
 class Queue {
@@ -51,11 +51,12 @@ class Queue {
 
   queue<
     T extends Parameters<PgBoss["sendOnce"]>,
-    F extends (...args: any) => any
+    F extends (params: { data: any }) => any,
+    P extends Parameters<F>[0]['data']
   >(
     name: T[0],
     func: F,
-    data: Parameters<F>[0]["data"],
+    data: P,
     options: T[2],
     key: string
   ) {

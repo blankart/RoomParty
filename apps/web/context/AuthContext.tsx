@@ -1,7 +1,7 @@
 import React, { createContext, useContext } from "react";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import { setCookie, parseCookies, destroyCookie } from "nookies";
+import { parseCookies, destroyCookie } from "nookies";
+import { useRouter } from "next/router";
 
 import { trpc } from "@web/api";
 import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
@@ -36,6 +36,7 @@ export const AuthContext = createContext<AuthContextState>({
 export function AuthContextProvider(props: { children?: React.ReactNode }) {
   const [hasAccessToken, setHasAccessToken] = useState(false);
   const [hasUserInitialized, setHasUserInitialized] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     const accessTokenFromCookie = parseCookies(null)[ACCESS_TOKEN_KEY];
@@ -47,6 +48,15 @@ export function AuthContextProvider(props: { children?: React.ReactNode }) {
     setHasUserInitialized(true);
   }, []);
 
+  function removeAuthenticationCallback() {
+    destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });
+    setHasAccessToken(false);
+    context.setQueryData(["users.me"], () => null);
+    context.setQueryData(["rooms.findMyRoom"], () => []);
+    context.setQueryData(["favorited-rooms.findMyFavorites"], () => []);
+    context.setQueryData(["favorited-rooms.isRoomFavorited"], () => false);
+  }
+
   const {
     data: user,
     error,
@@ -56,18 +66,14 @@ export function AuthContextProvider(props: { children?: React.ReactNode }) {
   } = trpc.useQuery(["users.me"], {
     enabled: hasAccessToken && !!parseCookies(null)[ACCESS_TOKEN_KEY],
     onError() {
-      destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });
-      setHasAccessToken(false);
+      removeAuthenticationCallback();
     },
   });
 
   const context = trpc.useContext();
   function handleSignout() {
-    destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });
-    context.setQueryData(["users.me"], () => null);
-    context.setQueryData(["rooms.findMyRoom"], () => []);
-    context.setQueryData(["favorited-rooms.findMyFavorites"], () => []);
-    context.setQueryData(["favorited-rooms.isRoomFavorited"], () => false);
+    removeAuthenticationCallback();
+    router.reload();
   }
 
   return (

@@ -12,7 +12,7 @@ model Account {
   provider   String
   providerId String
   userId     String
-  user       User   @relation(fields: [userId], references: [id])
+  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   Room       Room[]
 }
 
@@ -31,9 +31,9 @@ model User {
 
 model FavoritedRoom {
   id     String @id @default(cuid())
-  room   Room   @relation(fields: [roomId], references: [id])
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId String
-  user   User   @relation(fields: [userId], references: [id])
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
 }
 
@@ -42,7 +42,7 @@ model Room {
   name          String
   createdAt     DateTime        @default(now())
   playerStatus  Json?
-  owner         Account?        @relation(fields: [accountId], references: [id])
+  owner         Account?        @relation(fields: [accountId], references: [id], onDelete: Cascade)
   thumbnailUrl  String?
   chats         Chat[]
   private       Boolean         @default(false)
@@ -64,7 +64,7 @@ model Chat {
   roomId          String
   isSystemMessage Boolean? @default(false)
   room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  user            User?    @relation(fields: [userId], references: [id])
+  user            User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId          String?
 }
 

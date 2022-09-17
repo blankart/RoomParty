@@ -1,18 +1,14 @@
 import type { PlayerStatus } from "@rooms2watch/trpc";
-import { createTRPCClient, trpc } from "@web/api";
+import { trpc } from "@web/api";
 import Chat from "@web/components/Chat/Chat";
 import YoutubePlayerWithControls from "@web/components/YoutubePlayer/YoutubePlayerWithControls";
 import { useRoomsStore } from "@web/store/rooms";
-import type {
-  GetServerSidePropsContext,
-  InferGetServerSidePropsType,
-} from "next";
 import { Suspense, useEffect } from "react";
 import shallow from "zustand/shallow";
-import type { User } from "@rooms2watch/prisma-client";
 import Error from "next/error";
 import { useMe } from "@web/context/AuthContext";
 import { useRouter } from "next/router";
+import { DARK_THEME } from "@web/components/DashboardLayout/DashboardLayout";
 
 export default function Room() {
   const { set, id } = useRoomsStore(
@@ -79,3 +75,5 @@ export default function Room() {
     </div>
   );
 }
+
+(Room as any).forcedTheme = DARK_THEME;

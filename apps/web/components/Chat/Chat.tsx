@@ -1,18 +1,16 @@
 import classNames from "classnames";
 import { IoMdExit } from "react-icons/io";
-import { FaStar } from "react-icons/fa";
+import { FaSpinner, FaStar } from "react-icons/fa";
 import Link from "next/link";
 import { AiOutlineCheckCircle } from "react-icons/ai";
 
 import Modal from "../Modal/Modal";
 import useChat from "./useChat";
-import { useMe } from "@web/context/AuthContext";
 
 export interface ChatProps {}
 
 export default function Chat(props: ChatProps) {
   const ctx = useChat(props);
-  const { isLoading, isIdle } = useMe();
 
   return (
     <>
@@ -51,7 +49,7 @@ export default function Chat(props: ChatProps) {
           <section className="w-full p-4 bg-primary-focus">
             <div className="flex items-center justify-between w-full">
               <h1 className="text-sm font-normal !m-0">
-                Welcome to <b>{ctx.name}</b>&apos;s room!
+                Welcome to <b>{ctx.name}</b>
               </h1>
               <div className="flex gap-2">
                 {ctx.showFavoriteButton && (
@@ -96,7 +94,12 @@ export default function Chat(props: ChatProps) {
               "blur-sm": !ctx.shouldEnableQueries,
             })}
           >
-            {!isLoading && ctx.userName && (
+            {(ctx.isLoading || ctx.isFetching) && ctx.userName && (
+              <div className="flex items-center justify-center h-full">
+                <FaSpinner className="w-10 h-auto animate-spin" />
+              </div>
+            )}
+            {!ctx.isLoading && ctx.userName && !ctx.isFetching && (
               <>
                 {ctx.chats?.map((chat) => (
                   <div

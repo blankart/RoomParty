@@ -1,16 +1,17 @@
-import { BsPlayCircleFill } from "react-icons/bs";
+import { BsMoon, BsPlayCircleFill, BsSun } from "react-icons/bs";
 import { FaGoogle, FaSpinner } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { destroyCookie } from "nookies";
 
-import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
-import { trpc } from "@web/api";
 import { useMe } from "@web/context/AuthContext";
+import { useTheme } from "next-themes";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;
 }
+
+export const LIGHT_THEME = "light";
+export const DARK_THEME = "business";
 
 export default function DashboardLayout(props: DashboardLayoutProps) {
   const { user, isLoading, handleSignout } = useMe();
@@ -19,6 +20,9 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
   if (router.asPath.match(/\/rooms\/.*/)) {
     return <>{props.children}</>;
   }
+
+  const { theme, setTheme } = useTheme();
+
   return (
     <div className="flex flex-col w-full h-screen overflow-y-auto prose max-w-none">
       <div className="p-4 navbar bg-base-100">
@@ -68,6 +72,19 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
           </Link>
         </div>
         <div className="navbar-end">
+          <label className="p-4 swap swap-rotate">
+            <input
+              type="checkbox"
+              className="hidden"
+              checked={theme === DARK_THEME}
+              onChange={() =>
+                setTheme(theme === DARK_THEME ? LIGHT_THEME : DARK_THEME)
+              }
+            />
+
+            <BsSun className="w-4 h-auto md:w-6 swap-on" />
+            <BsMoon className="w-4 h-auto md:w-6 swap-off" />
+          </label>
           {isLoading ? (
             <>
               <div className="avatar">

@@ -78,13 +78,15 @@ class FavoritedRooms {
                         thumbnailUrl: true,
                         onlineGuests: true,
                         onlineUsers: true,
-                        playerStatus: true
+                        playerStatus: true,
+                        videoPlatform: true
                     }
                 }
             }
         })).map(favoritedRoom => ({
             id: favoritedRoom.room.id,
             name: favoritedRoom.room.name,
+            videoPlatform: favoritedRoom.room.videoPlatform,
             thumbnailUrl: favoritedRoom.room.thumbnailUrl ?? (favoritedRoom as any).room.playerStatus?.thumbnailUrl,
             online: favoritedRoom.room.onlineGuests.length + favoritedRoom.room.onlineUsers.length,
         }))

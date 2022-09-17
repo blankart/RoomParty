@@ -31,14 +31,21 @@ export const roomsRouter = createRouter().query("findById", {
   },
 });
 
-export const roomsProtectedRouter = createProtectedRouter().query(
-  "findMyRoom",
-  {
-    async resolve({ ctx }) {
-      return RoomsService.findMyRoom(ctx.user.id);
-    },
-  }
-);
+export const roomsProtectedRouter = createProtectedRouter()
+  .query(
+    "findMyRoom",
+    {
+      async resolve({ ctx }) {
+        return RoomsService.findMyRoom(ctx.user.id);
+      },
+    }
+  )
+  .mutation('deleteMyRoom', {
+    input: zod.string(),
+    async resolve({ input, ctx }) {
+      return RoomsService.deleteMyRoom(input, ctx.user)
+    }
+  })
 
 export const roomsWithUserRouter = createRouterWithUser().mutation("create", {
   input: zod.object({
