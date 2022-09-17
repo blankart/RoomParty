@@ -19,20 +19,19 @@ export default function Room() {
     shallow
   );
   const router = useRouter();
-  const roomId = router.query.room as string;
-  const {
-    user,
-    isLoading: isUserLoading,
-    isIdle,
-    hasUserInitialized,
-  } = useMe();
+  const roomIdentificationId = router.query.roomIdentificationId as string;
+  const { user, isLoading: isUserLoading, hasUserInitialized } = useMe();
   const {
     data: room,
     isLoading,
     error,
-  } = trpc.useQuery(["rooms.findById", roomId!], {
-    enabled: !!roomId && router.isReady,
-  });
+    isIdle,
+  } = trpc.useQuery(
+    ["rooms.findByRoomIdentificationId", roomIdentificationId!],
+    {
+      enabled: !!roomIdentificationId && router.isReady,
+    }
+  );
 
   useEffect(() => {
     if (!room) return;
@@ -50,11 +49,11 @@ export default function Room() {
     });
   }, [room, user]);
 
-  if (isLoading || isUserLoading || !hasUserInitialized) {
+  if (isLoading || isUserLoading || !hasUserInitialized || isIdle) {
     return null;
   }
 
-  if (!roomId && !isLoading) {
+  if (!roomIdentificationId && !isLoading) {
     return <Error statusCode={404} />;
   }
 

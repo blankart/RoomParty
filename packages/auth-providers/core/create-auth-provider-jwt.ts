@@ -22,7 +22,10 @@ export default function createAuthProviderJwt(
       return function (req: Request, res: Response) {
         const user = req.user as JwtPayload;
         const token = jwt.sign(user, options.secret, options.jwtOptions);
-        return res.redirect(redirectUrl + `?${new URLSearchParams({ access_token: token }).toString()}`);
+        return res.redirect(
+          redirectUrl +
+            `?${new URLSearchParams({ access_token: token }).toString()}`
+        );
       };
     },
 

@@ -3,95 +3,108 @@ import { CurrentUser } from "../../types/user";
 import { TRPCError } from "@trpc/server";
 
 class FavoritedRooms {
-    constructor() { }
-    private static instance?: FavoritedRooms;
-    static getInstance() {
-        if (!FavoritedRooms.instance) {
-            FavoritedRooms.instance = new FavoritedRooms();
-        }
-        return FavoritedRooms.instance;
+  constructor() { }
+  private static instance?: FavoritedRooms;
+  static getInstance() {
+    if (!FavoritedRooms.instance) {
+      FavoritedRooms.instance = new FavoritedRooms();
+    }
+    return FavoritedRooms.instance;
+  }
+
+  async toggle(data: { roomId: string }, user: CurrentUser) {
+    const room = await ModelsService.client.room.findFirst({
+      where: { id: data.roomId },
+    });
+
+    if (!room)
+      throw new TRPCError({ code: "BAD_REQUEST", message: "No room found" });
+
+    if (room.accountId === user?.id) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "You are not allowed to toggle favorite your own room.",
+      });
     }
 
-    async toggle(data: { roomId: string }, user: CurrentUser) {
-        const room = await ModelsService.client.room.findFirst({ where: { id: data.roomId } })
+    let favoritedRoom;
+    try {
+      favoritedRoom = await ModelsService.client.favoritedRoom.findFirst({
+        where: {
+          roomId: data.roomId,
+          userId: user?.user.id,
+        },
+      });
+    } catch { }
 
-        if (!room) throw new TRPCError({ code: 'BAD_REQUEST', message: 'No room found' })
-
-        if (room.accountId === user?.id) {
-            throw new TRPCError({ code: 'BAD_REQUEST', message: 'You are not allowed to toggle favorite your own room.' })
-        }
-
-        let favoritedRoom
-        try {
-            favoritedRoom = await ModelsService.client.favoritedRoom.findFirst({
-                where: {
-                    roomId: data.roomId,
-                    userId: user?.user.id
-                }
-            })
-        } catch { }
-
-        if (!favoritedRoom) {
-            return await ModelsService.client.favoritedRoom.create({
-                data: {
-                    room: {
-                        connect: {
-                            id: data.roomId
-                        }
-                    },
-                    user: {
-                        connect: {
-                            id: user?.user.id
-                        }
-                    }
-                }
-            })
-        }
-
-        return await ModelsService.client.favoritedRoom.delete({
-            where: { id: favoritedRoom.id }
-        })
-    }
-
-    async isRoomFavorited(data: { roomId: string }, user: CurrentUser) {
-        const favoritedRoom = await ModelsService.client.favoritedRoom.findFirst({
-            where: {
-                roomId: data.roomId,
-                userId: user?.user.id
-            }
-        })
-
-        if (!!favoritedRoom) return true
-        return false
-    }
-
-    async findMyFavorites(user: CurrentUser) {
-        return (await ModelsService.client.favoritedRoom.findMany({
-            where: {
-                userId: user?.user.id
+    if (!favoritedRoom) {
+      return await ModelsService.client.favoritedRoom.create({
+        data: {
+          room: {
+            connect: {
+              id: data.roomId,
             },
-            include: {
-                room: {
-                    select: {
-                        id: true,
-                        name: true,
-                        thumbnailUrl: true,
-                        onlineGuests: true,
-                        onlineUsers: true,
-                        playerStatus: true,
-                        videoPlatform: true
-                    }
-                }
-            }
-        })).map(favoritedRoom => ({
-            id: favoritedRoom.room.id,
-            name: favoritedRoom.room.name,
-            videoPlatform: favoritedRoom.room.videoPlatform,
-            thumbnailUrl: favoritedRoom.room.thumbnailUrl ?? (favoritedRoom as any).room.playerStatus?.thumbnailUrl,
-            online: favoritedRoom.room.onlineGuests.length + favoritedRoom.room.onlineUsers.length,
-        }))
+          },
+          user: {
+            connect: {
+              id: user?.user.id,
+            },
+          },
+        },
+      });
     }
 
+    return await ModelsService.client.favoritedRoom.delete({
+      where: { id: favoritedRoom.id },
+    });
+  }
+
+  async isRoomFavorited(data: { roomId: string }, user: CurrentUser) {
+    const favoritedRoom = await ModelsService.client.favoritedRoom.findFirst({
+      where: {
+        roomId: data.roomId,
+        userId: user?.user.id,
+      },
+    });
+
+    if (!!favoritedRoom) return true;
+    return false;
+  }
+
+  async findMyFavorites(user: CurrentUser) {
+    return (
+      await ModelsService.client.favoritedRoom.findMany({
+        where: {
+          userId: user?.user.id,
+        },
+        include: {
+          room: {
+            select: {
+              id: true,
+              name: true,
+              thumbnailUrl: true,
+              onlineGuests: true,
+              onlineUsers: true,
+              playerStatus: true,
+              videoPlatform: true,
+              roomIdentificationId: true,
+            },
+          },
+        },
+      })
+    ).map((favoritedRoom) => ({
+      id: favoritedRoom.room.id,
+      name: favoritedRoom.room.name,
+      roomIdentificationId: favoritedRoom.room.roomIdentificationId,
+      videoPlatform: favoritedRoom.room.videoPlatform,
+      thumbnailUrl:
+        favoritedRoom.room.thumbnailUrl ??
+        (favoritedRoom as any).room.playerStatus?.thumbnailUrl,
+      online:
+        favoritedRoom.room.onlineGuests.length +
+        favoritedRoom.room.onlineUsers.length,
+    }));
+  }
 }
 
 const FavoritedRoomsService = FavoritedRooms.getInstance();

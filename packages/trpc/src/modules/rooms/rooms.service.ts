@@ -8,6 +8,9 @@ enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",
 }
 
+const IDENTIFICATION_ID_MAX_LENGTH = 8;
+const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
+
 class Rooms {
   constructor() { }
   private static instance?: Rooms;
@@ -19,18 +22,29 @@ class Rooms {
     return Rooms.instance;
   }
 
-  async findById(id: string) {
+  private roomIdentificationIdGenerator() {
+    let generatedId = "";
+
+    for (let i = 0; i < IDENTIFICATION_ID_MAX_LENGTH; i++) {
+      generatedId +=
+        allowedCharacters[Math.floor(Math.random() * allowedCharacters.length)];
+    }
+
+    return generatedId;
+  }
+
+  async findByRoomIdentificationId(id: string) {
     return await ModelsService.client.room
       .findFirst({
         where: {
-          id,
+          roomIdentificationId: id,
         },
         include: {
           chats: {
             take: 20,
             orderBy: {
-              createdAt: 'desc'
-            }
+              createdAt: "desc",
+            },
           },
           owner: {
             select: {
@@ -43,9 +57,40 @@ class Rooms {
         if (!res) return res;
         return {
           ...res,
-          chats: res.chats.reverse().map(
-            ChatsService.convertEmoticonsToEmojisInChatsObject
-          ),
+          chats: res.chats
+            .reverse()
+            .map(ChatsService.convertEmoticonsToEmojisInChatsObject),
+        };
+      });
+  }
+
+  async findById(id: string) {
+    return await ModelsService.client.room
+      .findFirst({
+        where: {
+          id,
+        },
+        include: {
+          chats: {
+            take: 20,
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+          owner: {
+            select: {
+              userId: true,
+            },
+          },
+        },
+      })
+      .then((res) => {
+        if (!res) return res;
+        return {
+          ...res,
+          chats: res.chats
+            .reverse()
+            .map(ChatsService.convertEmoticonsToEmojisInChatsObject),
         };
       });
   }
@@ -57,8 +102,19 @@ class Rooms {
   }
 
   async create(name: string, user: CurrentUser) {
+    let roomIdentificationId = this.roomIdentificationIdGenerator();
+
+    while (
+      (await ModelsService.client.room.count({
+        where: { roomIdentificationId },
+      })) > 0
+    ) {
+      roomIdentificationId = this.roomIdentificationIdGenerator();
+    }
+
     const room = await ModelsService.client.room.create({
       data: {
+        roomIdentificationId,
         name,
         chats: {
           create: {
@@ -113,6 +169,7 @@ class Rooms {
             },
           },
           createdAt: true,
+          roomIdentificationId: true,
         },
       })
       .then((res) =>
@@ -120,6 +177,7 @@ class Rooms {
           .map((r) => ({
             owner: r.owner?.userId,
             videoPlatform: r.videoPlatform,
+            roomIdentificationId: r.roomIdentificationId,
             id: r.id,
             name: r.name,
             online: r.onlineGuests.length + r.onlineUsers.length,
@@ -137,14 +195,14 @@ class Rooms {
 
   async deleteMyRoom(id: string, user: CurrentUser) {
     const willDeleteRoom = await ModelsService.client.room.findFirst({
-      where: { id, owner: { id: user?.id } }
-    })
+      where: { id, owner: { id: user?.id } },
+    });
 
-    if (!willDeleteRoom) throw new TRPCError({ code: 'UNAUTHORIZED' })
+    if (!willDeleteRoom) throw new TRPCError({ code: "UNAUTHORIZED" });
 
     return await ModelsService.client.room.delete({
-      where: { id }
-    })
+      where: { id },
+    });
   }
 }
 

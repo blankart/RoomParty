@@ -1,8 +1,9 @@
 import classNames from "classnames";
-import { IoMdExit } from "react-icons/io";
-import { FaSpinner, FaStar } from "react-icons/fa";
+import { FaCopy, FaSpinner, FaStar } from "react-icons/fa";
+import { FiShare } from "react-icons/fi";
 import Link from "next/link";
 import { AiOutlineCheckCircle } from "react-icons/ai";
+import { ImExit } from "react-icons/im";
 
 import Modal from "../Modal/Modal";
 import useChat from "./useChat";
@@ -17,8 +18,9 @@ export default function Chat(props: ChatProps) {
       <Modal
         onClose={() => {}}
         open={ctx.showPrompt}
-        containerClassName="w-[min(500px,90vw)]"
+        containerClassName="w-[min(400px,100%)]"
         bodyClassName="flex flex-col w-full gap-4"
+        title={`Welcome to ${ctx.name}'s room!`}
       >
         <p className="!m-0 py-4 text-sm">
           Let me know your name so we can let you in!
@@ -32,6 +34,59 @@ export default function Chat(props: ChatProps) {
         <button className="w-full btn btn-primary" onClick={ctx.onSetName}>
           Let me in!
         </button>
+      </Modal>
+
+      <Modal
+        onClose={ctx.onClickShareWithYourFriends}
+        open={ctx.showShareWithYourFriendsModal}
+        closeOnClickOutside
+        showCloseButton
+        containerClassName="w-[min(480px,100%)]"
+        bodyClassName="flex flex-col w-full gap-4 p-2"
+        title={`Share this room with your friends!`}
+      >
+        <p className="!m-0 py-4 text-sm">
+          Let me them know that you want to watch videos with them by copying
+          the link below:
+        </p>
+        <p className="!m-0 text-center italic text-md font-bold py-4 rounded-md ring-accent ring-1 relative break-all p-2">
+          {process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/
+          {ctx.router.query.roomIdentificationId}
+          <button
+            className="mx-2 btn btn-xs btn-circle btn-ghost"
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${ctx.router.query.roomIdentificationId}`
+              );
+            }}
+          >
+            <FaCopy />
+          </button>
+        </p>
+        <div className="divider divider-vertical">or</div>
+        <p className="!m-0 py-4 text-sm">
+          Enter this room ID after visiting{" "}
+          <a
+            href={process.env.NEXT_PUBLIC_WEB_BASE_URL}
+            target="_blank"
+            className="font-bold link link-accent"
+          >
+            {process.env.NEXT_PUBLIC_WEB_BASE_URL}
+          </a>
+        </p>
+        <p className="text-4xl font-bold text-center !m-0">
+          {ctx.router.query.roomIdentificationId}
+          <button
+            className="mx-3 mb-2 align-middle btn-sm btn btn-circle btn-ghost"
+            onClick={() => {
+              navigator.clipboard.writeText(
+                `${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${ctx.router.query.roomIdentificationId}`
+              );
+            }}
+          >
+            <FaCopy className="" />
+          </button>
+        </p>
       </Modal>
 
       <div
@@ -52,6 +107,17 @@ export default function Chat(props: ChatProps) {
                 Welcome to <b>{ctx.name}</b>
               </h1>
               <div className="flex gap-2">
+                <div
+                  className="tooltip tooltip-primary tooltip-left"
+                  data-tip={"Share with your frients"}
+                >
+                  <button
+                    className="btn btn-ghost btn-sm"
+                    onClick={ctx.onClickShareWithYourFriends}
+                  >
+                    <FiShare className="w-4 h-auto" />
+                  </button>
+                </div>
                 {ctx.showFavoriteButton && (
                   <div
                     className="tooltip tooltip-primary tooltip-left"
@@ -81,7 +147,7 @@ export default function Chat(props: ChatProps) {
                 >
                   <Link href="/" passHref>
                     <a className="btn btn-ghost btn-sm">
-                      <IoMdExit className="w-5 h-auto" />
+                      <ImExit className="w-5 h-auto" />
                     </a>
                   </Link>
                 </div>

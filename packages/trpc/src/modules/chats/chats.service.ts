@@ -8,13 +8,13 @@ import ModelsService from "../models/models.service";
 import EmitterInstance from "../../utils/Emitter";
 
 interface EmitterTypes {
-  'SEND': Chat
+  SEND: Chat;
 }
 
-export const ChatsEmitter = EmitterInstance.for<EmitterTypes>('CHATS')
+export const ChatsEmitter = EmitterInstance.for<EmitterTypes>("CHATS");
 
 class Chats {
-  constructor() { }
+  constructor() {}
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {
@@ -38,13 +38,15 @@ class Chats {
           chats: {
             take: 20,
             orderBy: {
-              createdAt: 'desc'
+              createdAt: "desc",
             },
           },
         },
       })
       .then((res) =>
-        (res?.chats ?? []).reverse().map(this.convertEmoticonsToEmojisInChatsObject)
+        (res?.chats ?? [])
+          .reverse()
+          .map(this.convertEmoticonsToEmojisInChatsObject)
       );
   }
 
@@ -65,17 +67,20 @@ class Chats {
         },
         ...(data.userId
           ? {
-            user: {
-              connect: {
-                id: data.userId,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });
 
-    ChatsEmitter.channel('SEND').emit(data.id, this.convertEmoticonsToEmojisInChatsObject(newChat))
+    ChatsEmitter.channel("SEND").emit(
+      data.id,
+      this.convertEmoticonsToEmojisInChatsObject(newChat)
+    );
 
     return newChat;
   }
@@ -178,7 +183,7 @@ class Chats {
         emit.data(data);
       };
 
-      ChatsEmitter.channel('SEND').on(data.id, onAdd)
+      ChatsEmitter.channel("SEND").on(data.id, onAdd);
 
       Promise.all([
         ModelsService.client.chat
@@ -195,14 +200,17 @@ class Chats {
             },
           })
           .then((res) =>
-            ChatsEmitter.channel('SEND').emit(data.id, this.convertEmoticonsToEmojisInChatsObject(res))
+            ChatsEmitter.channel("SEND").emit(
+              data.id,
+              this.convertEmoticonsToEmojisInChatsObject(res)
+            )
           ),
 
         this.incrementOnlineCount(data.id, data.localStorageSessionId, user),
       ]);
 
       return () => {
-        ChatsEmitter.channel('SEND').off(data.id, onAdd)
+        ChatsEmitter.channel("SEND").off(data.id, onAdd);
 
         Promise.all([
           ModelsService.client.chat
@@ -219,7 +227,10 @@ class Chats {
               },
             })
             .then((res) =>
-              ChatsEmitter.channel('SEND').emit(data.id, this.convertEmoticonsToEmojisInChatsObject(res))
+              ChatsEmitter.channel("SEND").emit(
+                data.id,
+                this.convertEmoticonsToEmojisInChatsObject(res)
+              )
             ),
 
           this.decrementOnlineCount(data.id, data.localStorageSessionId, user),

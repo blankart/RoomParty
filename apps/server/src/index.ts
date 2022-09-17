@@ -97,7 +97,7 @@ async function main() {
         clientID: process.env.GOOGLE_OAUTH_CLIENT_ID,
         clientSecret: process.env.GOOGLE_OAUTH_CLIENT_SECRET,
         serverUrl: process.env.SERVER_URL,
-        webCallbackUrl: process.env.WEB_BASE_URL + '/api/oauth/callback',
+        webCallbackUrl: process.env.WEB_BASE_URL + "/api/oauth/callback",
         passReqToCallback: true,
         state: false,
         skipUserProfile: false,
@@ -108,12 +108,15 @@ async function main() {
     );
   } else {
     const missingCredentials = [
-      process.env.GOOGLE_OAUTH_CLIENT_ID && 'GOOGLE_OAUTH_CLIENT_ID',
-      process.env.GOOGLE_OAUTH_CLIENT_SECRET && 'GOOGLE_OAUTH_CLIENT_SECRET',
-      process.env.SERVER_URL && 'SERVER_URL',
-      process.env.WEB_BASE_URL && 'WEB_BASE_URL',
-    ].filter(mc => !!mc)
-    console.error('[SERVER] Failed to call `initializeGoogleOAuth20Provider`. Missing the following credentials: ', missingCredentials.join(','))
+      process.env.GOOGLE_OAUTH_CLIENT_ID && "GOOGLE_OAUTH_CLIENT_ID",
+      process.env.GOOGLE_OAUTH_CLIENT_SECRET && "GOOGLE_OAUTH_CLIENT_SECRET",
+      process.env.SERVER_URL && "SERVER_URL",
+      process.env.WEB_BASE_URL && "WEB_BASE_URL",
+    ].filter((mc) => !!mc);
+    console.error(
+      "[SERVER] Failed to call `initializeGoogleOAuth20Provider`. Missing the following credentials: ",
+      missingCredentials.join(",")
+    );
   }
 
   wss.on("connection", (ws) => {

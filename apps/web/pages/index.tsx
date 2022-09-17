@@ -10,7 +10,7 @@ export default function Index() {
   const router = useRouter();
   const { mutate: createRoom } = trpc.useMutation(["rooms.create"], {
     onSuccess(data) {
-      router.push("/rooms/[room]", `/rooms/${data.id}`);
+      router.push("/rooms/[room]", `/rooms/${data.roomIdentificationId}`);
     },
   });
 
@@ -25,11 +25,12 @@ export default function Index() {
   const joinRoomInputRef = useRef<HTMLInputElement>(null);
 
   const { refetch } = trpc.useQuery(
-    ["rooms.findById", joinRoomInputRef.current?.value!],
+    ["rooms.findByRoomIdentificationId", joinRoomInputRef.current?.value!],
     {
       enabled: !!joinRoomInputRef.current?.value,
       onSuccess(data) {
-        router.push("/rooms/[room]", `/rooms/${data.id}`);
+        if (!data) return;
+        router.push("/rooms/[room]", `/rooms/${data.roomIdentificationId}`);
       },
     }
   );
@@ -133,7 +134,10 @@ export default function Index() {
                 </div>
                 <div className="flex flex-col justify-center flex-1">
                   <div className="space-x-2">
-                    <Link href={`/rooms/${favoritedRoom.id}`} passHref>
+                    <Link
+                      href={`/rooms/${favoritedRoom.roomIdentificationId}`}
+                      passHref
+                    >
                       <a className="inline text-xl no-underline link link-secondary">
                         {favoritedRoom.name}
                       </a>

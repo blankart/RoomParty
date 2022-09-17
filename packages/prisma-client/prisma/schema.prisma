@@ -38,22 +38,23 @@ model FavoritedRoom {
 }
 
 model Room {
-  id            String          @id @default(cuid())
-  name          String
-  createdAt     DateTime        @default(now())
-  playerStatus  Json?
-  owner         Account?        @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  thumbnailUrl  String?
-  chats         Chat[]
-  private       Boolean         @default(false)
-  password      String?
-  videoPlatform VideoPlatform   @default(Youtube)
-  description   String?
-  onlineGuests  Int[]           @default([])
-  onlineUsers   User[]
-  accountId     String?
-  draft         Boolean         @default(true)
-  FavoritedRoom FavoritedRoom[]
+  id                   String          @id @default(cuid())
+  roomIdentificationId String          @unique
+  name                 String
+  createdAt            DateTime        @default(now())
+  playerStatus         Json?
+  owner                Account?        @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  thumbnailUrl         String?
+  chats                Chat[]
+  private              Boolean         @default(false)
+  password             String?
+  videoPlatform        VideoPlatform   @default(Youtube)
+  description          String?
+  onlineGuests         Int[]           @default([])
+  onlineUsers          User[]
+  accountId            String?
+  draft                Boolean         @default(true)
+  FavoritedRoom        FavoritedRoom[]
 }
 
 model Chat {

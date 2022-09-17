@@ -53,6 +53,9 @@ export const router = createRouter()
   .merge(routeNameForMerge(USERS_ROUTER_NAME), usersRouter)
   .merge(routeNameForMerge(USERS_ROUTER_NAME), usersProtectedRouter)
 
-  .merge(routeNameForMerge(FAVORITED_ROOMS_ROUTER_NAME), favoritedRoomsProtectedRouter)
+  .merge(
+    routeNameForMerge(FAVORITED_ROOMS_ROUTER_NAME),
+    favoritedRoomsProtectedRouter
+  );
 
 export type AppRouter = typeof router;

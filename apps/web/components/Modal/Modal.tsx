@@ -41,7 +41,7 @@ export default function Modal(props: ModalProps) {
           <div className={classNames("modal-box", props.containerClassName)}>
             {props.showCloseButton && (
               <button
-                className="absolute top-2 right-2 md:top-4 md:right-4 btn btn-circle btn-ghost"
+                className="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost"
                 onClick={props.onClose}
               >
                 <IoMdCloseCircle className="w-5 h-auto" />

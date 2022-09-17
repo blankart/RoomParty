@@ -6,16 +6,16 @@ import ChatsService, { ChatsEmitter } from "../chats/chats.service";
 import QueueService from "../queue/queue.service";
 
 interface EmitterTypes {
-  CONTROL: PlayerStatus
+  CONTROL: PlayerStatus;
 }
 
 enum PLAYER_SERVICE_QUEUE {
   NOTIFY_CONTROL_TO_CHAT = "NOTIFY_CONTROL_TO_CHAT",
 }
 
-export const PlayerEmitter = EmitterInstance.for<EmitterTypes>('PLAYER')
+export const PlayerEmitter = EmitterInstance.for<EmitterTypes>("PLAYER");
 class Player {
-  constructor() { }
+  constructor() {}
   private static instance?: Player;
   static getInstance() {
     if (!Player.instance) {
@@ -31,57 +31,71 @@ class Player {
         emit.data(data);
       };
 
-      PlayerEmitter.channel('CONTROL').on(data.id, onAdd)
+      PlayerEmitter.channel("CONTROL").on(data.id, onAdd);
 
       return () => {
-        PlayerEmitter.channel('CONTROL').off(data.id, onAdd)
+        PlayerEmitter.channel("CONTROL").off(data.id, onAdd);
       };
     });
   }
 
-  private async createChatAfterControl(params: { data: { id: string; statusObject: PlayerStatus } }) {
-    let message
+  private async createChatAfterControl(params: {
+    data: { id: string; statusObject: PlayerStatus };
+  }) {
+    let message;
 
     switch (params.data.statusObject.type) {
-      case 'PAUSED':
-      case 'PLAYED':
-        message = `${params.data.statusObject.name} ${params.data.statusObject.type === 'PAUSED' ? 'paused' : 'played'} the video.`
+      case "PAUSED":
+      case "PLAYED":
+        message = `${params.data.statusObject.name} ${
+          params.data.statusObject.type === "PAUSED" ? "paused" : "played"
+        } the video.`;
         break;
-      case 'CHANGE_URL':
-        message = `${params.data.statusObject.name} changed the video (${params.data.statusObject.url})`
-        break
-      default: break
+      case "CHANGE_URL":
+        message = `${params.data.statusObject.name} changed the video (${params.data.statusObject.url})`;
+        break;
+      default:
+        break;
     }
 
-    if (!message) return
-    await ModelsService.client.chat.create({
-      data: {
-        room: {
-          connect: {
-            id: params.data.id
+    if (!message) return;
+    await ModelsService.client.chat
+      .create({
+        data: {
+          room: {
+            connect: {
+              id: params.data.id,
+            },
           },
+          name: "Player Status",
+          isSystemMessage: true,
+          message,
         },
-        name: 'Player Status',
-        isSystemMessage: true,
-        message
-      }
-    }).then(res => ChatsEmitter.channel('SEND').emit(params.data.id, ChatsService.convertEmoticonsToEmojisInChatsObject(res)))
+      })
+      .then((res) =>
+        ChatsEmitter.channel("SEND").emit(
+          params.data.id,
+          ChatsService.convertEmoticonsToEmojisInChatsObject(res)
+        )
+      );
   }
 
   async control(data: { id: string; statusObject: PlayerStatus }) {
-    PlayerEmitter.channel('CONTROL').emit(data.id, data.statusObject)
+    PlayerEmitter.channel("CONTROL").emit(data.id, data.statusObject);
     await ModelsService.client.room.update({
       where: {
         id: data.id,
       },
       data: {
-        ...(data.statusObject?.thumbnail ? { thumbnailUrl: data.statusObject?.thumbnail } : {}),
+        ...(data.statusObject?.thumbnail
+          ? { thumbnailUrl: data.statusObject?.thumbnail }
+          : {}),
         playerStatus: data.statusObject,
       },
     });
 
-    const startAfter = new Date()
-    startAfter.setTime(startAfter.getTime() + 1_000)
+    const startAfter = new Date();
+    startAfter.setTime(startAfter.getTime() + 1_000);
 
     QueueService.queue(
       PLAYER_SERVICE_QUEUE.NOTIFY_CONTROL_TO_CHAT,
@@ -89,7 +103,7 @@ class Player {
       { id: data.id, statusObject: data.statusObject },
       { startAfter },
       data.id
-    )
+    );
   }
 }
 

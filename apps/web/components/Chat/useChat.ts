@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
 
 import {
@@ -100,11 +100,11 @@ export default function useChat(props: ChatProps) {
   const { user, isLoading, isIdle } = useMe();
 
   useEffect(() => {
-    if (isLoading && isIdle) return
+    if (isLoading && isIdle) return;
     if (userName || user) {
       set({ showPrompt: false });
-      return
-    };
+      return;
+    }
     if (!id) return;
     const storedName =
       (id && localStorage.getItem(getLocalStorageKeyName(id))) ?? "";
@@ -126,7 +126,6 @@ export default function useChat(props: ChatProps) {
     }
   }, [id, userName, isLoading, user, isIdle]);
 
-
   const shouldEnableQueries = !!id && !!userName && !!localStorageSessionId;
   trpc.useSubscription(
     [
@@ -146,7 +145,7 @@ export default function useChat(props: ChatProps) {
   );
 
   const { mutate: send } = trpc.useMutation(["chats.send"]);
-  const trpcContext = trpc.useContext()
+  const trpcContext = trpc.useContext();
 
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
@@ -166,20 +165,36 @@ export default function useChat(props: ChatProps) {
   function onSetName() {
     if (!nameInputRef.current?.value) return;
     setName(nameInputRef.current?.value);
+    setShowShareWithYourFriendsModal(true)
   }
 
-  const { mutateAsync: toggle } = trpc.useMutation(['favorited-rooms.toggle'])
-  const { data: isRoomFavorited } = trpc.useQuery(['favorited-rooms.isRoomFavorited', {
-    roomId: id!
-  }], {
-    enabled: !!user && !!id
-  })
-  const showFavoriteButton = !!id && !!user && !!owner && user.user.id !== owner
-
+  const { mutateAsync: toggle } = trpc.useMutation(["favorited-rooms.toggle"]);
+  const { data: isRoomFavorited } = trpc.useQuery(
+    [
+      "favorited-rooms.isRoomFavorited",
+      {
+        roomId: id!,
+      },
+    ],
+    {
+      enabled: !!user && !!id,
+    }
+  );
+  const showFavoriteButton =
+    !!id && !!user && !!owner && user.user.id !== owner;
 
   async function onToggleFavorites() {
-    !!id && await toggle({ roomId: id })
-    trpcContext.invalidateQueries(['favorited-rooms.isRoomFavorited', { roomId: id! }])
+    !!id && (await toggle({ roomId: id }));
+    trpcContext.invalidateQueries([
+      "favorited-rooms.isRoomFavorited",
+      { roomId: id! },
+    ]);
+  }
+
+  const [showShareWithYourFriendsModal, setShowShareWithYourFriendsModal] = useState(false)
+
+  function onClickShareWithYourFriends() {
+    setShowShareWithYourFriendsModal(!showShareWithYourFriendsModal)
   }
 
   return {
@@ -201,6 +216,9 @@ export default function useChat(props: ChatProps) {
     isRoomFavorited,
     userName,
     isLoading,
-    isFetching
+    isFetching,
+    router,
+    onClickShareWithYourFriends,
+    showShareWithYourFriendsModal
   };
 }

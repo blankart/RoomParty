@@ -127,7 +127,10 @@ export default function Rooms() {
                   </figure>
                   <div className="card-body">
                     <div className="space-x-2">
-                      <Link href={`/rooms/${room.id}`} passHref>
+                      <Link
+                        href={`/rooms/${room.roomIdentificationId}`}
+                        passHref
+                      >
                         <a className="inline card-title !m-0">{room.name}</a>
                       </Link>
                       <span className="inline rounded-full badge badge-success badge-sm">

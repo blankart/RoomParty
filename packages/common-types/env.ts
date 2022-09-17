@@ -25,5 +25,5 @@ export interface CustomProcessEnv {
   SERVER_SESSION_SECRET?: string;
   SERVER_JWT_SECRET?: string;
 
-  NODE_TLS_REJECT_UNAUTHORIZED?: string
+  NODE_TLS_REJECT_UNAUTHORIZED?: string;
 }
