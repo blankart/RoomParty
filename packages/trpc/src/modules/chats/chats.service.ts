@@ -1,6 +1,5 @@
 import { Subscription } from "@trpc/server";
 import { checkText } from "smile2emoji";
-import randomColor from "randomcolor";
 
 import type { Chat } from "@rooms2watch/prisma-client";
 
