@@ -32,10 +32,13 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
         )}
       >
         <FaSpinner
-          className={classNames("!w-20 h-auto animate-spin duration-100", {
-            "opacity-0 pointer-events-none":
-              !ctx.showVideoSearch || !ctx.isLoading,
-          })}
+          className={classNames(
+            "w-8 md:w-20 h-auto animate-spin duration-100",
+            {
+              "opacity-0 pointer-events-none":
+                !ctx.showVideoSearch || !ctx.isLoading,
+            }
+          )}
         />
         <span
           className={classNames(
@@ -53,17 +56,17 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
           }
         )}
       >
-        <div className="w-full">
+        <div className="flex items-center w-full mb-10 md:block">
           <AiFillYoutube className="inline-block w-10 h-auto my-2 mr-2" />
           <input
             value={ctx.q}
             onChange={(e) => ctx.setQ(e.target.value)}
-            className="input input-primary input-sm w-[min(600px,100%)] p-2 mb-10 text-lg mx-auto"
+            className="input input-primary input-sm w-[min(600px,100%)] p-2 text-lg mx-auto"
           />
         </div>
 
         <button
-          className="absolute btn btn-ghost top-10 right-10"
+          className="fixed md:absolute btn btn-ghost btn-sm top-2 right-2 btn-circle"
           onClick={() => ctx.setShowVideoSearch(false)}
         >
           <AiFillCloseCircle className="w-6 h-auto" />
@@ -82,12 +85,12 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
                     imgSrc={result.thumbnailSrc}
                     alt={result.title}
                   >
-                    <h2 className="text-[1rem] text-start !m-0 line-clamp-2">
+                    <h2 className="text-sm md:text-[1rem] text-start !m-0 line-clamp-2">
                       {result.title}
                     </h2>
-                    <div className="flex justify-between w-full">
-                      <p className="!m-0 text-sm">{result.uploadedAt}</p>
-                      <p className="!m-0 text-sm">{result.views} views</p>
+                    <div className="flex justify-between w-full text-xs md:text-sm">
+                      <p className="!m-0">{result.uploadedAt}</p>
+                      <p className="!m-0">{result.views} views</p>
                     </div>
                   </ClickableCard>
                 ))}

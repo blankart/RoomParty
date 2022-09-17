@@ -23,7 +23,7 @@ export default function ClickableCard(props: ClickableCardProps) {
         <img
           src={props.imgSrc}
           alt={props.alt}
-          className="!m-0 aspect-video max-h-[150px] object-cover !w-full"
+          className="!m-0 aspect-video max-h-[100px] md:max-h-[150px] object-cover !w-full"
         />
       ) : (
         <div className="!m-0 aspect-video max-h-[150px] bg-primary object-cover !w-full" />

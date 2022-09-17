@@ -172,12 +172,12 @@ export default function Chat(props: ChatProps) {
                   >
                     {chat.isSystemMessage ? (
                       <>
-                        <span className="block py-2 text-sm italic text-center opacity-50">
+                        <span className="block py-2 text-xs italic text-center opacity-50 md:text-sm">
                           {chat.message}
                         </span>
                       </>
                     ) : (
-                      <div>
+                      <div className="text-xs md:text-sm">
                         <b style={chat.color ? { color: chat.color } : {}}>
                           {chat.name}
                           {chat.userId === ctx.owner && (
