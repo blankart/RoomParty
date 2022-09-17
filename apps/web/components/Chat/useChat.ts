@@ -112,13 +112,16 @@ export default function useChat(props: ChatProps) {
 
   function onSend() {
     if (!inputRef.current?.value?.trim() || !roomStore.id) return;
+    let color = userNameChatColorFromLocalStorage
+    if (!color) color = randomColor()
     send({
       name: roomStore.userName,
       message: inputRef.current.value,
       id: roomStore.id,
       userId: user?.user?.id,
-      color: userNameChatColorFromLocalStorage
+      color,
     });
+    setUserNameChatColorFromLocalStorage(color)
     inputRef.current.value = "";
     inputRef.current.focus();
   }
