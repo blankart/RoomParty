@@ -3,7 +3,7 @@ import { CurrentUser } from "../../types/user";
 import { TRPCError } from "@trpc/server";
 
 class FavoritedRooms {
-  constructor() { }
+  constructor() {}
   private static instance?: FavoritedRooms;
   static getInstance() {
     if (!FavoritedRooms.instance) {
@@ -35,7 +35,7 @@ class FavoritedRooms {
           userId: user?.user.id,
         },
       });
-    } catch { }
+    } catch {}
 
     if (!favoritedRoom) {
       return await ModelsService.client.favoritedRoom.create({

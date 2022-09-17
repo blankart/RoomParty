@@ -22,39 +22,39 @@ model User {
   firstName     String?
   lastName      String?
   picture       String?
-  accounts      Account[]
   roomId        String?
   Room          Room?           @relation(fields: [roomId], references: [id])
+  accounts      Account[]
   Chat          Chat[]
   FavoritedRoom FavoritedRoom[]
 }
 
 model FavoritedRoom {
   id     String @id @default(cuid())
-  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId String
-  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId String
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Room {
   id                   String          @id @default(cuid())
-  roomIdentificationId String          @unique
   name                 String
   createdAt            DateTime        @default(now())
   playerStatus         Json?
-  owner                Account?        @relation(fields: [accountId], references: [id], onDelete: Cascade)
-  thumbnailUrl         String?
-  chats                Chat[]
-  private              Boolean         @default(false)
-  password             String?
-  videoPlatform        VideoPlatform   @default(Youtube)
-  description          String?
-  onlineGuests         Int[]           @default([])
-  onlineUsers          User[]
   accountId            String?
+  thumbnailUrl         String?
+  onlineGuests         Int[]           @default([])
+  description          String?
+  password             String?
+  private              Boolean         @default(false)
+  videoPlatform        VideoPlatform   @default(Youtube)
   draft                Boolean         @default(true)
+  roomIdentificationId String
+  owner                Account?        @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  chats                Chat[]
   FavoritedRoom        FavoritedRoom[]
+  onlineUsers          User[]
 }
 
 model Chat {
@@ -64,9 +64,10 @@ model Chat {
   createdAt       DateTime @default(now())
   roomId          String
   isSystemMessage Boolean? @default(false)
+  userId          String?
   room            Room     @relation(fields: [roomId], references: [id], onDelete: Cascade)
   user            User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId          String?
+  color           String?
 }
 
 enum VideoPlatform {

@@ -9,26 +9,18 @@ import {
 
 import { useRoomsStore } from "@web/store/rooms";
 import { trpc } from "@web/api";
-import { ChatProps } from "./Chat";
 import { useMe } from "@web/context/AuthContext";
+import useLocalStorage from "@web/hooks/useLocalStorage";
+
+import { ChatProps } from "./Chat";
+import randomColor from "randomcolor";
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
+const getLocalStorageColorName = (id: string) => `${getLocalStorageKeyName(id)}.chat-color`;
 
 export default function useChat(props: ChatProps) {
   const router = useRouter();
-  const {
-    collapsed,
-    id,
-    set,
-    userName,
-    addChat,
-    chatsLength,
-    showPrompt,
-    name,
-    chats,
-    owner,
-    localStorageSessionId,
-  } = useRoomsStore(
+  const roomStore = useRoomsStore(
     (s) => ({
       owner: s.owner,
       collapsed: s.collapsed,
@@ -44,6 +36,67 @@ export default function useChat(props: ChatProps) {
     }),
     shallow
   );
+  const { user, isLoading, isIdle } = useMe();
+  const shouldEnableQueries =
+    !!roomStore.id && !!roomStore.userName && !!roomStore.localStorageSessionId;
+
+  const chatsRef = useRef<HTMLDivElement>(null);
+  const inputRef = useRef<HTMLTextAreaElement>(null);
+  const nameInputRef = useRef<HTMLInputElement>(null);
+
+  const [showShareWithYourFriendsModal, setShowShareWithYourFriendsModal] =
+    useState(false);
+  const [sessionId, setSessionId] = useLocalStorage<undefined | number>(
+    CHAT_LOCAL_STORAGE_SESSION_KEY
+  );
+  const [userNameFromLocalStorage, setUserNameFromLocalStorage] =
+    useLocalStorage<string | undefined>(
+      getLocalStorageKeyName(roomStore?.id ?? "")
+    );
+  const [userNameChatColorFromLocalStorage, setUserNameChatColorFromLocalStorage] = useLocalStorage<string>(getLocalStorageColorName(roomStore?.id ?? ''))
+
+  useEffect(() => {
+    !userNameChatColorFromLocalStorage && setUserNameChatColorFromLocalStorage(randomColor())
+  }, [])
+
+  const { isFetching } = trpc.useQuery(["chats.chats", roomStore.id!], {
+    enabled: !!roomStore.id,
+    onSuccess(chats) {
+      roomStore.set({ chats });
+    },
+  });
+
+  trpc.useSubscription(
+    [
+      "chats.chatSubscription",
+      {
+        id: roomStore.id!,
+        name: roomStore.userName,
+        localStorageSessionId: roomStore.localStorageSessionId!,
+      },
+    ],
+    {
+      enabled: shouldEnableQueries,
+      onNext: (data) => {
+        roomStore.addChat(data);
+      },
+    }
+  );
+
+  const { mutateAsync: send } = trpc.useMutation(["chats.send"]);
+  const trpcContext = trpc.useContext();
+  const { mutateAsync: toggle } = trpc.useMutation(["favorited-rooms.toggle"]);
+  const { data: isRoomFavorited } = trpc.useQuery(
+    [
+      "favorited-rooms.isRoomFavorited",
+      {
+        roomId: roomStore.id!,
+      },
+    ],
+    {
+      enabled: !!user && !!roomStore.id,
+    }
+  );
 
   function scrollChatsToBottom() {
     chatsRef.current?.scrollTo({
@@ -51,112 +104,20 @@ export default function useChat(props: ChatProps) {
       top: Number.MAX_SAFE_INTEGER,
     });
   }
-  useEffect(() => {
-    scrollChatsToBottom();
-    if (inputRef.current && !inputRef.current?.value?.trim()) {
-      inputRef.current.value = "";
-    }
-  }, [chatsLength()]);
-
-  const chatsRef = useRef<HTMLDivElement>(null);
-
-  const { isFetching } = trpc.useQuery(["chats.chats", id!], {
-    enabled: !!id,
-    onSuccess(chats) {
-      set({ chats });
-    },
-  });
-
-  useEffect(() => {
-    const newId = id ?? (router.query?.id as string | undefined);
-    if (newId !== id) set({ id });
-  }, [id, router.query?.id]);
 
   function setName(newName: string) {
-    set({ userName: newName, showPrompt: false });
-    id && localStorage.setItem(getLocalStorageKeyName(id), newName);
+    roomStore.set({ userName: newName, showPrompt: false });
+    roomStore.id && setUserNameFromLocalStorage(newName);
   }
 
-  useEffect(() => {
-    if (localStorageSessionId) return;
-
-    const sessionId = localStorage.getItem(CHAT_LOCAL_STORAGE_SESSION_KEY);
-    if (!sessionId) {
-      const newLocalStorageSessionId = Math.floor(
-        (Math.random() * 1_000_000) % 1_000_0
-      );
-      localStorage.setItem(
-        CHAT_LOCAL_STORAGE_SESSION_KEY,
-        String(newLocalStorageSessionId)
-      );
-
-      set({ localStorageSessionId: newLocalStorageSessionId });
-      return;
-    }
-
-    set({ localStorageSessionId: Number(sessionId) });
-  }, []);
-
-  const { user, isLoading, isIdle } = useMe();
-
-  useEffect(() => {
-    if (isLoading && isIdle) return;
-    if (userName || user) {
-      set({ showPrompt: false });
-      return;
-    }
-    if (!id) return;
-    const storedName =
-      (id && localStorage.getItem(getLocalStorageKeyName(id))) ?? "";
-    if (!storedName) {
-      set({ showPrompt: true });
-      return;
-    } else {
-      set({ userName: storedName });
-    }
-
-    if (!id) return;
-    for (const key in localStorage) {
-      const maybeMatchedId = key?.match(
-        new RegExp(`${CHAT_NAME_KEY}\\.(.*)$`)
-      )?.[1];
-      if (key.startsWith(CHAT_NAME_KEY) && maybeMatchedId !== id) {
-        localStorage.removeItem(key);
-      }
-    }
-  }, [id, userName, isLoading, user, isIdle]);
-
-  const shouldEnableQueries = !!id && !!userName && !!localStorageSessionId;
-  trpc.useSubscription(
-    [
-      "chats.chatSubscription",
-      {
-        id: id!,
-        name: userName,
-        localStorageSessionId: localStorageSessionId!,
-      },
-    ],
-    {
-      enabled: shouldEnableQueries,
-      onNext: (data) => {
-        addChat(data);
-      },
-    }
-  );
-
-  const { mutate: send } = trpc.useMutation(["chats.send"]);
-  const trpcContext = trpc.useContext();
-
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const nameInputRef = useRef<HTMLInputElement>(null);
-
   function onSend() {
-    if (!inputRef.current?.value?.trim() || !id) return;
+    if (!inputRef.current?.value?.trim() || !roomStore.id) return;
     send({
-      name: userName,
+      name: roomStore.userName,
       message: inputRef.current.value,
-      id,
+      id: roomStore.id,
       userId: user?.user?.id,
+      color: userNameChatColorFromLocalStorage
     });
     inputRef.current.value = "";
     inputRef.current.focus();
@@ -165,60 +126,99 @@ export default function useChat(props: ChatProps) {
   function onSetName() {
     if (!nameInputRef.current?.value) return;
     setName(nameInputRef.current?.value);
-    setShowShareWithYourFriendsModal(true)
+    setShowShareWithYourFriendsModal(true);
   }
 
-  const { mutateAsync: toggle } = trpc.useMutation(["favorited-rooms.toggle"]);
-  const { data: isRoomFavorited } = trpc.useQuery(
-    [
-      "favorited-rooms.isRoomFavorited",
-      {
-        roomId: id!,
-      },
-    ],
-    {
-      enabled: !!user && !!id,
-    }
-  );
-  const showFavoriteButton =
-    !!id && !!user && !!owner && user.user.id !== owner;
-
   async function onToggleFavorites() {
-    !!id && (await toggle({ roomId: id }));
+    !!roomStore.id && (await toggle({ roomId: roomStore.id }));
     trpcContext.invalidateQueries([
       "favorited-rooms.isRoomFavorited",
-      { roomId: id! },
+      { roomId: roomStore.id! },
     ]);
   }
 
-  const [showShareWithYourFriendsModal, setShowShareWithYourFriendsModal] = useState(false)
-
   function onClickShareWithYourFriends() {
-    setShowShareWithYourFriendsModal(!showShareWithYourFriendsModal)
+    setShowShareWithYourFriendsModal(!showShareWithYourFriendsModal);
   }
 
+  useEffect(() => {
+    scrollChatsToBottom();
+    if (inputRef.current && !inputRef.current?.value?.trim()) {
+      inputRef.current.value = "";
+    }
+  }, [roomStore.chatsLength()]);
+
+  useEffect(() => {
+    const newId = roomStore.id ?? (router.query?.id as string | undefined);
+    if (newId !== roomStore.id) roomStore.set({ id: roomStore.id });
+  }, [roomStore.id, router.query?.id]);
+
+  useEffect(() => {
+    if (!roomStore.id) return
+    if (sessionId) {
+      roomStore.set({ localStorageSessionId: sessionId });
+      return;
+    }
+    const newLocalStorageSessionId = Math.floor(
+      (Math.random() * 1_000_000_000) % 1_000_000_000
+    );
+
+    setSessionId(newLocalStorageSessionId);
+    roomStore.set({ localStorageSessionId: newLocalStorageSessionId });
+    removeUnusedLocalStorageItems()
+  }, []);
+
+  function removeUnusedLocalStorageItems() {
+    if (!roomStore.id) return
+    for (const key in localStorage) {
+      const maybeMatchedId = key?.match(
+        new RegExp(`${CHAT_NAME_KEY}\\.(.*)$`)
+      )?.[1];
+      if (key.startsWith(CHAT_NAME_KEY) && !maybeMatchedId?.startsWith(roomStore.id)) {
+        localStorage.removeItem(key);
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (isLoading && isIdle) return;
+    if (roomStore.userName || user) {
+      roomStore.set({ showPrompt: false });
+      return;
+    }
+    if (!roomStore.id) return;
+    if (!userNameFromLocalStorage) {
+      roomStore.set({ showPrompt: true });
+      return;
+    } else {
+      roomStore.set({ userName: userNameFromLocalStorage });
+    }
+
+    if (!roomStore.id) return;
+  }, [roomStore.id, roomStore.userName, isLoading, user, isIdle]);
+
+  const showFavoriteButton =
+    !!roomStore.id &&
+    !!user &&
+    !!roomStore.owner &&
+    user.user.id !== roomStore.owner;
+
   return {
+    ...roomStore,
     chatsRef,
     onSetName,
     nameInputRef,
     inputRef,
     onSend,
     shouldEnableQueries,
-    chats,
-    collapsed,
-    showPrompt,
-    set,
-    name,
-    owner,
     user,
     showFavoriteButton,
     onToggleFavorites,
     isRoomFavorited,
-    userName,
     isLoading,
     isFetching,
     router,
     onClickShareWithYourFriends,
-    showShareWithYourFriendsModal
+    showShareWithYourFriendsModal,
   };
 }

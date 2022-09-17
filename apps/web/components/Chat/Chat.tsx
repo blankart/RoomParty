@@ -2,7 +2,6 @@ import classNames from "classnames";
 import { FaCopy, FaSpinner, FaStar } from "react-icons/fa";
 import { FiShare } from "react-icons/fi";
 import Link from "next/link";
-import { AiOutlineCheckCircle } from "react-icons/ai";
 import { ImExit } from "react-icons/im";
 
 import Modal from "../Modal/Modal";
@@ -78,8 +77,9 @@ export default function Chat(props: ChatProps) {
             target="_blank"
             className="font-bold link link-accent"
           >
-            {process.env.NEXT_PUBLIC_WEB_BASE_URL}:
+            {process.env.NEXT_PUBLIC_WEB_BASE_URL}
           </a>
+          :
         </p>
         <p className="text-4xl font-bold text-center !m-0 p-2 ring-1 ring-accent rounded-md">
           {ctx.router.query.roomIdentificationId}
@@ -157,7 +157,7 @@ export default function Chat(props: ChatProps) {
               "blur-sm": !ctx.shouldEnableQueries,
             })}
           >
-            {(ctx.isLoading || ctx.isFetching) && ctx.userName && (
+            {(ctx.isLoading || ctx.isFetching) && !!ctx.userName && (
               <div className="flex items-center justify-center h-full">
                 <FaSpinner className="w-10 h-auto animate-spin" />
               </div>
@@ -177,17 +177,14 @@ export default function Chat(props: ChatProps) {
                       </>
                     ) : (
                       <div>
-                        <b>
+                        <b style={chat.color ? { color: chat.color } : {}}>
                           {chat.name}
                           {chat.userId === ctx.owner && (
                             <span
-                              className="ml-1 tooltip tooltip-primary"
-                              data-tip="Host"
+                              className="inline-block m-0 ml-2 mb-1 text-[0.9rem] align-middle tooltip tooltip-primary"
+                              data-tip="Room Host"
                             >
-                              <AiOutlineCheckCircle
-                                title="Host"
-                                className="inline mb-1"
-                              />
+                              👑
                             </span>
                           )}
                         </b>
@@ -202,6 +199,7 @@ export default function Chat(props: ChatProps) {
           <div className="flex flex-col w-full p-2 gap-y-2">
             <textarea
               ref={ctx.inputRef}
+              disabled={(ctx.isLoading || ctx.isFetching) && !!ctx.userName}
               className="h-20 p-2 resize-none bg-slate-700/50 textarea"
               onKeyDown={(e) => {
                 if (e.key !== "Enter") return;
@@ -210,7 +208,13 @@ export default function Chat(props: ChatProps) {
             />
             <div className="flex justify-between">
               <div />
-              <button className="btn btn-secondary btn-sm" onClick={ctx.onSend}>
+              <button
+                className={classNames("btn btn-secondary btn-sm", {
+                  "btn-disabled":
+                    (ctx.isLoading || ctx.isFetching) && !!ctx.userName,
+                })}
+                onClick={ctx.onSend}
+              >
                 Send
               </button>
             </div>

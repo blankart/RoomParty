@@ -1,5 +1,6 @@
 import { Subscription } from "@trpc/server";
 import { checkText } from "smile2emoji";
+import randomColor from "randomcolor";
 
 import type { Chat } from "@rooms2watch/prisma-client";
 
@@ -8,13 +9,13 @@ import ModelsService from "../models/models.service";
 import EmitterInstance from "../../utils/Emitter";
 
 interface EmitterTypes {
-  SEND: Chat;
+  SEND: Chat
 }
 
 export const ChatsEmitter = EmitterInstance.for<EmitterTypes>("CHATS");
 
 class Chats {
-  constructor() {}
+  constructor() { }
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {
@@ -55,6 +56,7 @@ class Chats {
     message: string;
     id: string;
     userId?: string;
+    color: string
   }) {
     const newChat = await ModelsService.client.chat.create({
       data: {
@@ -67,12 +69,13 @@ class Chats {
         },
         ...(data.userId
           ? {
-              user: {
-                connect: {
-                  id: data.userId,
-                },
+            color: data.color,
+            user: {
+              connect: {
+                id: data.userId,
               },
-            }
+            },
+          }
           : {}),
       },
     });
@@ -178,8 +181,8 @@ class Chats {
     data: { id: string; name: string; localStorageSessionId: number },
     user: CurrentUser
   ) {
-    return new Subscription<Chat>((emit) => {
-      const onAdd = (data: Chat) => {
+    return new Subscription<Chat & { color: string | null }>((emit) => {
+      const onAdd = (data: Chat & { color: string | null }) => {
         emit.data(data);
       };
 
