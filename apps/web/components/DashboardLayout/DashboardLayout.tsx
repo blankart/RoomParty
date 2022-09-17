@@ -1,11 +1,12 @@
 import { BsPlayCircleFill } from "react-icons/bs";
 import { FaGoogle, FaSpinner } from "react-icons/fa";
-import useMe from "@web/hooks/useMe";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { destroyCookie } from "nookies";
-import { ACCESS_TOKEN_KEY } from "@web/../../packages/common-types";
+
+import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
 import { trpc } from "@web/api";
+import { useMe } from "@web/context/AuthContext";
 
 interface DashboardLayoutProps {
   children?: React.ReactNode;

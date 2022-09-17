@@ -1,10 +1,11 @@
 import classNames from "classnames";
-
-import useChat from "./useChat";
-import { AiOutlineCheckCircle } from "react-icons/ai";
 import { IoMdExit } from "react-icons/io";
-import Link from "next/link";
 import { FaStar } from "react-icons/fa";
+import Link from "next/link";
+import { AiOutlineCheckCircle } from "react-icons/ai";
+
+import Modal from "../Modal/Modal";
+import useChat from "./useChat";
 
 export interface ChatProps {}
 
@@ -13,35 +14,26 @@ export default function Chat(props: ChatProps) {
 
   return (
     <>
-      {ctx.showPrompt && (
-        <>
-          <input type="checkbox" id="my-modal" className="modal-toggle" />
-          <div className={classNames("modal", ctx.showPrompt && "modal-open")}>
-            <div className="modal-box w-[min(500px,90vw)]">
-              <h1 className="py-4 text-2xl font-bold text-center break-words">
-                Welcome to <b>{ctx.name}</b>&apos;s room!
-              </h1>
-              <div className="flex flex-col w-full gap-4">
-                <p className="!m-0 py-4 text-sm">
-                  Let me know your name so we can let you in!
-                </p>
-                <input
-                  ref={ctx.nameInputRef}
-                  placeholder="Your name"
-                  className="input input-bordered input-primary"
-                />
+      <Modal
+        onClose={() => {}}
+        open={ctx.showPrompt}
+        containerClassName="w-[min(500px,90vw)]"
+        bodyClassName="flex flex-col w-full gap-4"
+      >
+        <p className="!m-0 py-4 text-sm">
+          Let me know your name so we can let you in!
+        </p>
+        <input
+          ref={ctx.nameInputRef}
+          placeholder="Your name"
+          className="input input-bordered input-primary"
+        />
 
-                <button
-                  className="w-full btn btn-primary"
-                  onClick={ctx.onSetName}
-                >
-                  Let me in!
-                </button>
-              </div>
-            </div>
-          </div>
-        </>
-      )}
+        <button className="w-full btn btn-primary" onClick={ctx.onSetName}>
+          Let me in!
+        </button>
+      </Modal>
+
       <div
         className={classNames(
           "relative h-[60vh] lg:h-screen flex flex-col shadow-xl",

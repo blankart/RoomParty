@@ -1,10 +1,31 @@
-import { trpc } from "@web/api";
+import React, { createContext, useContext } from "react";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import { setCookie, parseCookies, destroyCookie } from "nookies";
+
+import { trpc } from "@web/api";
 import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
 
-export default function useMe() {
+// Only used for inferring types
+function useQueryUsersMe() {
+  return trpc.useQuery(["users.me"]);
+}
+
+interface AuthContextState {
+  user: ReturnType<typeof useQueryUsersMe>["data"];
+  error: ReturnType<typeof useQueryUsersMe>["error"];
+  isLoading: ReturnType<typeof useQueryUsersMe>["isLoading"];
+  refetch: ReturnType<typeof useQueryUsersMe>["refetch"];
+}
+
+export const AuthContext = createContext<AuthContextState>({
+  user: undefined,
+  error: null,
+  isLoading: false,
+  refetch: async () => ({} as any),
+});
+
+export function AuthContextProvider(props: { children?: React.ReactNode }) {
   const router = useRouter();
   const [hasAccessToken, setHasAccessToken] = useState(false);
 
@@ -45,5 +66,11 @@ export default function useMe() {
     },
   });
 
-  return { user, error, isLoading, refetch };
+  return (
+    <AuthContext.Provider value={{ user, error, isLoading, refetch }}>
+      {props.children}
+    </AuthContext.Provider>
+  );
 }
+
+export const useMe = () => useContext(AuthContext);

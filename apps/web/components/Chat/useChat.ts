@@ -1,14 +1,16 @@
-import { ChatProps } from "./Chat";
-import { trpc } from "@web/api";
 import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
-import { useRoomsStore } from "@web/store/rooms";
 import shallow from "zustand/shallow";
+
 import {
   CHAT_LOCAL_STORAGE_SESSION_KEY,
   CHAT_NAME_KEY,
 } from "@rooms2watch/common-types";
-import useMe from "@web/hooks/useMe";
+
+import { useRoomsStore } from "@web/store/rooms";
+import { trpc } from "@web/api";
+import { ChatProps } from "./Chat";
+import { useMe } from "@web/context/AuthContext";
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 

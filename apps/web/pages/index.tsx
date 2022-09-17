@@ -3,8 +3,8 @@ import { FaYoutube } from "react-icons/fa";
 import { trpc } from "@web/api";
 import { useRouter } from "next/router";
 import { useRef } from "react";
-import useMe from "@web/hooks/useMe";
 import Link from "next/link";
+import { useMe } from "@web/context/AuthContext";
 
 export default function Index() {
   const router = useRouter();
