@@ -23,7 +23,7 @@
     "zod": "^3.19.0"
   },
   "devDependencies": {
-    "@rooms2watch/common-types": "*",
+    "@rooms2watch/shared-lib": "*",
     "@rooms2watch/eslint-config-custom": "*",
     "@rooms2watch/tsconfig": "*",
     "@types/node": "^17.0.12",

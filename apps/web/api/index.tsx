@@ -10,7 +10,7 @@ import superjson from "superjson";
 import { parseCookies } from "nookies";
 
 import type { AppRouter } from "@rooms2watch/trpc";
-import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
+import { ACCESS_TOKEN_KEY } from "@rooms2watch/shared-lib";
 
 export const trpc = createReactQueryHooks<AppRouter>();
 

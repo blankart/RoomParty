@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
+import { ACCESS_TOKEN_KEY } from "@rooms2watch/shared-lib";
 import { parseCookies } from "nookies";
 import * as trpcExpress from "@trpc/server/adapters/express";
 

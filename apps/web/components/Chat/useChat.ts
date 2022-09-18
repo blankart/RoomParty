@@ -5,7 +5,7 @@ import shallow from "zustand/shallow";
 import {
   CHAT_LOCAL_STORAGE_SESSION_KEY,
   CHAT_NAME_KEY,
-} from "@rooms2watch/common-types";
+} from "@rooms2watch/shared-lib";
 
 import { useRoomsStore } from "@web/store/rooms";
 import { trpc } from "@web/api";

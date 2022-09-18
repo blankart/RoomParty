@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_KEY } from "@rooms2watch/common-types";
+import { ACCESS_TOKEN_KEY } from "@rooms2watch/shared-lib";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {

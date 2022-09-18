@@ -16,7 +16,7 @@
     "passport-google-oauth20": "^2.0.0"
   },
   "devDependencies": {
-    "@rooms2watch/common-types": "*",
+    "@rooms2watch/shared-lib": "*",
     "@rooms2watch/eslint-config-custom": "*",
     "@rooms2watch/tsconfig": "*",
     "@types/express": "^4.17.14",

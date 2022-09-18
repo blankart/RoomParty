@@ -1,5 +1,5 @@
 {
-  "name": "@rooms2watch/common-types",
+  "name": "@rooms2watch/shared-lib",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./index.ts",

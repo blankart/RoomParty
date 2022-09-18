@@ -21,7 +21,7 @@
   "devDependencies": {
     "@types/node": "^18.7.18",
     "@rooms2watch/tsconfig": "*",
-    "@rooms2watch/common-types": "*",
+    "@rooms2watch/shared-lib": "*",
     "@rooms2watch/eslint-config-custom": "*",
     "ts-node": "^10.9.1",
     "tsc-watch": "^5.0.3",

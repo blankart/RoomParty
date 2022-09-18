@@ -33,7 +33,7 @@
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
-    "@rooms2watch/common-types": "*",
+    "@rooms2watch/shared-lib": "*",
     "@rooms2watch/eslint-config-custom": "*",
     "@rooms2watch/prisma-client": "*",
     "@rooms2watch/tsconfig": "*",
