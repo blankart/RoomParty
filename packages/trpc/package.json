@@ -21,10 +21,10 @@
     "smile2emoji": "^3.1.1",
     "superjson": "^1.9.1",
     "ytsr": "^3.8.0",
-    "zod": "^3.19.0"
+    "zod": "^3.19.0",
+    "@rooms2watch/shared-lib": "*"
   },
   "devDependencies": {
-    "@rooms2watch/shared-lib": "*",
     "@rooms2watch/eslint-config-custom": "*",
     "@rooms2watch/tsconfig": "*",
     "@types/node": "^17.0.12",

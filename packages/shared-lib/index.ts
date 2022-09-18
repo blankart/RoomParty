@@ -5,4 +5,4 @@ export {
   LOCAL_STORAGE_LAST_VISITED_ROOM,
 } from "./constants";
 
-export type { CustomProcessEnv } from "./env";
+export type { CustomProcessEnv } from "./types/env";

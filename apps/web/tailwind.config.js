@@ -8,14 +8,14 @@ module.exports = {
     extend: {},
   },
   plugins: [
-    require('@tailwindcss/typography'),
-    require('@tailwindcss/forms'),
-    require('@tailwindcss/line-clamp'),
-    require('daisyui')
+    require("@tailwindcss/typography"),
+    require("@tailwindcss/forms"),
+    require("@tailwindcss/line-clamp"),
+    require("daisyui"),
   ],
 
   daisyui: {
     log: true,
-    themes: ['business', 'light']
-  }
+    themes: ["business", "light"],
+  },
 };

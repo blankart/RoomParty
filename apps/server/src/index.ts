@@ -9,7 +9,7 @@ import { randomUUID } from "crypto";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 
-import { router, createContext } from "@rooms2watch/trpc";
+import { createRootRouter, createContext } from "@rooms2watch/trpc";
 import {
   createAuthProviderJwt,
   initializeGoogleOAuth20Provider,
@@ -20,6 +20,7 @@ const allowList = [process.env.WEB_BASE_URL];
 const port = process.env.SERVER_PORT || process.env.PORT || 8000;
 
 async function main() {
+  const router = createRootRouter()
   const app = express();
 
   const prismaClient = createPrismaClient();

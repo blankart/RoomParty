@@ -10,6 +10,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@hookform/resolvers": "^2.9.8",
     "@rooms2watch/trpc": "*",
     "@tanstack/react-query": "^4.3.4",
     "@trpc/client": "^9.27.2",
@@ -30,11 +31,11 @@
     "react-player": "^2.10.1",
     "react-query": "^3.39.2",
     "superjson": "^1.9.1",
-    "zustand": "^4.1.1"
+    "zustand": "^4.1.1",
+    "@rooms2watch/shared-lib": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.0.0",
-    "@rooms2watch/shared-lib": "*",
     "@rooms2watch/eslint-config-custom": "*",
     "@rooms2watch/prisma-client": "*",
     "@rooms2watch/tsconfig": "*",

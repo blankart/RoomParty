@@ -36,7 +36,7 @@ import {
 function routeNameForMerge<T extends string>(route: T): `${T}.` {
   return (route + ".") as `${T}.`;
 }
-export const router = createRouter()
+export const createRootRouter = () => createRouter()
   .transformer(superjson)
 
   .merge(routeNameForMerge(ROOMS_ROUTER_NAME), roomsRouter)
@@ -58,4 +58,4 @@ export const router = createRouter()
     favoritedRoomsProtectedRouter
   );
 
-export type AppRouter = typeof router;
+export type AppRouter = ReturnType<typeof createRootRouter>;

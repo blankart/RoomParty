@@ -13,13 +13,13 @@ type GoogleOAuth20StrategyParams = ConstructorParameters<
 type GoogleOAuth20ProviderCallbackParamsShifted = Parameters<
   GoogleOAuth20StrategyParams[1]
 > extends [
-    infer Req,
-    infer AccessToken,
-    infer RefresToken,
-    infer Options,
-    infer Profile,
-    infer Done
-  ]
+  infer Req,
+  infer AccessToken,
+  infer RefresToken,
+  infer Options,
+  infer Profile,
+  infer Done
+]
   ? [Req, AccessToken, RefresToken, Profile, AuthNextCallback]
   : never;
 

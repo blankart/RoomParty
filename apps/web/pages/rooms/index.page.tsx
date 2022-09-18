@@ -1,11 +1,12 @@
-import { trpc } from "@web/api";
-import Modal from "@web/components/Modal/Modal";
-import { useMe } from "@web/context/AuthContext";
 import classNames from "classnames";
 import Link from "next/link";
 import { useMemo, useState } from "react";
-import { FaSadTear, FaSpinner, FaTrash } from "react-icons/fa";
+import { FaSadTear, FaSpinner } from "react-icons/fa";
 import { IoMdMore } from "react-icons/io";
+
+import { trpc } from "@web/api";
+import Modal from "@web/components/Modal/Modal";
+import { useMe } from "@web/context/AuthContext";
 
 export default function Rooms() {
   const {
@@ -48,7 +49,7 @@ export default function Rooms() {
 
   async function deleteRoom() {
     selectedRoomId &&
-      (await deleteMyRoom(selectedRoomId).then(() => {
+      (await deleteMyRoom({ id: selectedRoomId }).then(() => {
         setSelectedRoomId(null);
         refetchQueries(["rooms.findMyRoom"]);
       }));

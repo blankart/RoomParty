@@ -3,6 +3,12 @@ import ModelsService from "../models/models.service";
 import QueueService from "../queue/queue.service";
 import { CurrentUser } from "../../types/user";
 import { TRPCError } from "@trpc/server";
+import {
+  CreateSchema,
+  DeleteMyRoomSchema,
+  FindByIdSchema,
+  FindByRoomIdentificationIdSchema,
+} from "./rooms.dto";
 
 enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",
@@ -33,11 +39,11 @@ class Rooms {
     return generatedId;
   }
 
-  async findByRoomIdentificationId(id: string) {
-    return await ModelsService.client.room
+  async findByRoomIdentificationId(data: FindByRoomIdentificationIdSchema) {
+    const room = await ModelsService.client.room
       .findFirst({
         where: {
-          roomIdentificationId: id,
+          roomIdentificationId: data.roomIdentificationId,
         },
         select: {
           id: true,
@@ -72,13 +78,21 @@ class Rooms {
             .map(ChatsService.convertEmoticonsToEmojisInChatsObject),
         };
       });
+
+    if (!room)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No room found matching this ID.",
+      });
+
+    return room;
   }
 
-  async findById(id: string) {
-    return await ModelsService.client.room
+  async findById(data: FindByIdSchema) {
+    const room = await ModelsService.client.room
       .findFirst({
         where: {
-          id,
+          id: data.id,
         },
         select: {
           id: true,
@@ -113,6 +127,14 @@ class Rooms {
             .map(ChatsService.convertEmoticonsToEmojisInChatsObject),
         };
       });
+
+    if (!room)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No room found matching this ID.",
+      });
+
+    return room;
   }
 
   async deleteRoom(data: { data: { id: string } }) {
@@ -121,7 +143,7 @@ class Rooms {
     });
   }
 
-  async create(name: string, user: CurrentUser) {
+  async create(data: CreateSchema, user: CurrentUser) {
     let roomIdentificationId = this.roomIdentificationIdGenerator();
 
     while (
@@ -135,13 +157,13 @@ class Rooms {
     const room = await ModelsService.client.room.create({
       data: {
         roomIdentificationId,
-        name,
+        name: data.name,
         chats: {
           create: {
             name: "Welcome Message",
             message: user
-              ? `Welcome to ${name}'s room!`
-              : `Welcome to ${name}'s room! This room is only available for 24 hours. Create an account to own a watch room!`,
+              ? `Welcome to ${data.name}'s room!`
+              : `Welcome to ${data.name}'s room! This room is only available for 24 hours. Create an account to own a watch room!`,
             isSystemMessage: true,
           },
         },
@@ -213,15 +235,15 @@ class Rooms {
       );
   }
 
-  async deleteMyRoom(id: string, user: CurrentUser) {
+  async deleteMyRoom(data: DeleteMyRoomSchema, user: CurrentUser) {
     const willDeleteRoom = await ModelsService.client.room.findFirst({
-      where: { id, owner: { id: user?.id } },
+      where: { id: data.id, owner: { id: user?.id } },
     });
 
     if (!willDeleteRoom) throw new TRPCError({ code: "UNAUTHORIZED" });
 
     return await ModelsService.client.room.delete({
-      where: { id },
+      where: { id: data.id },
     });
   }
 }

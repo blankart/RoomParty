@@ -1,6 +1,6 @@
 {
   "name": "tube-hub-monorepo",
-  "version": "3.8.0",
+  "version": "3.9.0",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -15,7 +15,7 @@
     "start": "turbo run start --parallel",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
-    "format": "prettier --write \"**/*.{ts,tsx,md}\"",
+    "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
     "dev:build": "env-cmd --file .env.local turbo run dev:build",
     "dev:start": "env-cmd --file .env.local turbo run start",
     "dev": "env-cmd --file .env.local turbo run dev --parallel",

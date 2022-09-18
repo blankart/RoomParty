@@ -105,10 +105,10 @@ export default function YoutubePlayerWithControls(
         <div className="flex items-center justify-between p-4 py-6 bg-base-200">
           <div>
             <div>
-              <h2 className="text-[1.2rem] md:text-2xl !m-0 inline-block max-w-[150px] align-middle overflow-hidden overflow-ellipsis whitespace-nowrap">
+              <h2 className="text-[1.2rem] md:text-2xl !m-0 inline-block max-w-[150px] md:max-w-none align-middle overflow-hidden overflow-ellipsis whitespace-nowrap">
                 {ctx.name}
               </h2>
-              <span className="inline-block ml-2 text-xs align-middle rounded-full badge badge-success badge-sm md:text-md">
+              <span className="inline-block ml-2 align-middle rounded-full badge badge-success badge-sm">
                 {ctx.videoPlatform}
               </span>
             </div>

@@ -27,7 +27,7 @@ export default function Room() {
     error,
     isIdle,
   } = trpc.useQuery(
-    ["rooms.findByRoomIdentificationId", roomIdentificationId!],
+    ["rooms.findByRoomIdentificationId", { roomIdentificationId }],
     {
       enabled: !!roomIdentificationId && router.isReady,
     }

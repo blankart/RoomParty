@@ -21,10 +21,10 @@
     "jsonwebtoken": "^8.5.1",
     "passport": "^0.6.0",
     "ws": "^8.8.1",
-    "zod": "^3.19.0"
+    "zod": "^3.19.0",
+    "@rooms2watch/shared-lib": "*"
   },
   "devDependencies": {
-    "@rooms2watch/shared-lib": "*",
     "@rooms2watch/eslint-config-custom": "*",
     "@rooms2watch/tsconfig": "*",
     "@types/cors": "^2.8.12",

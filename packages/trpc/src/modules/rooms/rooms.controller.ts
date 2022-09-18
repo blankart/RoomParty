@@ -3,21 +3,26 @@ import {
   createRouter,
   createRouterWithUser,
 } from "../../trpc";
-import zod from "zod";
 import RoomsService from "./rooms.service";
 import { TRPCError } from "@trpc/server";
+import {
+  createSchema,
+  deleteMyRoomSchema,
+  findByIdSchema,
+  findByRoomIdentificationIdSchema,
+} from "./rooms.schema";
 
 export const ROOMS_ROUTER_NAME = "rooms";
 
 export const roomsRouter = createRouter()
   .query("findById", {
-    input: zod.string(),
+    input: findByIdSchema,
     async resolve({ input }) {
       return await RoomsService.findById(input);
     },
   })
   .query("findByRoomIdentificationId", {
-    input: zod.string(),
+    input: findByRoomIdentificationIdSchema,
     async resolve({ input }) {
       return await RoomsService.findByRoomIdentificationId(input);
     },
@@ -30,19 +35,17 @@ export const roomsProtectedRouter = createProtectedRouter()
     },
   })
   .mutation("deleteMyRoom", {
-    input: zod.string(),
+    input: deleteMyRoomSchema,
     async resolve({ input, ctx }) {
       return RoomsService.deleteMyRoom(input, ctx.user);
     },
   });
 
 export const roomsWithUserRouter = createRouterWithUser().mutation("create", {
-  input: zod.object({
-    name: zod.string(),
-  }),
+  input: createSchema,
   async resolve({ input, ctx }) {
     try {
-      return await RoomsService.create(input.name, ctx.user);
+      return await RoomsService.create(input, ctx.user);
     } catch (e) {
       throw new TRPCError({
         message: e as any,
