@@ -12,7 +12,7 @@ export interface RoomsStore {
   localStorageSessionId?: number;
   owner?: string;
   videoPlatform?: string
-  ownerName?: string
+  ownerName?: string | null
 
   isPlayed: boolean;
   scrubTime: number;
