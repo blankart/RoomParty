@@ -5,7 +5,7 @@ import CreateARoomCard from "./components/CreateARoomCard";
 import JoinARoomCard from "./components/JoinARoomCard";
 import FavoritedRoom from "./components/FavoritedRoom";
 
-export default function Index() {
+export default function IndexPage() {
   return (
     <div className="block w-full h-screen overflow-y-auto prose max-w-none">
       <div className="hidden md:grid hero bg-base-100">

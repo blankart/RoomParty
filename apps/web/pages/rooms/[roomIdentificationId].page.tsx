@@ -10,7 +10,7 @@ import { useMe } from "@web/context/AuthContext";
 import { useRouter } from "next/router";
 import { DARK_THEME } from "@web/components/DashboardLayout/DashboardLayout";
 
-export default function Room() {
+export default function RoomPage() {
   const { set, id } = useRoomsStore(
     (s) => ({
       set: s.set,
@@ -77,4 +77,4 @@ export default function Room() {
   );
 }
 
-(Room as any).forcedTheme = DARK_THEME;
+(RoomPage as any).forcedTheme = DARK_THEME;

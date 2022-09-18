@@ -1,13 +1,11 @@
-import type { inferProcedureOutput } from "@trpc/server";
-import { AppRouter } from "@rooms2watch/trpc";
 import Link from "next/link";
 import { FaStar } from "react-icons/fa";
+import { InferQueryOutput } from "@web/types/trpc";
 
-type FindMyFavoritesResponse = inferProcedureOutput<
-  AppRouter["_def"]["queries"]["favorited-rooms.findMyFavorites"]
->[number];
+type FindMyFavoritesQueryOutput =
+  InferQueryOutput<"favorited-rooms.findMyFavorites">[number];
 
-interface FavoritedRoomItemProps extends FindMyFavoritesResponse {
+interface FavoritedRoomItemProps extends FindMyFavoritesQueryOutput {
   handleToggleFavorite: (id: string) => any;
 }
 
