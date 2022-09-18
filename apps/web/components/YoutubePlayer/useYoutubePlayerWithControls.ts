@@ -1,12 +1,14 @@
 import type { PlayerStatus } from "@rooms2watch/trpc";
 import { trpc } from "@web/api";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { RoomsStore, useRoomsStore } from "@web/store/rooms";
 import shallow from "zustand/shallow";
 
 import { YoutubePlayerWithControlsProps } from "./YoutubePlayerWithControls";
 import { useRouter } from "next/router";
 import { useMe } from "@web/context/AuthContext";
+import useLocalStorage from "@web/hooks/useLocalStorage";
+import { CHAT_LOCAL_STORAGE_SESSION_KEY, LOCAL_STORAGE_LAST_VISITED_ROOM } from "@rooms2watch/shared-lib";
 
 export function useControlMutation() {
   const { mutate: _control } = trpc.useMutation(["player.control"]);
@@ -106,6 +108,20 @@ export default function useYoutubePlayerWithControls(
       youtubePlayerRef?.current?.player?.player?.player?.pauseVideo();
     }
   }
+
+  const [_, setLastVisitedRoom] = useLocalStorage<{ name: string, id: string, videoPlatform: string }>(LOCAL_STORAGE_LAST_VISITED_ROOM)
+
+  useEffect(() => {
+    if (
+      !roomStore.name || !router.query.roomIdentificationId || !roomStore.videoPlatform
+    ) return
+
+    setLastVisitedRoom({
+      name: roomStore.name,
+      id: router.query.roomIdentificationId as string,
+      videoPlatform: roomStore.videoPlatform,
+    })
+  }, [roomStore.name, router.query.roomIdentificationId, roomStore.videoPlatform])
 
   function setWatchState(
     newState: Partial<

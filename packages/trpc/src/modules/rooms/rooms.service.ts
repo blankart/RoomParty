@@ -44,6 +44,7 @@ class Rooms {
           name: true,
           playerStatus: true,
           videoPlatform: true,
+          roomIdentificationId: true,
           chats: {
             take: 20,
             orderBy: {
@@ -79,7 +80,12 @@ class Rooms {
         where: {
           id,
         },
-        include: {
+        select: {
+          id: true,
+          name: true,
+          playerStatus: true,
+          videoPlatform: true,
+          roomIdentificationId: true,
           chats: {
             take: 20,
             orderBy: {
@@ -89,6 +95,11 @@ class Rooms {
           owner: {
             select: {
               userId: true,
+              user: {
+                select: {
+                  name: true
+                }
+              }
             },
           },
         },

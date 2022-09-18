@@ -5,6 +5,8 @@ import { useRouter } from "next/router";
 import { useRef } from "react";
 import Link from "next/link";
 import { useMe } from "@web/context/AuthContext";
+import useLocalStorage from "@web/hooks/useLocalStorage";
+import { LOCAL_STORAGE_LAST_VISITED_ROOM } from "@rooms2watch/shared-lib";
 
 export default function Index() {
   const router = useRouter();
@@ -15,6 +17,9 @@ export default function Index() {
   });
 
   const { refetchQueries } = trpc.useContext();
+  const [lastVisitedRoom] = useLocalStorage<
+    { id: string; name: string; videoPlatform: string } | undefined
+  >(LOCAL_STORAGE_LAST_VISITED_ROOM, undefined);
 
   const { mutateAsync: toggleFavorite } = trpc.useMutation([
     "favorited-rooms.toggle",
