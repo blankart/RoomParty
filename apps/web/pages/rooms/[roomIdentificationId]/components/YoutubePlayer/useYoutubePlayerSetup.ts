@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
-import { useRoomsStore } from "@web/store/rooms";
+import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import { useControlMutation } from "./useYoutubePlayerWithControls";
 import { YoutubePlayerSetupProps } from "./YoutubePlayerSetup";
 import { trpc } from "@web/api";

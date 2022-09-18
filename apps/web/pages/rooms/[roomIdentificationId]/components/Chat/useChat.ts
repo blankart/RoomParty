@@ -7,7 +7,7 @@ import {
   CHAT_NAME_KEY,
 } from "@rooms2watch/shared-lib";
 
-import { useRoomsStore } from "@web/store/rooms";
+import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import { trpc } from "@web/api";
 import { useMe } from "@web/context/AuthContext";
 import useLocalStorage from "@web/hooks/useLocalStorage";

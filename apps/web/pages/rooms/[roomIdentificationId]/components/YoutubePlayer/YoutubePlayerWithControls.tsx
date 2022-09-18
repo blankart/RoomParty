@@ -5,12 +5,15 @@ import React, { Suspense } from "react";
 import { FaCopy, FaStar } from "react-icons/fa";
 import { FiShare } from "react-icons/fi";
 import { ImExit } from "react-icons/im";
-import Modal from "../Modal/Modal";
+import Modal from "../../../../../components/Modal/Modal";
 import useYoutubePlayerWithControls from "./useYoutubePlayerWithControls";
 import YoutubePlayerSetup from "./YoutubePlayerSetup";
 
 const YoutubePlayer = dynamic(
-  () => import("@web/components/YoutubePlayer/YoutubePlayer"),
+  () =>
+    import(
+      "@web/pages/rooms/[roomIdentificationId]/components/YoutubePlayer/YoutubePlayer"
+    ),
   {
     ssr: false,
   }

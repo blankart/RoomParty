@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import { FaSpinner } from "react-icons/fa";
 
-import Modal from "../Modal/Modal";
+import Modal from "../../../../../components/Modal/Modal";
 import useChat from "./useChat";
 
 export interface ChatProps {}

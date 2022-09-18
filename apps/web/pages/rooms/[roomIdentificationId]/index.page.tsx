@@ -1,13 +1,15 @@
-import type { PlayerStatus } from "@rooms2watch/trpc";
-import { trpc } from "@web/api";
-import Chat from "@web/components/Chat/Chat";
-import YoutubePlayerWithControls from "@web/components/YoutubePlayer/YoutubePlayerWithControls";
-import { useRoomsStore } from "@web/store/rooms";
 import { Suspense, useEffect } from "react";
 import shallow from "zustand/shallow";
 import Error from "next/error";
-import { useMe } from "@web/context/AuthContext";
 import { useRouter } from "next/router";
+
+import type { PlayerStatus } from "@rooms2watch/trpc";
+
+import { trpc } from "@web/api";
+import Chat from "@web/pages/rooms/[roomIdentificationId]/components/Chat/Chat";
+import YoutubePlayerWithControls from "@web/pages/rooms/[roomIdentificationId]/components/YoutubePlayer/YoutubePlayerWithControls";
+import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
+import { useMe } from "@web/context/AuthContext";
 import { DARK_THEME } from "@web/components/DashboardLayout/DashboardLayout";
 
 export default function RoomPage() {

@@ -1,7 +1,7 @@
 import type { PlayerStatus } from "@rooms2watch/trpc";
 import { trpc } from "@web/api";
 import { useEffect, useRef, useState } from "react";
-import { RoomsStore, useRoomsStore } from "@web/store/rooms";
+import { RoomsStore, useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import shallow from "zustand/shallow";
 
 import { YoutubePlayerWithControlsProps } from "./YoutubePlayerWithControls";
