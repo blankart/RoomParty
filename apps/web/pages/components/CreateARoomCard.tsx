@@ -11,6 +11,7 @@ import Input from "@web/components/Input/Input";
 import { trpc } from "@web/api";
 
 import BaseCard from "./BaseCard";
+import Button from "@web/components/Button/Button";
 
 export default function CreateARoomCard() {
   const router = useRouter();
@@ -24,7 +25,9 @@ export default function CreateARoomCard() {
     resolver: zodResolver(RoomsSchema.createSchema),
   });
 
-  const { mutateAsync: createRoom } = trpc.useMutation(["rooms.create"]);
+  const { mutateAsync: createRoom, isLoading } = trpc.useMutation([
+    "rooms.create",
+  ]);
 
   async function onCreateRoom(data: RoomsDTO.CreateSchema) {
     try {
@@ -56,9 +59,12 @@ export default function CreateARoomCard() {
               placeholder="Enter your room name"
               {...register("name")}
               error={errors.name?.message}
+              disabled={isLoading}
             />
           </div>
-          <button className="btn btn-primary">Create a room</button>
+          <Button loading={isLoading} disabled={isLoading}>
+            Create a room
+          </Button>
         </form>
       </div>
     </BaseCard>

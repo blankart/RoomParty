@@ -1,5 +1,4 @@
-import classNames from "classnames";
-import { FaSpinner } from "react-icons/fa";
+import Button from "@web/components/Button/Button";
 
 import { FindMyRoomQueryOutput } from "./RoomItem";
 
@@ -26,17 +25,14 @@ export default function DeleteMyRoomItem(props: DeleteMyRoomItemProps) {
           <p className="!m-0">{props.online} online users</p>
         </div>
       </div>
-      <button
-        className={classNames("w-full btn btn-error", {
-          "btn-disabled": props.isDeleteMyRoomLoading,
-        })}
+      <Button
+        className="w-full btn-error"
+        disabled={props.isDeleteMyRoomLoading}
+        loading={props.isDeleteMyRoomLoading}
         onClick={props.deleteRoom}
       >
-        Delete{" "}
-        {props.isDeleteMyRoomLoading && (
-          <FaSpinner className="mx-2 animate-spin" />
-        )}
-      </button>
+        Delete
+      </Button>
     </div>
   );
 }

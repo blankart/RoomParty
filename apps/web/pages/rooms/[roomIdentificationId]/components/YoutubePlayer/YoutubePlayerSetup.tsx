@@ -1,8 +1,10 @@
 import { AiFillYoutube, AiFillCloseCircle } from "react-icons/ai";
 import classNames from "classnames";
-import { useYoutubePlayerSetup } from "./useYoutubePlayerSetup";
-import ClickableCard from "../../../../../components/Card/ClickableCard";
 import { FaSpinner } from "react-icons/fa";
+
+import ClickableCard from "@web/components/Card/ClickableCard";
+
+import { useYoutubePlayerSetup } from "./useYoutubePlayerSetup";
 
 export interface YoutubePlayerSetupProps {}
 

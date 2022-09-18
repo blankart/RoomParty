@@ -96,7 +96,7 @@ export function withTRPC(C: any) {
           defaultOptions: {
             queries: {
               ssr: false,
-              retry: 3,
+              retry: 0,
               refetchOnWindowFocus: false,
             },
           },

@@ -8,6 +8,7 @@ import { RoomsSchema } from "@rooms2watch/trpc/schema";
 
 import { trpc } from "@web/api";
 import Input from "@web/components/Input/Input";
+import Button from "@web/components/Button/Button";
 
 import BaseCard from "./BaseCard";
 
@@ -30,16 +31,23 @@ export default function JoinARoomCard(props: JoinARoomCardProps) {
 
   const formData = watch();
 
-  trpc.useQuery(["rooms.findByRoomIdentificationId", formData], {
-    enabled: enableQuery,
-    onSuccess(data) {
-      router.push("/rooms/[room]", `/rooms/${data.roomIdentificationId}`);
-    },
-    onError(err) {
-      setError("roomIdentificationId", err);
-      setEnableQuery(false);
-    },
-  });
+  const { isFetching } = trpc.useQuery(
+    ["rooms.findByRoomIdentificationId", formData],
+    {
+      enabled: enableQuery,
+      onSuccess(data) {
+        router.push("/rooms/[room]", `/rooms/${data.roomIdentificationId}`);
+        setEnableQuery(false);
+      },
+      onError(err) {
+        setError("roomIdentificationId", {
+          type: "custom",
+          message: err.message,
+        });
+        setEnableQuery(false);
+      },
+    }
+  );
 
   async function onJoinRoom(data: RoomsDTO.FindByRoomIdentificationIdSchema) {
     setEnableQuery(true);
@@ -57,12 +65,16 @@ export default function JoinARoomCard(props: JoinARoomCardProps) {
           <div className="flex flex-col">
             <Input
               type="text"
+              maxLength={8}
               placeholder="Enter room ID"
               {...register("roomIdentificationId")}
               error={errors.roomIdentificationId?.message}
+              disabled={isFetching}
             />
           </div>
-          <button className="btn btn-secondary">Join room</button>
+          <Button loading={isFetching} disabled={isFetching}>
+            Join room
+          </Button>
         </form>
       </div>
     </BaseCard>
