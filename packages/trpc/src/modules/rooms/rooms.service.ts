@@ -12,7 +12,7 @@ const IDENTIFICATION_ID_MAX_LENGTH = 8;
 const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
 class Rooms {
-  constructor() {}
+  constructor() { }
   private static instance?: Rooms;
   static getInstance() {
     if (!Rooms.instance) {
@@ -149,7 +149,7 @@ class Rooms {
       },
     });
 
-    if (user?.id) {
+    if (!user?.id) {
       const startAfter = new Date();
       const ONE_DAY_IN_MS = 1_000 * 60 * 60 * 24;
       startAfter.setTime(startAfter.getTime() + ONE_DAY_IN_MS);
