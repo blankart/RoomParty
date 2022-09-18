@@ -12,7 +12,7 @@ const IDENTIFICATION_ID_MAX_LENGTH = 8;
 const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
 class Rooms {
-  constructor() {}
+  constructor() { }
   private static instance?: Rooms;
   static getInstance() {
     if (!Rooms.instance) {
@@ -39,7 +39,11 @@ class Rooms {
         where: {
           roomIdentificationId: id,
         },
-        include: {
+        select: {
+          id: true,
+          name: true,
+          playerStatus: true,
+          videoPlatform: true,
           chats: {
             take: 20,
             orderBy: {
@@ -49,6 +53,11 @@ class Rooms {
           owner: {
             select: {
               userId: true,
+              user: {
+                select: {
+                  name: true
+                }
+              }
             },
           },
         },

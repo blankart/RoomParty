@@ -1,10 +1,12 @@
 import type { PlayerStatus } from "@rooms2watch/trpc";
 import { trpc } from "@web/api";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { RoomsStore, useRoomsStore } from "@web/store/rooms";
 import shallow from "zustand/shallow";
 
 import { YoutubePlayerWithControlsProps } from "./YoutubePlayerWithControls";
+import { useRouter } from "next/router";
+import { useMe } from "@web/context/AuthContext";
 
 export function useControlMutation() {
   const { mutate: _control } = trpc.useMutation(["player.control"]);
@@ -37,8 +39,11 @@ export default function useYoutubePlayerWithControls(
   props: YoutubePlayerWithControlsProps
 ) {
   const youtubePlayerRef = useRef<any>(null);
+  const router = useRouter()
+  const { user } = useMe()
+  const trpcContext = trpc.useContext()
 
-  const { id, userName, scrubTime, url, set, tabSessionId, type } =
+  const roomStore =
     useRoomsStore(
       (s) => ({
         id: s.id,
@@ -49,14 +54,18 @@ export default function useYoutubePlayerWithControls(
         set: s.set,
         tabSessionId: s.tabSessionId,
         type: s.type,
+        name: s.name,
+        videoPlatform: s.videoPlatform,
+        ownerName: s.ownerName,
+        owner: s.owner
       }),
       shallow
     );
 
   trpc.useSubscription(
-    ["player.statusSubscription", { id: id!, name: userName! }],
+    ["player.statusSubscription", { id: roomStore.id!, name: roomStore.userName! }],
     {
-      enabled: !!id,
+      enabled: !!roomStore.id,
       onNext(data) {
         setWatchState({ thumbnail: data.thumbnail, url: data.url });
 
@@ -64,7 +73,7 @@ export default function useYoutubePlayerWithControls(
           setWatchState({ isPlayed: false, scrubTime: 0, url: data.url });
         }
 
-        if (data.tabSessionId === tabSessionId) return;
+        if (data.tabSessionId === roomStore.tabSessionId) return;
 
         if (data.type === "PAUSED") {
           setWatchState({
@@ -88,8 +97,7 @@ export default function useYoutubePlayerWithControls(
     newState: Pick<RoomsStore, "scrubTime" | "isPlayed">
   ) {
     youtubePlayerRef?.current?.player?.player?.player?.seekTo(
-      newState.scrubTime,
-      "seconds"
+      newState.scrubTime, "seconds"
     );
 
     if (newState.isPlayed) {
@@ -104,7 +112,7 @@ export default function useYoutubePlayerWithControls(
       Pick<RoomsStore, "scrubTime" | "isPlayed" | "url" | "type" | "thumbnail">
     >
   ) {
-    if (newState.scrubTime && newState.scrubTime !== scrubTime) {
+    if (newState.scrubTime && newState.scrubTime !== roomStore.scrubTime) {
       youtubePlayerRef?.current?.player?.player?.player?.seekTo(
         newState.scrubTime,
         "seconds"
@@ -119,65 +127,99 @@ export default function useYoutubePlayerWithControls(
       }
     }
 
-    set({ ...newState });
+    roomStore.set({ ...newState });
   }
 
   function onStart() {
     initializeWatchState({
-      scrubTime: scrubTime ?? 0,
-      isPlayed: type !== "PAUSED",
+      scrubTime: roomStore.scrubTime ?? 0,
+      isPlayed: roomStore.type !== "PAUSED",
     });
   }
 
   const control = useControlMutation();
 
   function onPause() {
-    url &&
+    roomStore.url &&
       control({
-        id: id!,
+        id: roomStore.id!,
         statusObject: {
-          tabSessionId: tabSessionId,
+          tabSessionId: roomStore.tabSessionId,
           time: youtubePlayerRef?.current?.getCurrentTime() ?? 0,
           type: "PAUSED",
-          name: userName!,
-          url: url,
+          name: roomStore.userName!,
+          url: roomStore.url,
         },
       });
   }
 
   function onPlay() {
-    url &&
+    roomStore.url &&
       control({
-        id: id!,
+        id: roomStore.id!,
         statusObject: {
-          tabSessionId: tabSessionId,
+          tabSessionId: roomStore.tabSessionId,
           type: "PLAYED",
           time: youtubePlayerRef?.current?.getCurrentTime() ?? 0,
-          name: userName!,
-          url: url,
+          name: roomStore.userName!,
+          url: roomStore.url,
         },
       });
   }
 
   function onSeek(time: number) {
-    url &&
+    roomStore.url &&
       control({
-        id: id!,
+        id: roomStore.id!,
         statusObject: {
-          tabSessionId: tabSessionId,
-          name: userName!,
+          tabSessionId: roomStore.tabSessionId,
+          name: roomStore.userName!,
           type: "SEEK_TO",
           time,
-          url: url,
+          url: roomStore.url,
         },
       });
   }
 
+  const [showShareWithYourFriendsModal, setShowShareWithYourFriendsModal] =
+    useState(false);
+  function onClickShareWithYourFriends() {
+    setShowShareWithYourFriendsModal(!showShareWithYourFriendsModal);
+  }
+
+  const { data: isRoomFavorited } = trpc.useQuery(
+    [
+      "favorited-rooms.isRoomFavorited",
+      {
+        roomId: roomStore.id!,
+      },
+    ],
+    {
+      enabled: !!user && !!roomStore.id,
+    }
+  );
+
+  const { mutateAsync: toggle } = trpc.useMutation(["favorited-rooms.toggle"]);
+
+  async function onToggleFavorites() {
+    !!roomStore.id && (await toggle({ roomId: roomStore.id }));
+    trpcContext.invalidateQueries([
+      "favorited-rooms.isRoomFavorited",
+      { roomId: roomStore.id! },
+    ]);
+  }
+
+  const showFavoriteButton =
+    !!roomStore.id &&
+    !!user &&
+    !!roomStore.owner &&
+    user.user.id !== roomStore.owner;
+
   return {
-    url,
-    tabSessionId,
-    id,
-    userName,
+    url: roomStore.url,
+    tabSessionId: roomStore.tabSessionId,
+    id: roomStore.id,
+    userName: roomStore.userName,
     youtubePlayerRef,
     control,
     setWatchState,
@@ -185,5 +227,14 @@ export default function useYoutubePlayerWithControls(
     onPause,
     onPlay,
     onSeek,
+    name: roomStore.name,
+    videoPlatform: roomStore.videoPlatform,
+    ownerName: roomStore.ownerName,
+    onClickShareWithYourFriends,
+    showShareWithYourFriendsModal,
+    router,
+    isRoomFavorited,
+    onToggleFavorites,
+    showFavoriteButton
   };
 }

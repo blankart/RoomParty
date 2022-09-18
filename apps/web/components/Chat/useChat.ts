@@ -45,8 +45,6 @@ export default function useChat(props: ChatProps) {
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const nameInputRef = useRef<HTMLInputElement>(null);
 
-  const [showShareWithYourFriendsModal, setShowShareWithYourFriendsModal] =
-    useState(false);
   const [sessionId, setSessionId] = useLocalStorage<undefined | number>(
     CHAT_LOCAL_STORAGE_SESSION_KEY
   );
@@ -89,19 +87,6 @@ export default function useChat(props: ChatProps) {
   );
 
   const { mutateAsync: send } = trpc.useMutation(["chats.send"]);
-  const trpcContext = trpc.useContext();
-  const { mutateAsync: toggle } = trpc.useMutation(["favorited-rooms.toggle"]);
-  const { data: isRoomFavorited } = trpc.useQuery(
-    [
-      "favorited-rooms.isRoomFavorited",
-      {
-        roomId: roomStore.id!,
-      },
-    ],
-    {
-      enabled: !!user && !!roomStore.id,
-    }
-  );
 
   function scrollChatsToBottom() {
     chatsRef.current?.scrollTo({
@@ -134,20 +119,8 @@ export default function useChat(props: ChatProps) {
   function onSetName() {
     if (!nameInputRef.current?.value) return;
     setName(nameInputRef.current?.value);
-    setShowShareWithYourFriendsModal(true);
   }
 
-  async function onToggleFavorites() {
-    !!roomStore.id && (await toggle({ roomId: roomStore.id }));
-    trpcContext.invalidateQueries([
-      "favorited-rooms.isRoomFavorited",
-      { roomId: roomStore.id! },
-    ]);
-  }
-
-  function onClickShareWithYourFriends() {
-    setShowShareWithYourFriendsModal(!showShareWithYourFriendsModal);
-  }
 
   useEffect(() => {
     scrollChatsToBottom();
@@ -208,11 +181,6 @@ export default function useChat(props: ChatProps) {
     if (!roomStore.id) return;
   }, [roomStore.id, roomStore.userName, isLoading, user, isIdle]);
 
-  const showFavoriteButton =
-    !!roomStore.id &&
-    !!user &&
-    !!roomStore.owner &&
-    user.user.id !== roomStore.owner;
 
   return {
     ...roomStore,
@@ -223,13 +191,8 @@ export default function useChat(props: ChatProps) {
     onSend,
     shouldEnableQueries,
     user,
-    showFavoriteButton,
-    onToggleFavorites,
-    isRoomFavorited,
     isLoading,
     isFetching,
     router,
-    onClickShareWithYourFriends,
-    showShareWithYourFriendsModal,
   };
 }

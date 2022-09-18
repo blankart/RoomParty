@@ -11,6 +11,8 @@ export interface RoomsStore {
   tabSessionId: number;
   localStorageSessionId?: number;
   owner?: string;
+  videoPlatform?: string
+  ownerName?: string
 
   isPlayed: boolean;
   scrubTime: number;

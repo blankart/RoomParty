@@ -46,6 +46,8 @@ export default function Room() {
       userName: user?.user?.name ?? "",
       thumbnail: playerStatus?.thumbnail,
       owner: room.owner?.userId,
+      videoPlatform: room.videoPlatform,
+      ownerName: room.owner?.user.name,
     });
   }, [room, user]);
 

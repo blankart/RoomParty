@@ -1,8 +1,5 @@
 import classNames from "classnames";
-import { FaCopy, FaSpinner, FaStar } from "react-icons/fa";
-import { FiShare } from "react-icons/fi";
-import Link from "next/link";
-import { ImExit } from "react-icons/im";
+import { FaSpinner } from "react-icons/fa";
 
 import Modal from "../Modal/Modal";
 import useChat from "./useChat";
@@ -35,61 +32,9 @@ export default function Chat(props: ChatProps) {
         </button>
       </Modal>
 
-      <Modal
-        onClose={ctx.onClickShareWithYourFriends}
-        open={ctx.showShareWithYourFriendsModal}
-        closeOnClickOutside
-        showCloseButton
-        containerClassName="w-[min(480px,100%)]"
-        bodyClassName="flex flex-col w-full gap-4 p-2"
-        title={`Share this room with your friends!`}
-      >
-        <p className="!m-0 py-4 text-sm">
-          Let me them know that you want to watch videos with them by copying
-          the link below:
-        </p>
-        <div
-          className="tooltip tooltip-accent"
-          data-tip={`${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${ctx.router.query.roomIdentificationId}`}
-        >
-          <p className="!m-0 text-center italic text-md font-bold py-4 rounded-md ring-accent ring-1 relative break-all p-2">
-            {process.env.NEXT_PUBLIC_WEB_BASE_URL?.substring(0, 20) + "..."}
-            /rooms/
-            {ctx.router.query.roomIdentificationId}
-            <button
-              className="mx-2 btn btn-xs btn-circle btn-ghost"
-              onClick={() => {
-                navigator.clipboard.writeText(
-                  `${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${ctx.router.query.roomIdentificationId}`
-                );
-              }}
-            >
-              <FaCopy />
-            </button>
-          </p>
-        </div>
-
-        <div className="divider divider-vertical">or</div>
-        <p className="!m-0 py-4 text-sm break-all">
-          Enter this room ID after visiting{" "}
-          <a
-            href={process.env.NEXT_PUBLIC_WEB_BASE_URL}
-            target="_blank"
-            rel="noreferrer"
-            className="font-bold link link-accent"
-          >
-            {process.env.NEXT_PUBLIC_WEB_BASE_URL}
-          </a>
-          :
-        </p>
-        <p className="text-4xl font-bold text-center !m-0 p-2 ring-1 ring-accent rounded-md">
-          {ctx.router.query.roomIdentificationId}
-        </p>
-      </Modal>
-
       <div
         className={classNames(
-          "relative h-[60vh] lg:h-screen flex flex-col shadow-xl",
+          "relative h-[50vh] lg:h-screen flex flex-col shadow-xl",
           !ctx.collapsed ? "w-0" : "w-full lg:w-[400px]"
         )}
       >
@@ -98,60 +43,7 @@ export default function Chat(props: ChatProps) {
           onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}
         />
-        <section className="flex flex-col justify-end flex-1 h-[60vh] lg:h-screen bg-base-100">
-          <section className="w-full p-4 bg-primary-focus">
-            <div className="flex items-center justify-between w-full">
-              <h1 className="text-sm font-normal !m-0">
-                Welcome to <b>{ctx.name}</b>
-              </h1>
-              <div className="flex gap-2">
-                <div
-                  className="tooltip tooltip-primary tooltip-left"
-                  data-tip={"Share with your frients"}
-                >
-                  <button
-                    className="btn btn-ghost btn-sm"
-                    onClick={ctx.onClickShareWithYourFriends}
-                  >
-                    <FiShare className="w-4 h-auto" />
-                  </button>
-                </div>
-                {ctx.showFavoriteButton && (
-                  <div
-                    className="tooltip tooltip-primary tooltip-left"
-                    data-tip={
-                      !ctx.isRoomFavorited
-                        ? "Add to Favorites"
-                        : "Remove to Favorites"
-                    }
-                  >
-                    <button
-                      className="btn btn-ghost btn-sm"
-                      onClick={ctx.onToggleFavorites}
-                    >
-                      <FaStar
-                        className={classNames(
-                          "w-4 h-auto",
-                          ctx.isRoomFavorited && "text-amber-500"
-                        )}
-                      />
-                    </button>
-                  </div>
-                )}
-
-                <div
-                  className="tooltip tooltip-primary tooltip-left"
-                  data-tip="Exit Room"
-                >
-                  <Link href="/" passHref>
-                    <a className="btn btn-ghost btn-sm">
-                      <ImExit className="w-5 h-auto" />
-                    </a>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </section>
+        <section className="flex flex-col justify-end flex-1 h-[50vh] lg:h-screen bg-base-100">
           <div
             ref={ctx.chatsRef}
             className={classNames("p-2 overflow-y-auto relative flex-1", {
