@@ -12,7 +12,8 @@
     "pull": "prisma db pull",
     "clean": "rm -rf dist",
     "build": "yarn clean && tsc",
-    "dev": "yarn clean && tsc-watch --noClear"
+    "dev": "yarn clean && tsc-watch --noClear",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",

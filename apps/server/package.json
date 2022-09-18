@@ -5,7 +5,8 @@
   "scripts": {
     "build": "tsc",
     "dev": "nodemon -e ts -w ../../packages/trpc -w ../../packages/auth-providers -w ./src/index.ts -x ts-node ./src",
-    "start": "node ./dist"
+    "start": "node ./dist",
+    "typecheck": "tsc"
   },
   "dependencies": {
     "@rooms2watch/auth-providers": "*",

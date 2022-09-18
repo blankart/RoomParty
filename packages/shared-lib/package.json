@@ -8,7 +8,8 @@
     "clean": "rm -rf dist",
     "build": "yarn clean && tsc",
     "lint": "eslint *.ts*",
-    "dev": "yarn clean && tsc-watch --noClear"
+    "dev": "yarn clean && tsc-watch --noClear",
+    "typecheck": "tsc"
   },
   "devDependencies": {
     "@types/node": "^17.0.12",
