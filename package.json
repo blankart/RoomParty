@@ -12,6 +12,7 @@
     "start:server": "turbo run start --filter=@rooms2watch/server --",
     "start:web": "turbo run start --filter=@rooms2watch/web --",
     "start": "turbo run start --parallel",
+    "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "dev:build": "env-cmd --file .env.local turbo run dev:build",

@@ -121,7 +121,6 @@ export default function useChat(props: ChatProps) {
     setName(nameInputRef.current?.value);
   }
 
-
   useEffect(() => {
     scrollChatsToBottom();
     if (inputRef.current && !inputRef.current?.value?.trim()) {
@@ -180,7 +179,6 @@ export default function useChat(props: ChatProps) {
 
     if (!roomStore.id) return;
   }, [roomStore.id, roomStore.userName, isLoading, user, isIdle]);
-
 
   return {
     ...roomStore,

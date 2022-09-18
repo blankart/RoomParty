@@ -8,7 +8,10 @@ import { YoutubePlayerWithControlsProps } from "./YoutubePlayerWithControls";
 import { useRouter } from "next/router";
 import { useMe } from "@web/context/AuthContext";
 import useLocalStorage from "@web/hooks/useLocalStorage";
-import { CHAT_LOCAL_STORAGE_SESSION_KEY, LOCAL_STORAGE_LAST_VISITED_ROOM } from "@rooms2watch/shared-lib";
+import {
+  CHAT_LOCAL_STORAGE_SESSION_KEY,
+  LOCAL_STORAGE_LAST_VISITED_ROOM,
+} from "@rooms2watch/shared-lib";
 
 export function useControlMutation() {
   const { mutate: _control } = trpc.useMutation(["player.control"]);
@@ -41,31 +44,33 @@ export default function useYoutubePlayerWithControls(
   props: YoutubePlayerWithControlsProps
 ) {
   const youtubePlayerRef = useRef<any>(null);
-  const router = useRouter()
-  const { user } = useMe()
-  const trpcContext = trpc.useContext()
+  const router = useRouter();
+  const { user } = useMe();
+  const trpcContext = trpc.useContext();
 
-  const roomStore =
-    useRoomsStore(
-      (s) => ({
-        id: s.id,
-        userName: s.userName,
-        isPlayed: s.isPlayed,
-        url: s.url,
-        scrubTime: s.scrubTime,
-        set: s.set,
-        tabSessionId: s.tabSessionId,
-        type: s.type,
-        name: s.name,
-        videoPlatform: s.videoPlatform,
-        ownerName: s.ownerName,
-        owner: s.owner
-      }),
-      shallow
-    );
+  const roomStore = useRoomsStore(
+    (s) => ({
+      id: s.id,
+      userName: s.userName,
+      isPlayed: s.isPlayed,
+      url: s.url,
+      scrubTime: s.scrubTime,
+      set: s.set,
+      tabSessionId: s.tabSessionId,
+      type: s.type,
+      name: s.name,
+      videoPlatform: s.videoPlatform,
+      ownerName: s.ownerName,
+      owner: s.owner,
+    }),
+    shallow
+  );
 
   trpc.useSubscription(
-    ["player.statusSubscription", { id: roomStore.id!, name: roomStore.userName! }],
+    [
+      "player.statusSubscription",
+      { id: roomStore.id!, name: roomStore.userName! },
+    ],
     {
       enabled: !!roomStore.id,
       onNext(data) {
@@ -99,7 +104,8 @@ export default function useYoutubePlayerWithControls(
     newState: Pick<RoomsStore, "scrubTime" | "isPlayed">
   ) {
     youtubePlayerRef?.current?.player?.player?.player?.seekTo(
-      newState.scrubTime, "seconds"
+      newState.scrubTime,
+      "seconds"
     );
 
     if (newState.isPlayed) {
@@ -109,19 +115,30 @@ export default function useYoutubePlayerWithControls(
     }
   }
 
-  const [_, setLastVisitedRoom] = useLocalStorage<{ name: string, id: string, videoPlatform: string }>(LOCAL_STORAGE_LAST_VISITED_ROOM)
+  const [_, setLastVisitedRoom] = useLocalStorage<{
+    name: string;
+    id: string;
+    videoPlatform: string;
+  }>(LOCAL_STORAGE_LAST_VISITED_ROOM);
 
   useEffect(() => {
     if (
-      !roomStore.name || !router.query.roomIdentificationId || !roomStore.videoPlatform
-    ) return
+      !roomStore.name ||
+      !router.query.roomIdentificationId ||
+      !roomStore.videoPlatform
+    )
+      return;
 
     setLastVisitedRoom({
       name: roomStore.name,
       id: router.query.roomIdentificationId as string,
       videoPlatform: roomStore.videoPlatform,
-    })
-  }, [roomStore.name, router.query.roomIdentificationId, roomStore.videoPlatform])
+    });
+  }, [
+    roomStore.name,
+    router.query.roomIdentificationId,
+    roomStore.videoPlatform,
+  ]);
 
   function setWatchState(
     newState: Partial<
@@ -251,6 +268,6 @@ export default function useYoutubePlayerWithControls(
     router,
     isRoomFavorited,
     onToggleFavorites,
-    showFavoriteButton
+    showFavoriteButton,
   };
 }
