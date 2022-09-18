@@ -2,7 +2,7 @@ import type { PassportStatic } from "passport";
 import type { Express } from "express";
 import { Strategy as GoogleOAuth2Strategy } from "passport-google-oauth20";
 import { AuthNextCallback, JwtSigner } from "../../types";
-import { CustomPrismaClient } from "@rooms2watch/prisma-client";
+import type { CustomPrismaClient } from "@rooms2watch/prisma-client";
 
 export const OAUTH_URL_REDIRECT_ROUTE = "/oauth2/redirect/google";
 
@@ -13,13 +13,13 @@ type GoogleOAuth20StrategyParams = ConstructorParameters<
 type GoogleOAuth20ProviderCallbackParamsShifted = Parameters<
   GoogleOAuth20StrategyParams[1]
 > extends [
-  infer Req,
-  infer AccessToken,
-  infer RefresToken,
-  infer Options,
-  infer Profile,
-  infer Done
-]
+    infer Req,
+    infer AccessToken,
+    infer RefresToken,
+    infer Options,
+    infer Profile,
+    infer Done
+  ]
   ? [Req, AccessToken, RefresToken, Profile, AuthNextCallback]
   : never;
 
