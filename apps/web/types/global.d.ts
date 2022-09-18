@@ -1,4 +1,4 @@
-import { CustomProcessEnv } from "@rooms2watch/shared-lib";
+import type { CustomProcessEnv } from "@rooms2watch/shared-lib/types/env";
 import type GoogleAccounts from "google.accounts";
 import type GApi from "gapi";
 

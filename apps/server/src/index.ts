@@ -20,7 +20,7 @@ const allowList = [process.env.WEB_BASE_URL];
 const port = process.env.SERVER_PORT || process.env.PORT || 8000;
 
 async function main() {
-  const router = createRootRouter()
+  const router = createRootRouter();
   const app = express();
 
   const prismaClient = createPrismaClient();

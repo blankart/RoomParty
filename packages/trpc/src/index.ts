@@ -36,26 +36,27 @@ import {
 function routeNameForMerge<T extends string>(route: T): `${T}.` {
   return (route + ".") as `${T}.`;
 }
-export const createRootRouter = () => createRouter()
-  .transformer(superjson)
+export const createRootRouter = () =>
+  createRouter()
+    .transformer(superjson)
 
-  .merge(routeNameForMerge(ROOMS_ROUTER_NAME), roomsRouter)
-  .merge(routeNameForMerge(ROOMS_ROUTER_NAME), roomsWithUserRouter)
-  .merge(routeNameForMerge(ROOMS_ROUTER_NAME), roomsProtectedRouter)
+    .merge(routeNameForMerge(ROOMS_ROUTER_NAME), roomsRouter)
+    .merge(routeNameForMerge(ROOMS_ROUTER_NAME), roomsWithUserRouter)
+    .merge(routeNameForMerge(ROOMS_ROUTER_NAME), roomsProtectedRouter)
 
-  .merge(routeNameForMerge(CHATS_ROUTER_NAME), chatsRouter)
-  .merge(routeNameForMerge(CHATS_ROUTER_NAME), chatsWithUserRouter)
+    .merge(routeNameForMerge(CHATS_ROUTER_NAME), chatsRouter)
+    .merge(routeNameForMerge(CHATS_ROUTER_NAME), chatsWithUserRouter)
 
-  .merge(routeNameForMerge(PLAYER_ROUTER_NAME), playerRouter)
+    .merge(routeNameForMerge(PLAYER_ROUTER_NAME), playerRouter)
 
-  .merge(routeNameForMerge(YOUTUBE_ROUTER_NAME), youtubeRouter)
+    .merge(routeNameForMerge(YOUTUBE_ROUTER_NAME), youtubeRouter)
 
-  .merge(routeNameForMerge(USERS_ROUTER_NAME), usersRouter)
-  .merge(routeNameForMerge(USERS_ROUTER_NAME), usersProtectedRouter)
+    .merge(routeNameForMerge(USERS_ROUTER_NAME), usersRouter)
+    .merge(routeNameForMerge(USERS_ROUTER_NAME), usersProtectedRouter)
 
-  .merge(
-    routeNameForMerge(FAVORITED_ROOMS_ROUTER_NAME),
-    favoritedRoomsProtectedRouter
-  );
+    .merge(
+      routeNameForMerge(FAVORITED_ROOMS_ROUTER_NAME),
+      favoritedRoomsProtectedRouter
+    );
 
 export type AppRouter = ReturnType<typeof createRootRouter>;

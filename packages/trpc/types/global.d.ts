@@ -1,4 +1,4 @@
-import { CustomProcessEnv } from "@rooms2watch/shared-lib";
+import type { CustomProcessEnv } from "@rooms2watch/shared-lib/types/env";
 
 declare global {
   namespace NodeJS {

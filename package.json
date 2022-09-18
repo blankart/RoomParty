@@ -7,6 +7,7 @@
     "packages/*"
   ],
   "scripts": {
+    "turbo": "turbo",
     "prepare": "husky install",
     "build": "turbo run build",
     "build:server": "turbo run build --filter=@rooms2watch/server --",
