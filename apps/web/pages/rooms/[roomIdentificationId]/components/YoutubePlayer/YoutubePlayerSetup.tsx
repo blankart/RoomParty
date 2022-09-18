@@ -78,7 +78,7 @@ export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
               <div className="grid grid-cols-1 gap-4 overflow-y-auto md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {ctx.searchResult.map((result) => (
                   <ClickableCard
-                    key={result.id}
+                    key={result.description + result.title}
                     onClick={() =>
                       ctx.onSelectLink(result.url, result.thumbnailSrc)
                     }

@@ -1,8 +1,22 @@
 import classNames from "classnames";
 import { FaSpinner } from "react-icons/fa";
+import dynamic from "next/dynamic";
 
-import Modal from "../../../../../components/Modal/Modal";
+import Modal from "@web/components/Modal/Modal";
+
 import useChat from "./useChat";
+const ChatNamePrompt = dynamic(() => import("./ChatNamePrompt"), {
+  ssr: false,
+  suspense: true,
+});
+const ChatItem = dynamic(() => import("./ChatItem"), {
+  ssr: false,
+  suspense: true,
+});
+const ChatTextarea = dynamic(() => import("./ChatTextarea"), {
+  ssr: false,
+  suspense: true,
+});
 
 export interface ChatProps {}
 
@@ -18,18 +32,7 @@ export default function Chat(props: ChatProps) {
         bodyClassName="flex flex-col w-full gap-4"
         title={`Welcome to ${ctx.name}'s room!`}
       >
-        <p className="!m-0 py-4 text-sm">
-          Let me know your name so we can let you in!
-        </p>
-        <input
-          ref={ctx.nameInputRef}
-          placeholder="Your name"
-          className="input input-bordered input-primary"
-        />
-
-        <button className="w-full btn btn-primary" onClick={ctx.onSetName}>
-          Let me in!
-        </button>
+        <ChatNamePrompt onSetName={ctx.onSetName} />
       </Modal>
 
       <div
@@ -58,60 +61,15 @@ export default function Chat(props: ChatProps) {
             {!ctx.isLoading && ctx.userName && !ctx.isFetching && (
               <>
                 {ctx.chats?.map((chat) => (
-                  <div
-                    key={chat.id}
-                    className="p-1 break-all hover:bg-slate-600/20"
-                  >
-                    {chat.isSystemMessage ? (
-                      <>
-                        <span className="block py-2 text-xs italic text-center opacity-50 md:text-sm">
-                          {chat.message}
-                        </span>
-                      </>
-                    ) : (
-                      <div className="text-xs md:text-sm">
-                        <b style={chat.color ? { color: chat.color } : {}}>
-                          {chat.name}
-                          {chat.userId === ctx.owner && (
-                            <span
-                              className="inline-block m-0 ml-2 mb-1 text-[0.9rem] align-middle tooltip tooltip-primary"
-                              data-tip="Room Host"
-                            >
-                              👑
-                            </span>
-                          )}
-                        </b>
-                        : {chat.message}
-                      </div>
-                    )}
-                  </div>
+                  <ChatItem key={chat.id} {...chat} owner={ctx.owner} />
                 ))}
               </>
             )}
           </div>
-          <div className="flex flex-col w-full p-2 gap-y-2">
-            <textarea
-              ref={ctx.inputRef}
-              disabled={(ctx.isLoading || ctx.isFetching) && !!ctx.userName}
-              className="h-20 p-2 resize-none bg-slate-700/50 textarea"
-              onKeyDown={(e) => {
-                if (e.key !== "Enter") return;
-                ctx.onSend();
-              }}
-            />
-            <div className="flex justify-between">
-              <div />
-              <button
-                className={classNames("btn btn-secondary btn-sm", {
-                  "btn-disabled":
-                    (ctx.isLoading || ctx.isFetching) && !!ctx.userName,
-                })}
-                onClick={ctx.onSend}
-              >
-                Send
-              </button>
-            </div>
-          </div>
+          <ChatTextarea
+            disabled={(ctx.isLoading || ctx.isFetching) && !!ctx.userName}
+            onSend={ctx.onSend}
+          />
         </section>
       </div>
     </>

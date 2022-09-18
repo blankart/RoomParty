@@ -14,6 +14,8 @@ import useLocalStorage from "@web/hooks/useLocalStorage";
 
 import { ChatProps } from "./Chat";
 import randomColor from "randomcolor";
+import { ChatNamePromptForm } from "./ChatNamePrompt";
+import { ChatTextareaForm } from "./ChatTextarea";
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 const getLocalStorageColorName = (id: string) =>
@@ -42,8 +44,6 @@ export default function useChat(props: ChatProps) {
     !!roomStore.id && !!roomStore.userName && !!roomStore.localStorageSessionId;
 
   const chatsRef = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLTextAreaElement>(null);
-  const nameInputRef = useRef<HTMLInputElement>(null);
 
   const [sessionId, setSessionId] = useLocalStorage<undefined | number>(
     CHAT_LOCAL_STORAGE_SESSION_KEY
@@ -100,32 +100,27 @@ export default function useChat(props: ChatProps) {
     roomStore.id && setUserNameFromLocalStorage(newName);
   }
 
-  function onSend() {
-    if (!inputRef.current?.value?.trim() || !roomStore.id) return;
+  function onSend(data: ChatTextareaForm) {
+    if (!data.message?.trim()) return
+    if (!roomStore.id) return;
     let color = userNameChatColorFromLocalStorage;
     if (!color) color = randomColor();
     send({
       name: roomStore.userName,
-      message: inputRef.current.value,
+      message: data.message,
       id: roomStore.id,
       userId: user?.user?.id,
       color,
     });
     setUserNameChatColorFromLocalStorage(color);
-    inputRef.current.value = "";
-    inputRef.current.focus();
   }
 
-  function onSetName() {
-    if (!nameInputRef.current?.value) return;
-    setName(nameInputRef.current?.value);
+  function onSetName(data: ChatNamePromptForm) {
+    setName(data.name);
   }
 
   useEffect(() => {
     scrollChatsToBottom();
-    if (inputRef.current && !inputRef.current?.value?.trim()) {
-      inputRef.current.value = "";
-    }
   }, [roomStore.chatsLength()]);
 
   useEffect(() => {
@@ -184,8 +179,6 @@ export default function useChat(props: ChatProps) {
     ...roomStore,
     chatsRef,
     onSetName,
-    nameInputRef,
-    inputRef,
     onSend,
     shouldEnableQueries,
     user,
