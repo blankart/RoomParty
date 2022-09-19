@@ -6,6 +6,8 @@ import type { Chat } from "@rooms2watch/prisma-client";
 import type { CurrentUser } from "../../types/user";
 import ModelsService from "../models/models.service";
 import EmitterInstance from "../../utils/Emitter";
+import RoomsService from "../rooms/rooms.service";
+import { RoomSyncIntervalMap } from "../player/player.service";
 
 interface EmitterTypes {
   SEND: Chat;
@@ -16,7 +18,7 @@ const TempRoomSessionMap = new Map<string, number>();
 export const ChatsEmitter = EmitterInstance.for<EmitterTypes>("CHATS");
 
 class Chats {
-  constructor() {}
+  constructor() { }
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {
@@ -70,13 +72,13 @@ class Chats {
         },
         ...(data.userId
           ? {
-              color: data.color,
-              user: {
-                connect: {
-                  id: data.userId,
-                },
+            color: data.color,
+            user: {
+              connect: {
+                id: data.userId,
               },
-            }
+            },
+          }
           : {}),
       },
     });
@@ -219,7 +221,7 @@ class Chats {
         this.incrementOnlineCount(data.id, data.localStorageSessionId, user),
       ]);
 
-      return () => {
+      return async () => {
         TempRoomSessionMap.set(
           JSON.stringify(data),
           Math.max(0, (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) - 1)
@@ -228,7 +230,7 @@ class Chats {
         ChatsEmitter.channel("SEND").off(data.id, onAdd);
 
         if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) === 0)
-          Promise.all([
+          await Promise.all([
             ModelsService.client.chat
               .create({
                 data: {
@@ -255,6 +257,10 @@ class Chats {
               user
             ),
           ]);
+
+        if (await RoomsService.countNumberOfOnlineInRoom(data.id) <= 0) {
+          clearInterval(RoomSyncIntervalMap.get(data.id))
+        }
       };
     });
   }

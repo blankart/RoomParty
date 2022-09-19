@@ -4,12 +4,14 @@ import { FaSpinner } from "react-icons/fa";
 
 import ClickableCard from "@web/components/Card/ClickableCard";
 
-import { useYoutubePlayerSetup } from "./useYoutubePlayerSetup";
+import { useReactPlayerWithControlsSetup } from "../hooks/useReactPlayerWithControlsSetup";
 
-export interface YoutubePlayerSetupProps {}
+export interface ReactPlayerWithControlsSetupProps {}
 
-export default function YoutubePlayerSetup(props: YoutubePlayerSetupProps) {
-  const ctx = useYoutubePlayerSetup(props);
+export default function ReactPlayerWithControlsSetup(
+  props: ReactPlayerWithControlsSetupProps
+) {
+  const ctx = useReactPlayerWithControlsSetup(props);
 
   return (
     <>

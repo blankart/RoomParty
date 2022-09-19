@@ -238,6 +238,26 @@ class Rooms {
       }
     })
   }
+
+  async countNumberOfOnlineInRoom(id: string) {
+    const onlineUsers = await ModelsService.client.user.count({
+      where: {
+        Room: {
+          id
+        }
+      }
+    })
+
+    const onlineGuests = await ModelsService.client.room.findFirst({
+      where: { id },
+      select: { onlineGuests: true }
+    }).then(room => {
+      if (!room) return 0
+      return room.onlineGuests?.length
+    })
+
+    return onlineGuests + onlineUsers
+  }
 }
 
 const RoomsService = Rooms.getInstance();

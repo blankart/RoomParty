@@ -14,15 +14,16 @@
   "dependencies": {
     "@rooms2watch/auth-providers": "*",
     "@rooms2watch/prisma-client": "*",
+    "@rooms2watch/shared-lib": "*",
     "@trpc/server": "^9.27.2",
+    "eventemitter2": "^6.4.9",
     "eventemitter3": "^4.0.7",
     "nookies": "^2.5.2",
     "pg-boss": "^8.0.0",
     "smile2emoji": "^3.1.1",
     "superjson": "^1.9.1",
     "ytsr": "^3.8.0",
-    "zod": "^3.19.0",
-    "@rooms2watch/shared-lib": "*"
+    "zod": "^3.19.0"
   },
   "devDependencies": {
     "@rooms2watch/eslint-config-custom": "*",

@@ -1,6 +1,6 @@
-import _EventEmitter3 from "eventemitter3";
+import _EventEmitter2 from "eventemitter2";
 
-class EventEmitter3 extends _EventEmitter3 {
+class EventEmitter2 extends _EventEmitter2 {
   emit(type: any, ...args: any[]) {
     if (process.env.NODE_ENV !== "production") {
       console.log(`${type} emitted: ${JSON.stringify(args)}`);
@@ -10,12 +10,15 @@ class EventEmitter3 extends _EventEmitter3 {
 }
 
 class Emitter {
-  constructor(private emitter: EventEmitter3) {}
+  constructor(private emitter: EventEmitter2) { }
   static instance: Emitter;
 
   static getInstance() {
     if (!Emitter.instance) {
-      Emitter.instance = new Emitter(new EventEmitter3());
+      Emitter.instance = new Emitter(new EventEmitter2({
+        wildcard: true,
+        delimiter: '.',
+      }));
     }
 
     return Emitter.instance;
@@ -26,10 +29,8 @@ class Emitter {
     channel: keyof T,
     key: string
   ) {
-    return `[${module}-${String(channel)}-${key}]`;
+    return `${module}.${String(channel)}.${key}`;
   }
-
-  private test() {}
 
   for<ChannelTypes extends Record<string, any>>(module: string) {
     const self = this;
@@ -60,17 +61,21 @@ class Emitter {
 
           emit(key: string, value: ChannelTypes[Key]) {
             self.emitter.emit(
-              self.generateKeyWithChannel<ChannelTypes>(
+              [
                 module,
-                channelKey,
+                String(channelKey),
                 key
-              ),
+              ],
               value
             );
           },
         };
       },
     };
+  }
+
+  on(...args: Parameters<EventEmitter2['on']>) {
+    return this.emitter.on(...args)
   }
 }
 

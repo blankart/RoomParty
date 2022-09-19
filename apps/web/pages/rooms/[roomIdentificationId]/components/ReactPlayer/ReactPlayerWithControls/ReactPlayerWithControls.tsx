@@ -5,35 +5,29 @@ import React, { Suspense } from "react";
 import { FaCopy, FaStar } from "react-icons/fa";
 import { FiShare } from "react-icons/fi";
 import { ImExit } from "react-icons/im";
-import Modal from "../../../../../components/Modal/Modal";
-import useYoutubePlayerWithControls from "./useYoutubePlayerWithControls";
-import YoutubePlayerSetup from "./YoutubePlayerSetup";
+import Modal from "../../../../../../components/Modal/Modal";
+import useReactPlayerWithControls from "./hooks/useReactPlayerWithControls";
+import ReactPlayerWithControlsSetup from "./components/ReactPlayerWithControlsSetup";
 
-const YoutubePlayer = dynamic(
+const ReactPlayer = dynamic(
   () =>
     import(
-      "@web/pages/rooms/[roomIdentificationId]/components/YoutubePlayer/YoutubePlayer"
+      "@web/pages/rooms/[roomIdentificationId]/components/ReactPlayer/ReactPlayer"
     ),
   {
     ssr: false,
   }
 );
 
-export interface YoutubePlayerWithControlsProps {}
+export interface ReactPlayerWithControlsProps {}
 
-const YOUTUBE_PLAYER_CONFIG = {
-  playerVars: { origin: process.env.NEXT_PUBLIC_WEB_BASE_URL },
-};
-
-const YOUTUBE_PLAYER_PROGRESS_INTERVAL = 1_000;
-
-export default function YoutubePlayerWithControls(
-  props: YoutubePlayerWithControlsProps
+export default function ReactPlayerWithControls(
+  props: ReactPlayerWithControlsProps
 ) {
-  const ctx = useYoutubePlayerWithControls(props);
+  const ctx = useReactPlayerWithControls(props);
 
   return (
-    <>
+    <Suspense>
       <Modal
         onClose={ctx.onClickShareWithYourFriends}
         open={ctx.showShareWithYourFriendsModal}
@@ -88,20 +82,20 @@ export default function YoutubePlayerWithControls(
       <div className="flex flex-col flex-1 w-full max-h-screen bg-base-100">
         <div className="relative flex-1 w-full bg-base-100">
           <Suspense>
-            <YoutubePlayerSetup />
-            <YoutubePlayer
-              onStart={ctx.onStart}
+            <ReactPlayerWithControlsSetup />
+            <ReactPlayer
+              onReady={ctx.onStart}
+              onDuration={ctx.onStart}
               onPause={ctx.onPause}
               onPlay={ctx.onPlay}
               onSeek={ctx.onSeek}
-              progressInterval={YOUTUBE_PLAYER_PROGRESS_INTERVAL}
+              pip
               stopOnUnmount
               controls
-              youtubePlayerRef={ctx.youtubePlayerRef}
+              reactPlayerRef={ctx.reactPlayerRef}
               width="100%"
               height="100%"
               url={ctx.url}
-              config={YOUTUBE_PLAYER_CONFIG}
             />
           </Suspense>
         </div>
@@ -177,6 +171,6 @@ export default function YoutubePlayerWithControls(
           </div>
         </div>
       </div>
-    </>
+    </Suspense>
   );
 }

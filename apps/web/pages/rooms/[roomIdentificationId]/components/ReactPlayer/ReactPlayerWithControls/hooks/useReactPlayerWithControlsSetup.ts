@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
-import { useControlMutation } from "./useYoutubePlayerWithControls";
-import { YoutubePlayerSetupProps } from "./YoutubePlayerSetup";
+import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWithControlsSetup";
 import { trpc } from "@web/api";
 import useDebouncedState from "@web/hooks/useDebouncedState";
 import numeral from "numeral";
+import { useControlMutation } from "./useReactPlayerWithControls";
 
-export function useYoutubePlayerSetup(props: YoutubePlayerSetupProps) {
+export function useReactPlayerWithControlsSetup(props: ReactPlayerWithControlsSetupProps) {
   const [focused, setFocused] = useState(false);
   const youtubeInputRef = useRef<HTMLInputElement>(null);
   const [q, debouncedQ, setQ] = useDebouncedState("", 300);
