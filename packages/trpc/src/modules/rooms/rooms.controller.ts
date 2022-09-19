@@ -9,16 +9,24 @@ import {
   createSchema,
   deleteMyRoomSchema,
   findByRoomIdentificationIdSchema,
+  getOnlineInfoSchema,
 } from "./rooms.schema";
 
 export const ROOMS_ROUTER_NAME = "rooms";
 
-export const roomsRouter = createRouter().query("findByRoomIdentificationId", {
-  input: findByRoomIdentificationIdSchema,
-  async resolve({ input }) {
-    return await RoomsService.findByRoomIdentificationId(input);
-  },
-});
+export const roomsRouter = createRouter()
+  .query("findByRoomIdentificationId", {
+    input: findByRoomIdentificationIdSchema,
+    async resolve({ input }) {
+      return await RoomsService.findByRoomIdentificationId(input);
+    },
+  })
+  .query("getOnlineInfo", {
+    input: getOnlineInfoSchema,
+    async resolve({ input }) {
+      return await RoomsService.getOnlineInfoByRoomIdentificationid(input);
+    },
+  });
 
 export const roomsProtectedRouter = createProtectedRouter()
   .query("findMyRoom", {

@@ -7,6 +7,7 @@ import {
   CreateSchema,
   DeleteMyRoomSchema,
   FindByRoomIdentificationIdSchema,
+  GetOnlineInfoSchema,
 } from "./rooms.dto";
 
 enum ROOMS_SERVICE_QUEUE {
@@ -17,7 +18,7 @@ const IDENTIFICATION_ID_MAX_LENGTH = 8;
 const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
 class Rooms {
-  constructor() {}
+  constructor() { }
   private static instance?: Rooms;
   static getInstance() {
     if (!Rooms.instance) {
@@ -195,6 +196,47 @@ class Rooms {
     return await ModelsService.client.room.delete({
       where: { id: data.id },
     });
+  }
+
+  async getOnlineInfoByRoomIdentificationid(data: GetOnlineInfoSchema) {
+    const onlineUsersCount = await ModelsService.client.user.count({
+      where: {
+        Room: {
+          roomIdentificationId: data.roomIdentificationId
+        }
+      }
+    })
+
+    return await ModelsService.client.room.findFirst({
+      where: { roomIdentificationId: data.roomIdentificationId },
+      select: {
+        onlineGuests: true,
+        onlineUsers: {
+          take: 3,
+          select: {
+            name: true,
+            picture: true
+          }
+        }
+      },
+    }).then(room => {
+      if (!room) return room
+
+      const onlineInfo = [] as { name: string | null, picture: string | null }[]
+
+      for (let i = 0; i < Math.min(room.onlineGuests.length, 3); i++) {
+        onlineInfo.push({ name: 'User', picture: null })
+      }
+
+      for (let i = 0; i < room.onlineUsers.length; i++) {
+        onlineInfo.push(room.onlineUsers[i])
+      }
+
+      return {
+        onlineUsers: room.onlineGuests.length + onlineUsersCount,
+        data: onlineInfo.reverse()
+      }
+    })
   }
 }
 

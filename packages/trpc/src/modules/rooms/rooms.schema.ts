@@ -6,6 +6,12 @@ export const findByRoomIdentificationIdSchema = zod.object({
     .length(8, "Room ID must have exactly 8 characters."),
 });
 
+export const getOnlineInfoSchema = zod.object({
+  roomIdentificationId: zod
+    .string()
+    .length(8, "Room ID must have exactly 8 characters."),
+});
+
 export const deleteMyRoomSchema = zod.object({
   id: zod.string(),
 });
