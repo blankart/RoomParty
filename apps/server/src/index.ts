@@ -63,7 +63,7 @@ async function main() {
   const handler = applyWSSHandler({
     wss,
     router,
-    createContext: createContext as any,
+    createContext: createContext(verifier) as any,
   });
   app.use(
     expressSession({

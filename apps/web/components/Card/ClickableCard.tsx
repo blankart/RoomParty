@@ -21,6 +21,7 @@ export default function ClickableCard(props: ClickableCardProps) {
     <>
       {props.imgSrc ? (
         <img
+          loading="lazy"
           src={props.imgSrc}
           alt={props.alt}
           className="!m-0 aspect-video max-h-[100px] md:max-h-[150px] object-cover !w-full"

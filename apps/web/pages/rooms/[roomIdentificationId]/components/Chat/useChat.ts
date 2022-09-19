@@ -1,6 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
+import uniqBy from 'lodash.uniqby'
 
 import {
   CHAT_LOCAL_STORAGE_SESSION_KEY,
@@ -62,12 +63,17 @@ export default function useChat(props: ChatProps) {
       setUserNameChatColorFromLocalStorage(randomColor());
   }, []);
 
-  const { isFetching } = trpc.useQuery(["chats.chats", roomStore.id!], {
+  const { isFetching, data } = trpc.useQuery(["chats.chats", roomStore.id!], {
     enabled: !!roomStore.id,
-    onSuccess(chats) {
-      roomStore.set({ chats });
-    },
   });
+
+  const chatsFetchedOnceRef = useRef<boolean>(false)
+
+  useEffect(() => {
+    if (chatsFetchedOnceRef.current || !data || !roomStore.chats) return
+    roomStore.set({ chats: uniqBy([...data, ...roomStore.chats], (c) => c.id) })
+    chatsFetchedOnceRef.current = true
+  }, [data, roomStore.chats])
 
   trpc.useSubscription(
     [
@@ -82,6 +88,7 @@ export default function useChat(props: ChatProps) {
       enabled: shouldEnableQueries,
       onNext: (data) => {
         roomStore.addChat(data);
+        removeUnusedLocalStorageItems()
       },
     }
   );

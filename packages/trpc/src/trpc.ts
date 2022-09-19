@@ -50,6 +50,7 @@ export const createProtectedRouter = () =>
     try {
       decoded = await jwt(getAccessToken(ctx));
     } catch {}
+
     if (!decoded) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
 
     const user = await ModelsService.client.account.findFirst({

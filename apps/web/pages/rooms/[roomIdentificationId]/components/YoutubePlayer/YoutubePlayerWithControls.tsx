@@ -105,67 +105,74 @@ export default function YoutubePlayerWithControls(
             />
           </Suspense>
         </div>
-        <div className="flex items-center justify-between p-4 py-6 bg-base-200">
-          <div>
+        <div className="p-4 py-3 md:py-6 bg-base-200">
+          <div className="flex items-center justify-between">
             <div>
-              <h2 className="text-[1.2rem] md:text-2xl !m-0 inline-block max-w-[150px] md:max-w-none align-middle overflow-hidden overflow-ellipsis whitespace-nowrap">
-                {ctx.name}
-              </h2>
-              <span className="inline-block ml-2 align-middle rounded-full badge badge-success badge-sm">
-                {ctx.videoPlatform}
-              </span>
+              <div>
+                <h2 className="text-[1.2rem] md:text-2xl !m-0 inline-block max-w-[150px] md:max-w-none align-middle overflow-hidden overflow-ellipsis whitespace-nowrap">
+                  {ctx.name}
+                </h2>
+                <span className="inline-block ml-2 align-middle rounded-full badge badge-success badge-sm">
+                  {ctx.videoPlatform}
+                </span>
+              </div>
+              {!!ctx.ownerName && (
+                <p className="!m-0 text-xs md:text-lg">
+                  Hosted by: {ctx.ownerName}
+                </p>
+              )}
             </div>
-            {!!ctx.ownerName && (
-              <p className="!m-0 text-xs md:text-lg">
-                Hosted by: {ctx.ownerName}
-              </p>
-            )}
-          </div>
-          <div className="flex gap-2">
-            <div
-              className="tooltip tooltip-primary tooltip-left"
-              data-tip={"Share with your frients"}
-            >
-              <button
-                className="btn btn-ghost btn-sm btn-circle"
-                onClick={ctx.onClickShareWithYourFriends}
-              >
-                <FiShare className="w-4 h-auto" />
-              </button>
-            </div>
-
-            {ctx.showFavoriteButton && (
+            <div className="flex gap-2">
               <div
                 className="tooltip tooltip-primary tooltip-left"
-                data-tip={
-                  ctx.isRoomFavorited
-                    ? "Add to Favorites"
-                    : "Remove to Favorites"
-                }
+                data-tip={"Share with your frients"}
               >
                 <button
                   className="btn btn-ghost btn-sm btn-circle"
-                  onClick={ctx.onToggleFavorites}
+                  onClick={ctx.onClickShareWithYourFriends}
                 >
-                  <FaStar
-                    className={classNames(
-                      "w-4 h-auto",
-                      ctx.isRoomFavorited && "text-amber-500"
-                    )}
-                  />
+                  <FiShare className="w-4 h-auto" />
                 </button>
               </div>
-            )}
 
-            <div
-              className="tooltip tooltip-primary tooltip-left"
-              data-tip="Exit Room"
-            >
-              <Link href="/" passHref>
-                <a className="btn btn-ghost btn-sm btn-circle">
-                  <ImExit className="w-4 h-auto" />
-                </a>
-              </Link>
+              {ctx.showFavoriteButton && (
+                <div
+                  className="tooltip tooltip-primary tooltip-left"
+                  data-tip={
+                    !ctx.isRoomFavorited
+                      ? "Add to Favorites"
+                      : "Remove to Favorites"
+                  }
+                >
+                  <button
+                    className={classNames(
+                      "btn btn-ghost btn-sm btn-circle",
+                      ctx.isRoomFavoritedLoading && "btn-disabled"
+                    )}
+                    onClick={ctx.onToggleFavorites}
+                  >
+                    <FaStar
+                      className={classNames(
+                        "w-4 h-auto",
+                        ctx.isRoomFavorited &&
+                          !ctx.isRoomFavoritedLoading &&
+                          "text-amber-500"
+                      )}
+                    />
+                  </button>
+                </div>
+              )}
+
+              <div
+                className="tooltip tooltip-primary tooltip-left"
+                data-tip="Exit Room"
+              >
+                <Link href="/" passHref>
+                  <a className="btn btn-ghost btn-sm btn-circle">
+                    <ImExit className="w-4 h-auto" />
+                  </a>
+                </Link>
+              </div>
             </div>
           </div>
         </div>

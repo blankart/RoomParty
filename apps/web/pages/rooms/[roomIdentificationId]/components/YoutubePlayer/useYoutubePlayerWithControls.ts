@@ -1,7 +1,10 @@
 import type { PlayerStatus } from "@rooms2watch/trpc";
 import { trpc } from "@web/api";
 import { useEffect, useRef, useState } from "react";
-import { RoomsStore, useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
+import {
+  RoomsStore,
+  useRoomsStore,
+} from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import shallow from "zustand/shallow";
 
 import { YoutubePlayerWithControlsProps } from "./YoutubePlayerWithControls";
@@ -220,17 +223,18 @@ export default function useYoutubePlayerWithControls(
     setShowShareWithYourFriendsModal(!showShareWithYourFriendsModal);
   }
 
-  const { data: isRoomFavorited } = trpc.useQuery(
-    [
-      "favorited-rooms.isRoomFavorited",
+  const { data: isRoomFavorited, isLoading: isRoomFavoritedLoading } =
+    trpc.useQuery(
+      [
+        "favorited-rooms.isRoomFavorited",
+        {
+          roomId: roomStore.id!,
+        },
+      ],
       {
-        roomId: roomStore.id!,
-      },
-    ],
-    {
-      enabled: !!user && !!roomStore.id,
-    }
-  );
+        enabled: !!user && !!roomStore.id,
+      }
+    );
 
   const { mutateAsync: toggle } = trpc.useMutation(["favorited-rooms.toggle"]);
 
@@ -269,5 +273,6 @@ export default function useYoutubePlayerWithControls(
     isRoomFavorited,
     onToggleFavorites,
     showFavoriteButton,
+    isRoomFavoritedLoading,
   };
 }

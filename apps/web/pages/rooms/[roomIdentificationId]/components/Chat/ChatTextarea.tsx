@@ -1,5 +1,10 @@
 import classNames from "classnames";
+import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
+
+const ChatOnlineUsers = dynamic(() => import("./ChatOnlineUsers"), {
+  ssr: false,
+});
 
 export interface ChatTextareaForm {
   message: string;
@@ -23,30 +28,34 @@ export default function ChatTextarea(props: ChatTextareaProps) {
   }
 
   return (
-    <form
-      onSubmit={handleSubmit(onSend)}
-      className="flex flex-col w-full p-2 gap-y-2"
-    >
-      <textarea
-        {...register("message")}
-        disabled={props.disabled}
-        className="h-20 p-2 resize-none bg-slate-700/50 textarea"
-        onKeyDown={(e) => {
-          if (e.key === "Enter" && !e.shiftKey) {
-            handleSubmit(onSend)();
-          }
-        }}
-      />
-      <div className="flex justify-between">
-        <div />
-        <button
-          className={classNames("btn btn-secondary btn-sm", {
-            "btn-disabled": props.disabled,
-          })}
-        >
-          Send
-        </button>
-      </div>
-    </form>
+    <>
+      <form
+        onSubmit={handleSubmit(onSend)}
+        className="flex flex-col w-full p-2 gap-y-2"
+      >
+        <textarea
+          {...register("message")}
+          disabled={props.disabled}
+          className="h-20 p-2 resize-none bg-slate-700/50 textarea"
+          onKeyDown={(e) => {
+            if (e.key === "Enter" && !e.shiftKey) {
+              handleSubmit(onSend)();
+            }
+          }}
+        />
+        <div className="flex justify-between">
+          <div>
+            <ChatOnlineUsers />
+          </div>
+          <button
+            className={classNames("btn btn-secondary btn-sm", {
+              "btn-disabled": props.disabled,
+            })}
+          >
+            Send
+          </button>
+        </div>
+      </form>
+    </>
   );
 }

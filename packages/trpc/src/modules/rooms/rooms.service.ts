@@ -6,7 +6,6 @@ import { TRPCError } from "@trpc/server";
 import {
   CreateSchema,
   DeleteMyRoomSchema,
-  FindByIdSchema,
   FindByRoomIdentificationIdSchema,
 } from "./rooms.dto";
 
@@ -18,7 +17,7 @@ const IDENTIFICATION_ID_MAX_LENGTH = 8;
 const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
 class Rooms {
-  constructor() {}
+  constructor() { }
   private static instance?: Rooms;
   static getInstance() {
     if (!Rooms.instance) {
@@ -44,55 +43,6 @@ class Rooms {
       .findFirst({
         where: {
           roomIdentificationId: data.roomIdentificationId,
-        },
-        select: {
-          id: true,
-          name: true,
-          playerStatus: true,
-          videoPlatform: true,
-          roomIdentificationId: true,
-          chats: {
-            take: 20,
-            orderBy: {
-              createdAt: "desc",
-            },
-          },
-          owner: {
-            select: {
-              userId: true,
-              user: {
-                select: {
-                  name: true,
-                },
-              },
-            },
-          },
-        },
-      })
-      .then((res) => {
-        if (!res) return res;
-        return {
-          ...res,
-          chats: res.chats
-            .reverse()
-            .map(ChatsService.convertEmoticonsToEmojisInChatsObject),
-        };
-      });
-
-    if (!room)
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "No room found matching this ID.",
-      });
-
-    return room;
-  }
-
-  async findById(data: FindByIdSchema) {
-    const room = await ModelsService.client.room
-      .findFirst({
-        where: {
-          id: data.id,
         },
         select: {
           id: true,

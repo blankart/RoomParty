@@ -11,10 +11,12 @@ interface EmitterTypes {
   SEND: Chat;
 }
 
+const TempRoomSessionMap = new Map<string, number>()
+
 export const ChatsEmitter = EmitterInstance.for<EmitterTypes>("CHATS");
 
 class Chats {
-  constructor() {}
+  constructor() { }
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {
@@ -68,13 +70,13 @@ class Chats {
         },
         ...(data.userId
           ? {
-              color: data.color,
-              user: {
-                connect: {
-                  id: data.userId,
-                },
+            color: data.color,
+            user: {
+              connect: {
+                id: data.userId,
               },
-            }
+            },
+          }
           : {}),
       },
     });
@@ -186,40 +188,17 @@ class Chats {
       };
 
       ChatsEmitter.channel("SEND").on(data.id, onAdd);
+      TempRoomSessionMap.set(JSON.stringify(data),
+        (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) + 1)
 
       Promise.all([
-        ModelsService.client.chat
-          .create({
-            data: {
-              name: data.name,
-              message: `${data.name} has joined the room.`,
-              isSystemMessage: true,
-              room: {
-                connect: {
-                  id: data.id,
-                },
-              },
-            },
-          })
-          .then((res) =>
-            ChatsEmitter.channel("SEND").emit(
-              data.id,
-              this.convertEmoticonsToEmojisInChatsObject(res)
-            )
-          ),
-
-        this.incrementOnlineCount(data.id, data.localStorageSessionId, user),
-      ]);
-
-      return () => {
-        ChatsEmitter.channel("SEND").off(data.id, onAdd);
-
-        Promise.all([
-          ModelsService.client.chat
+        (async () => {
+          if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) > 1) return
+          await ModelsService.client.chat
             .create({
               data: {
                 name: data.name,
-                message: `${data.name} has left the room.`,
+                message: `${data.name} has joined the room.`,
                 isSystemMessage: true,
                 room: {
                   connect: {
@@ -233,10 +212,43 @@ class Chats {
                 data.id,
                 this.convertEmoticonsToEmojisInChatsObject(res)
               )
-            ),
+            )
+        })()
+        ,
 
-          this.decrementOnlineCount(data.id, data.localStorageSessionId, user),
-        ]);
+        this.incrementOnlineCount(data.id, data.localStorageSessionId, user),
+      ]);
+
+      return () => {
+        TempRoomSessionMap.set(JSON.stringify(data),
+          Math.max(0, (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) - 1))
+
+        ChatsEmitter.channel("SEND").off(data.id, onAdd);
+
+        if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) === 0)
+          Promise.all([
+            ModelsService.client.chat
+              .create({
+                data: {
+                  name: data.name,
+                  message: `${data.name} has left the room.`,
+                  isSystemMessage: true,
+                  room: {
+                    connect: {
+                      id: data.id,
+                    },
+                  },
+                },
+              })
+              .then((res) =>
+                ChatsEmitter.channel("SEND").emit(
+                  data.id,
+                  this.convertEmoticonsToEmojisInChatsObject(res)
+                )
+              ),
+
+            this.decrementOnlineCount(data.id, data.localStorageSessionId, user),
+          ]);
       };
     });
   }

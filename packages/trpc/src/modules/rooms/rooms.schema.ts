@@ -1,9 +1,5 @@
 import zod from "zod";
 
-export const findByIdSchema = zod.object({
-  id: zod.string(),
-});
-
 export const findByRoomIdentificationIdSchema = zod.object({
   roomIdentificationId: zod
     .string()

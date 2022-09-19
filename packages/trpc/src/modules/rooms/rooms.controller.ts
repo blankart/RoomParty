@@ -8,19 +8,12 @@ import { TRPCError } from "@trpc/server";
 import {
   createSchema,
   deleteMyRoomSchema,
-  findByIdSchema,
   findByRoomIdentificationIdSchema,
 } from "./rooms.schema";
 
 export const ROOMS_ROUTER_NAME = "rooms";
 
 export const roomsRouter = createRouter()
-  .query("findById", {
-    input: findByIdSchema,
-    async resolve({ input }) {
-      return await RoomsService.findById(input);
-    },
-  })
   .query("findByRoomIdentificationId", {
     input: findByRoomIdentificationIdSchema,
     async resolve({ input }) {
