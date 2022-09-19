@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
-import uniqBy from 'lodash.uniqby'
+import uniqBy from "lodash.uniqby";
 
 import {
   CHAT_LOCAL_STORAGE_SESSION_KEY,
@@ -67,13 +67,15 @@ export default function useChat(props: ChatProps) {
     enabled: !!roomStore.id,
   });
 
-  const chatsFetchedOnceRef = useRef<boolean>(false)
+  const chatsFetchedOnceRef = useRef<boolean>(false);
 
   useEffect(() => {
-    if (chatsFetchedOnceRef.current || !data || !roomStore.chats) return
-    roomStore.set({ chats: uniqBy([...data, ...roomStore.chats], (c) => c.id) })
-    chatsFetchedOnceRef.current = true
-  }, [data, roomStore.chats])
+    if (chatsFetchedOnceRef.current || !data || !roomStore.chats) return;
+    roomStore.set({
+      chats: uniqBy([...data, ...roomStore.chats], (c) => c.id),
+    });
+    chatsFetchedOnceRef.current = true;
+  }, [data, roomStore.chats]);
 
   trpc.useSubscription(
     [
@@ -88,7 +90,7 @@ export default function useChat(props: ChatProps) {
       enabled: shouldEnableQueries,
       onNext: (data) => {
         roomStore.addChat(data);
-        removeUnusedLocalStorageItems()
+        removeUnusedLocalStorageItems();
       },
     }
   );
@@ -108,7 +110,7 @@ export default function useChat(props: ChatProps) {
   }
 
   function onSend(data: ChatTextareaForm) {
-    if (!data.message?.trim()) return
+    if (!data.message?.trim()) return;
     if (!roomStore.id) return;
     let color = userNameChatColorFromLocalStorage;
     if (!color) color = randomColor();

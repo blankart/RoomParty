@@ -11,12 +11,12 @@ interface EmitterTypes {
   SEND: Chat;
 }
 
-const TempRoomSessionMap = new Map<string, number>()
+const TempRoomSessionMap = new Map<string, number>();
 
 export const ChatsEmitter = EmitterInstance.for<EmitterTypes>("CHATS");
 
 class Chats {
-  constructor() { }
+  constructor() {}
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {
@@ -70,13 +70,13 @@ class Chats {
         },
         ...(data.userId
           ? {
-            color: data.color,
-            user: {
-              connect: {
-                id: data.userId,
+              color: data.color,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });
@@ -188,12 +188,14 @@ class Chats {
       };
 
       ChatsEmitter.channel("SEND").on(data.id, onAdd);
-      TempRoomSessionMap.set(JSON.stringify(data),
-        (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) + 1)
+      TempRoomSessionMap.set(
+        JSON.stringify(data),
+        (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) + 1
+      );
 
       Promise.all([
         (async () => {
-          if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) > 1) return
+          if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) > 1) return;
           await ModelsService.client.chat
             .create({
               data: {
@@ -212,16 +214,16 @@ class Chats {
                 data.id,
                 this.convertEmoticonsToEmojisInChatsObject(res)
               )
-            )
-        })()
-        ,
-
+            );
+        })(),
         this.incrementOnlineCount(data.id, data.localStorageSessionId, user),
       ]);
 
       return () => {
-        TempRoomSessionMap.set(JSON.stringify(data),
-          Math.max(0, (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) - 1))
+        TempRoomSessionMap.set(
+          JSON.stringify(data),
+          Math.max(0, (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) - 1)
+        );
 
         ChatsEmitter.channel("SEND").off(data.id, onAdd);
 
@@ -247,7 +249,11 @@ class Chats {
                 )
               ),
 
-            this.decrementOnlineCount(data.id, data.localStorageSessionId, user),
+            this.decrementOnlineCount(
+              data.id,
+              data.localStorageSessionId,
+              user
+            ),
           ]);
       };
     });

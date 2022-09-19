@@ -17,7 +17,7 @@ const IDENTIFICATION_ID_MAX_LENGTH = 8;
 const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
 class Rooms {
-  constructor() { }
+  constructor() {}
   private static instance?: Rooms;
   static getInstance() {
     if (!Rooms.instance) {
