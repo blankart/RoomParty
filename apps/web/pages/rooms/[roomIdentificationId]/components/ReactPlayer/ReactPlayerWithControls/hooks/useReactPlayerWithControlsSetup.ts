@@ -7,7 +7,9 @@ import useDebouncedState from "@web/hooks/useDebouncedState";
 import numeral from "numeral";
 import { useControlMutation } from "./useReactPlayerWithControls";
 
-export function useReactPlayerWithControlsSetup(props: ReactPlayerWithControlsSetupProps) {
+export function useReactPlayerWithControlsSetup(
+  props: ReactPlayerWithControlsSetupProps
+) {
   const [focused, setFocused] = useState(false);
   const youtubeInputRef = useRef<HTMLInputElement>(null);
   const [q, debouncedQ, setQ] = useDebouncedState("", 300);

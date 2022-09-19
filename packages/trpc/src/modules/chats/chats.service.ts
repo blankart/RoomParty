@@ -18,7 +18,7 @@ const TempRoomSessionMap = new Map<string, number>();
 export const ChatsEmitter = EmitterInstance.for<EmitterTypes>("CHATS");
 
 class Chats {
-  constructor() { }
+  constructor() {}
   private static instance?: Chats;
   static getInstance() {
     if (!Chats.instance) {
@@ -72,13 +72,13 @@ class Chats {
         },
         ...(data.userId
           ? {
-            color: data.color,
-            user: {
-              connect: {
-                id: data.userId,
+              color: data.color,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });
@@ -258,8 +258,8 @@ class Chats {
             ),
           ]);
 
-        if (await RoomsService.countNumberOfOnlineInRoom(data.id) <= 0) {
-          clearInterval(RoomSyncIntervalMap.get(data.id))
+        if ((await RoomsService.countNumberOfOnlineInRoom(data.id)) <= 0) {
+          clearInterval(RoomSyncIntervalMap.get(data.id));
         }
       };
     });

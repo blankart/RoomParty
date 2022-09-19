@@ -11,9 +11,7 @@ import { ReactPlayerWithControlsProps } from "../ReactPlayerWithControls";
 import { useRouter } from "next/router";
 import { useMe } from "@web/context/AuthContext";
 import useLocalStorage from "@web/hooks/useLocalStorage";
-import {
-  LOCAL_STORAGE_LAST_VISITED_ROOM,
-} from "@rooms2watch/shared-lib";
+import { LOCAL_STORAGE_LAST_VISITED_ROOM } from "@rooms2watch/shared-lib";
 import { useReactPlayer } from "../context/ReactPlayerWithControlsContext";
 
 export function useControlMutation() {
@@ -43,11 +41,11 @@ export function useControlMutation() {
   return control;
 }
 
-
 export default function useReactPlayerWithControls(
   props: ReactPlayerWithControlsProps
 ) {
-  const { reactPlayerRef, playVideo, pauseVideo, seekTo, getInternalPlayer } = useReactPlayer()
+  const { reactPlayerRef, playVideo, pauseVideo, seekTo, getInternalPlayer } =
+    useReactPlayer();
 
   const router = useRouter();
   const { user } = useMe();
@@ -109,16 +107,13 @@ export default function useReactPlayerWithControls(
     newState: Pick<RoomsStore, "scrubTime" | "isPlayed">
   ) {
     setTimeout(() => {
-      seekTo(
-        newState.scrubTime,
-        "seconds"
-      );
+      seekTo(newState.scrubTime, "seconds");
       if (newState.isPlayed) {
         playVideo();
       } else {
         pauseVideo();
       }
-    }, 2_000)
+    }, 2_000);
   }
 
   const [_, setLastVisitedRoom] = useLocalStorage<{
@@ -152,10 +147,7 @@ export default function useReactPlayerWithControls(
     >
   ) {
     if (newState.scrubTime && newState.scrubTime !== roomStore.scrubTime) {
-      seekTo(
-        newState.scrubTime,
-        "seconds"
-      );
+      seekTo(newState.scrubTime, "seconds");
     }
 
     if (typeof newState.isPlayed === "boolean") {
@@ -177,8 +169,8 @@ export default function useReactPlayerWithControls(
   }
 
   useEffect(() => {
-    onStart()
-  }, [])
+    onStart();
+  }, []);
 
   const control = useControlMutation();
 
@@ -211,7 +203,7 @@ export default function useReactPlayerWithControls(
   }
 
   function onSeek(_time: number | { position: number }) {
-    const time = typeof _time === 'number' ? _time : _time.position
+    const time = typeof _time === "number" ? _time : _time.position;
     roomStore.url &&
       control({
         id: roomStore.id!,

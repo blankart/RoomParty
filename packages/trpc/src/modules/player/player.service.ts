@@ -14,10 +14,10 @@ enum PLAYER_SERVICE_QUEUE {
 }
 
 export const PlayerEmitter = EmitterInstance.for<EmitterTypes>("PLAYER");
-export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>()
+export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
 class Player {
   constructor() {
-    PlayerEmitter.channel('CONTROL').on('*', this.synchronizeScrubTime)
+    PlayerEmitter.channel("CONTROL").on("*", this.synchronizeScrubTime);
   }
   private static instance?: Player;
   static getInstance() {
@@ -28,30 +28,44 @@ class Player {
     return Player.instance;
   }
 
-  private async synchronizeScrubTime({ id, ...playerStatus }: PlayerStatus & { id: string }) {
+  private async synchronizeScrubTime({
+    id,
+    ...playerStatus
+  }: PlayerStatus & { id: string }) {
     switch (playerStatus.type) {
-      case 'CHANGE_URL':
-      case 'PAUSED':
-      case 'SEEK_TO':
-        clearTimeout(RoomSyncIntervalMap.get(id))
-        break
-      case 'PLAYED':
-        clearTimeout(RoomSyncIntervalMap.get(id))
-        RoomSyncIntervalMap.set(id, setInterval(() => {
-          ModelsService.client.room.findFirst({
-            where: { id },
-            select: { playerStatus: true }
-          }).then(async room => {
-            if (!room) return
-            const { playerStatus } = room
-            if (playerStatus && typeof playerStatus !== 'object') return
-            await ModelsService.client.room.update({
-              where: { id },
-              data: { playerStatus: { ...(playerStatus as any || {}), time: ((room as any).playerStatus?.time ?? 0) + 5 } }
-            })
-          })
-        }, 5_000))
-      default: break
+      case "CHANGE_URL":
+      case "PAUSED":
+      case "SEEK_TO":
+        clearTimeout(RoomSyncIntervalMap.get(id));
+        break;
+      case "PLAYED":
+        clearTimeout(RoomSyncIntervalMap.get(id));
+        RoomSyncIntervalMap.set(
+          id,
+          setInterval(() => {
+            ModelsService.client.room
+              .findFirst({
+                where: { id },
+                select: { playerStatus: true },
+              })
+              .then(async (room) => {
+                if (!room) return;
+                const { playerStatus } = room;
+                if (playerStatus && typeof playerStatus !== "object") return;
+                await ModelsService.client.room.update({
+                  where: { id },
+                  data: {
+                    playerStatus: {
+                      ...((playerStatus as any) || {}),
+                      time: ((room as any).playerStatus?.time ?? 0) + 5,
+                    },
+                  },
+                });
+              });
+          }, 5_000)
+        );
+      default:
+        break;
     }
   }
 
@@ -77,8 +91,9 @@ class Player {
     switch (params.data.statusObject.type) {
       case "PAUSED":
       case "PLAYED":
-        message = `${params.data.statusObject.name} ${params.data.statusObject.type === "PAUSED" ? "paused" : "played"
-          } the video.`;
+        message = `${params.data.statusObject.name} ${
+          params.data.statusObject.type === "PAUSED" ? "paused" : "played"
+        } the video.`;
         break;
       case "CHANGE_URL":
         message = `${params.data.statusObject.name} changed the video (${params.data.statusObject.url})`;
@@ -110,7 +125,10 @@ class Player {
   }
 
   async control(data: { id: string; statusObject: PlayerStatus }) {
-    PlayerEmitter.channel("CONTROL").emit(data.id, { ...data.statusObject, id: data.id });
+    PlayerEmitter.channel("CONTROL").emit(data.id, {
+      ...data.statusObject,
+      id: data.id,
+    });
     await ModelsService.client.room.update({
       where: {
         id: data.id,

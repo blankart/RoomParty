@@ -10,15 +10,17 @@ class EventEmitter2 extends _EventEmitter2 {
 }
 
 class Emitter {
-  constructor(private emitter: EventEmitter2) { }
+  constructor(private emitter: EventEmitter2) {}
   static instance: Emitter;
 
   static getInstance() {
     if (!Emitter.instance) {
-      Emitter.instance = new Emitter(new EventEmitter2({
-        wildcard: true,
-        delimiter: '.',
-      }));
+      Emitter.instance = new Emitter(
+        new EventEmitter2({
+          wildcard: true,
+          delimiter: ".",
+        })
+      );
     }
 
     return Emitter.instance;
@@ -60,22 +62,15 @@ class Emitter {
           },
 
           emit(key: string, value: ChannelTypes[Key]) {
-            self.emitter.emit(
-              [
-                module,
-                String(channelKey),
-                key
-              ],
-              value
-            );
+            self.emitter.emit([module, String(channelKey), key], value);
           },
         };
       },
     };
   }
 
-  on(...args: Parameters<EventEmitter2['on']>) {
-    return this.emitter.on(...args)
+  on(...args: Parameters<EventEmitter2["on"]>) {
+    return this.emitter.on(...args);
   }
 }
 

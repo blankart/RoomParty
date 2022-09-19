@@ -18,7 +18,7 @@ const IDENTIFICATION_ID_MAX_LENGTH = 8;
 const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
 class Rooms {
-  constructor() { }
+  constructor() {}
   private static instance?: Rooms;
   static getInstance() {
     if (!Rooms.instance) {
@@ -202,61 +202,68 @@ class Rooms {
     const onlineUsersCount = await ModelsService.client.user.count({
       where: {
         Room: {
-          roomIdentificationId: data.roomIdentificationId
-        }
-      }
-    })
-
-    return await ModelsService.client.room.findFirst({
-      where: { roomIdentificationId: data.roomIdentificationId },
-      select: {
-        onlineGuests: true,
-        onlineUsers: {
-          take: 3,
-          select: {
-            name: true,
-            picture: true
-          }
-        }
+          roomIdentificationId: data.roomIdentificationId,
+        },
       },
-    }).then(room => {
-      if (!room) return room
+    });
 
-      const onlineInfo = [] as { name: string | null, picture: string | null }[]
+    return await ModelsService.client.room
+      .findFirst({
+        where: { roomIdentificationId: data.roomIdentificationId },
+        select: {
+          onlineGuests: true,
+          onlineUsers: {
+            take: 3,
+            select: {
+              name: true,
+              picture: true,
+            },
+          },
+        },
+      })
+      .then((room) => {
+        if (!room) return room;
 
-      for (let i = 0; i < Math.min(room.onlineGuests.length, 3); i++) {
-        onlineInfo.push({ name: 'User', picture: null })
-      }
+        const onlineInfo = [] as {
+          name: string | null;
+          picture: string | null;
+        }[];
 
-      for (let i = 0; i < room.onlineUsers.length; i++) {
-        onlineInfo.push(room.onlineUsers[i])
-      }
+        for (let i = 0; i < Math.min(room.onlineGuests.length, 3); i++) {
+          onlineInfo.push({ name: "User", picture: null });
+        }
 
-      return {
-        onlineUsers: room.onlineGuests.length + onlineUsersCount,
-        data: onlineInfo.reverse()
-      }
-    })
+        for (let i = 0; i < room.onlineUsers.length; i++) {
+          onlineInfo.push(room.onlineUsers[i]);
+        }
+
+        return {
+          onlineUsers: room.onlineGuests.length + onlineUsersCount,
+          data: onlineInfo.reverse(),
+        };
+      });
   }
 
   async countNumberOfOnlineInRoom(id: string) {
     const onlineUsers = await ModelsService.client.user.count({
       where: {
         Room: {
-          id
-        }
-      }
-    })
+          id,
+        },
+      },
+    });
 
-    const onlineGuests = await ModelsService.client.room.findFirst({
-      where: { id },
-      select: { onlineGuests: true }
-    }).then(room => {
-      if (!room) return 0
-      return room.onlineGuests?.length
-    })
+    const onlineGuests = await ModelsService.client.room
+      .findFirst({
+        where: { id },
+        select: { onlineGuests: true },
+      })
+      .then((room) => {
+        if (!room) return 0;
+        return room.onlineGuests?.length;
+      });
 
-    return onlineGuests + onlineUsers
+    return onlineGuests + onlineUsers;
   }
 }
 
