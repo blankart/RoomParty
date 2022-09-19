@@ -7,7 +7,7 @@ import FavoritedRoom from "./components/FavoritedRoom";
 
 export default function IndexPage() {
   return (
-    <div className="block w-full h-screen overflow-y-auto prose max-w-none">
+    <div className="block w-full overflow-y-auto prose max-w-none">
       <div className="hidden md:grid hero bg-base-100">
         <div className="text-center hero-content">
           <div className="max-w-md">
