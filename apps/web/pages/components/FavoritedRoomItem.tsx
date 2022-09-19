@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { FaStar } from "react-icons/fa";
 import { InferQueryOutput } from "@web/types/trpc";
+import Image from "next/image";
 
 type FindMyFavoritesQueryOutput =
   InferQueryOutput<"favorited-rooms.findMyFavorites">[number];
@@ -14,7 +15,14 @@ export default function FavoritedRoomItem(props: FavoritedRoomItemProps) {
     <div key={props.id} className="flex gap-4">
       <div className="w-[100px]">
         {props.thumbnailUrl ? (
-          <img src={props.thumbnailUrl} className="object-cover w-20 h-20" />
+          <Image
+            src={props.thumbnailUrl}
+            layout="responsive"
+            className="object-cover"
+            width={80}
+            height={80}
+            alt={props.name}
+          />
         ) : (
           <div className="w-20 h-20 bg-secondary" />
         )}
