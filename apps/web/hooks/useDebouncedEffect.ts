@@ -6,7 +6,7 @@ export const DEFAULT_DEBOUNCED_TIME = 1_000;
 
 export default function useDebouncedEffect(
   f: ReturnTypeUseEffect[0],
-  deps: ReturnTypeUseEffect[1],
+  deps?: ReturnTypeUseEffect[1],
   debounceTime?: number
 ) {
   if (typeof debounceTime !== "number") debounceTime = DEFAULT_DEBOUNCED_TIME;
@@ -21,5 +21,5 @@ export default function useDebouncedEffect(
       clearTimeout(timeout);
       cleanup?.();
     };
-  }, [deps]);
+  }, deps);
 }

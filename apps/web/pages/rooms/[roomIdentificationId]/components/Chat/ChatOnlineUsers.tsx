@@ -1,21 +1,33 @@
 import { trpc } from "@web/api";
-import { useMe } from "@web/context/AuthContext";
+import useDebouncedEffect from "@web/hooks/useDebouncedEffect";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
 import { CgMoreAlt } from "react-icons/cg";
+import { useRoomsStore } from "../../store/rooms";
 
 interface ChatOnlineUsersProps {}
 
 export default function ChatOnlineUsers(props: ChatOnlineUsersProps) {
   const router = useRouter();
   const roomIdentificationId = router.query.roomIdentificationId as string;
-  const { data } = trpc.useQuery(
+  const { data, refetch } = trpc.useQuery(
     ["rooms.getOnlineInfo", { roomIdentificationId }],
     {
       enabled: !!roomIdentificationId,
-      refetchInterval: 10_000,
+      refetchOnWindowFocus: true,
+      refetchOnReconnect: true,
     }
+  );
+
+  const chatLength = useRoomsStore((s) => s.chatsLength());
+
+  useDebouncedEffect(
+    () => {
+      refetch();
+    },
+    [chatLength],
+    5_000
   );
 
   const first3OnlineInfo = useMemo(() => data?.data?.slice(0, 3) ?? [], [data]);
