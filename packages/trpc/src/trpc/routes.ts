@@ -1,19 +1,19 @@
 import { injectable, inject } from "inversify";
-import ChatsController, {
+import ChatsRouter, {
   CHATS_ROUTER_NAME,
-} from "../modules/chats/chats.controller";
-import FavoritedRoomsController, {
+} from "../modules/chats/chats.router";
+import FavoritedRoomsRouter, {
   FAVORITED_ROOMS_ROUTER_NAME,
-} from "../modules/favorited-rooms/favorited-rooms.controller";
-import PlayerController, {
+} from "../modules/favorited-rooms/favorited-rooms.router";
+import PlayerRouter, {
   PLAYER_ROUTER_NAME,
-} from "../modules/player/player.controller";
-import RoomsController, {
+} from "../modules/player/player.router";
+import RoomsRouter, {
   ROOMS_ROUTER_NAME,
-} from "../modules/rooms/rooms.controller";
-import UsersController, { USERS_ROUTER_NAME } from "../modules/users/users.controller";
-import YoutubeController, { YOUTUBE_ROUTER_NAME } from "../modules/youtube/youtube.controller";
-import { CONTROLLER_TYPES, TRPC_ROUTER } from "../types/container";
+} from "../modules/rooms/rooms.router";
+import UsersRouter, { USERS_ROUTER_NAME } from "../modules/users/users.router";
+import YoutubeRouter, { YOUTUBE_ROUTER_NAME } from "../modules/youtube/youtube.router";
+import { ROUTER_TYPES, TRPC_ROUTER } from "../types/container";
 import superjson from "superjson";
 import TRPCRouter from "./router";
 
@@ -21,13 +21,13 @@ import TRPCRouter from "./router";
 class TRPCRoutes {
   constructor(
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter,
-    @inject(CONTROLLER_TYPES.Rooms) private roomsController: RoomsController,
-    @inject(CONTROLLER_TYPES.Chats) private chatsController: ChatsController,
-    @inject(CONTROLLER_TYPES.Player) private playerController: PlayerController,
-    @inject(CONTROLLER_TYPES.Users) private usersController: UsersController,
-    @inject(CONTROLLER_TYPES.Youtube) private youtubeController: YoutubeController,
-    @inject(CONTROLLER_TYPES.FavoritedRooms)
-    private favoritedRoomsController: FavoritedRoomsController
+    @inject(ROUTER_TYPES.Rooms) private roomsRouter: RoomsRouter,
+    @inject(ROUTER_TYPES.Chats) private chatsRouter: ChatsRouter,
+    @inject(ROUTER_TYPES.Player) private playerRouter: PlayerRouter,
+    @inject(ROUTER_TYPES.Users) private usersRouter: UsersRouter,
+    @inject(ROUTER_TYPES.Youtube) private youtubeRouter: YoutubeRouter,
+    @inject(ROUTER_TYPES.FavoritedRooms)
+    private favoritedRoomsController: FavoritedRoomsRouter
   ) {
 
   }
@@ -40,29 +40,29 @@ class TRPCRoutes {
       .transformer(superjson)
       .merge(
         this.routeNameForMerge(ROOMS_ROUTER_NAME),
-        this.roomsController.router()
+        this.roomsRouter.router()
       )
       .merge(
         this.routeNameForMerge(ROOMS_ROUTER_NAME),
-        this.roomsController.protectedRouter()
+        this.roomsRouter.protectedRouter()
       )
       .merge(
         this.routeNameForMerge(ROOMS_ROUTER_NAME),
-        this.roomsController.routerWithUser()
+        this.roomsRouter.routerWithUser()
       )
 
       .merge(
         this.routeNameForMerge(CHATS_ROUTER_NAME),
-        this.chatsController.router()
+        this.chatsRouter.router()
       )
       .merge(
         this.routeNameForMerge(CHATS_ROUTER_NAME),
-        this.chatsController.routerWithUser()
+        this.chatsRouter.routerWithUser()
       )
 
       .merge(
         this.routeNameForMerge(PLAYER_ROUTER_NAME),
-        this.playerController.router()
+        this.playerRouter.router()
       )
 
       .merge(
@@ -70,10 +70,10 @@ class TRPCRoutes {
         this.favoritedRoomsController.protectedRouter()
       )
 
-      .merge(this.routeNameForMerge(USERS_ROUTER_NAME), this.usersController.router())
-      .merge(this.routeNameForMerge(USERS_ROUTER_NAME), this.usersController.protectedRouter())
+      .merge(this.routeNameForMerge(USERS_ROUTER_NAME), this.usersRouter.router())
+      .merge(this.routeNameForMerge(USERS_ROUTER_NAME), this.usersRouter.protectedRouter())
 
-      .merge(this.routeNameForMerge(YOUTUBE_ROUTER_NAME), this.youtubeController.router())
+      .merge(this.routeNameForMerge(YOUTUBE_ROUTER_NAME), this.youtubeRouter.router())
   }
 }
 

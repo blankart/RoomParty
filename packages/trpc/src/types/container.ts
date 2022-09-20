@@ -18,13 +18,13 @@ export const CONTROLLER_TYPES = {
     Youtube: Symbol("YoutubeController"),
 };
 
-export const ROUTES_TYPES = {
-    Rooms: Symbol("RoomsRoutes"),
-    Chats: Symbol("ChatsRoutes"),
-    Player: Symbol("PlayerRoutes"),
-    FavoritedRooms: Symbol("FavoritedRoomsRoutes"),
-    Users: Symbol("UsersRoutes"),
-    Youtube: Symbol("YoutubeRoutes"),
+export const ROUTER_TYPES = {
+    Rooms: Symbol("RoomsRouter"),
+    Chats: Symbol("ChatsRouter"),
+    Player: Symbol("PlayerRouter"),
+    FavoritedRooms: Symbol("FavoritedRoomsRouter"),
+    Users: Symbol("UsersRouter"),
+    Youtube: Symbol("YoutubeRouter"),
 };
 
 export const TRPC_ROUTES = Symbol("TRPCRoutes");

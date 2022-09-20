@@ -1,27 +1,18 @@
-import zod from "zod";
-import YoutubeService from "./youtube.service";
 import { inject, injectable } from 'inversify'
-import { SERVICES_TYPES, TRPC_ROUTER } from "../../types/container";
-import TRPCRouter from "../../trpc/router";
+import { SERVICES_TYPES } from "../../types/container";
+import YoutubeService from "./youtube.service";
 
-export const YOUTUBE_ROUTER_NAME = "youtube";
 
 @injectable()
 class YoutubeController {
   constructor(
-    @inject(SERVICES_TYPES.Youtube) private youtubeService: YoutubeService,
-    @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
+    @inject(SERVICES_TYPES.Youtube) private youtubeService: YoutubeService
   ) { }
 
-  router() {
-    const self = this
-    return this.trpcRouter.createRouter().query("search", {
-      input: zod.string(),
-      async resolve({ input }) {
-        return await self.youtubeService.search(input);
-      },
-    })
+  async search(q: string) {
+    if (!q) q = "funny dogs";
+    return await this.youtubeService.getVideosByQ(q);
   }
 }
 
-export default YoutubeController
+export default YoutubeController;

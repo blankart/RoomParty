@@ -1,15 +1,15 @@
 import zod from "zod";
-import ChatsService from "./chats.service";
 import { injectable, inject } from "inversify";
-import { SERVICES_TYPES, TRPC_ROUTER } from "../../types/container";
+import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
 import TRPCRouter from "../../trpc/router";
+import ChatsController from "./chats.controller";
 
 export const CHATS_ROUTER_NAME = "chats";
 
 @injectable()
-class ChatsRoutes {
+class ChatsRouter {
     constructor(
-        @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
+        @inject(CONTROLLER_TYPES.Chats) private chatsController: ChatsController,
         @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
     ) { }
 
@@ -19,7 +19,7 @@ class ChatsRoutes {
             .query("chats", {
                 input: zod.string(),
                 async resolve({ input }) {
-                    return self.chatsService.findChatsByRoomId(input);
+                    return self.chatsController.chats(input);
                 },
             })
 
@@ -32,7 +32,7 @@ class ChatsRoutes {
                     color: zod.string(),
                 }),
                 async resolve({ input }) {
-                    return await self.chatsService.send(input);
+                    return await self.chatsController.send(input);
                 },
             });
     }
@@ -46,10 +46,10 @@ class ChatsRoutes {
                 localStorageSessionId: zod.number(),
             }),
             async resolve({ input, ctx }) {
-                return await self.chatsService.chatSubscription(input, ctx.user);
+                return await self.chatsController.chatSubscription(input, ctx.user);
             },
         });
     }
 }
 
-export default ChatsRoutes;
+export default ChatsRouter;

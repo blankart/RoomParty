@@ -1,75 +1,227 @@
+import ChatsService from "../chats/chats.service";
+import ModelsService from "../models/models.service";
+import QueueService from "../queue/queue.service";
+import { CurrentUser } from "../../types/user";
+import { injectable, inject } from "inversify";
 import { TRPCError } from "@trpc/server";
 import {
-  createSchema,
-  deleteMyRoomSchema,
-  findByRoomIdentificationIdSchema,
-  getOnlineInfoSchema,
-} from "./rooms.schema";
+  CreateSchema,
+  DeleteMyRoomSchema,
+  FindByRoomIdentificationIdSchema,
+  GetOnlineInfoSchema,
+} from "./rooms.dto";
+import { SERVICES_TYPES } from "../../types/container";
+import RoomsService from "./rooms.service";
 
-import { injectable, inject } from "inversify";
-import { SERVICES_TYPES, TRPC_ROUTER } from "../../types/container";
-import type RoomsService from "./rooms.service";
-import TRPCRouter from "../../trpc/router";
-
-export const ROOMS_ROUTER_NAME = "rooms";
+enum ROOMS_SERVICE_QUEUE {
+  DELETE_ROOM = "DELETE_ROOM",
+}
 
 @injectable()
 class RoomsController {
   constructor(
-    @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
-    @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
+    @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
+    @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
+    @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
+    @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService
   ) { }
-  router() {
-    const self = this;
-    return this.trpcRouter.createRouter()
-      .query("findByRoomIdentificationId", {
-        input: findByRoomIdentificationIdSchema,
-        async resolve({ input }) {
-          return await self.roomsService.findByRoomIdentificationId(input);
+  async findByRoomIdentificationId(data: FindByRoomIdentificationIdSchema) {
+    const room = await this.modelsService.client.room
+      .findFirst({
+        where: {
+          roomIdentificationId: data.roomIdentificationId,
+        },
+        select: {
+          id: true,
+          name: true,
+          playerStatus: true,
+          videoPlatform: true,
+          roomIdentificationId: true,
+          chats: {
+            take: 20,
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
+          owner: {
+            select: {
+              userId: true,
+              user: {
+                select: {
+                  name: true,
+                },
+              },
+            },
+          },
         },
       })
-      .query("getOnlineInfo", {
-        input: getOnlineInfoSchema,
-        async resolve({ input }) {
-          return await self.roomsService.getOnlineInfoByRoomIdentificationid(
-            input
-          );
-        },
+      .then((res) => {
+        if (!res) return res;
+        return {
+          ...res,
+          chats: res.chats
+            .reverse()
+            .map(this.chatsService.convertEmoticonsToEmojisInChatsObject),
+        };
       });
+
+    if (!room)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "No room found matching this ID.",
+      });
+
+    return room;
   }
 
-  protectedRouter() {
-    const self = this;
-    return this.trpcRouter.createProtectedRouter()
-      .query("findMyRoom", {
-        async resolve({ ctx }) {
-          return self.roomsService.findMyRoom(ctx.user.id);
-        },
-      })
-      .mutation("deleteMyRoom", {
-        input: deleteMyRoomSchema,
-        async resolve({ input, ctx }) {
-          return self.roomsService.deleteMyRoom(input, ctx.user);
-        },
-      });
-  }
+  async create(data: CreateSchema, user: CurrentUser) {
+    let roomIdentificationId = this.roomsService.roomIdentificationIdGenerator();
 
-  routerWithUser() {
-    const self = this;
+    while (
+      (await this.modelsService.client.room.count({
+        where: { roomIdentificationId },
+      })) > 0
+    ) {
+      roomIdentificationId = this.roomsService.roomIdentificationIdGenerator();
+    }
 
-    return this.trpcRouter.createRouterWithUser().mutation("create", {
-      input: createSchema,
-      async resolve({ input, ctx }) {
-        try {
-          return await self.roomsService.create(input, ctx.user);
-        } catch (e) {
-          throw new TRPCError({
-            message: e as any,
-            code: "BAD_REQUEST",
-          });
-        }
+    const room = await this.modelsService.client.room.create({
+      data: {
+        roomIdentificationId,
+        name: data.name,
+        chats: {
+          create: {
+            name: "Welcome Message",
+            message: user
+              ? `Welcome to ${data.name}'s room!`
+              : `Welcome to ${data.name}'s room! This room is only available for 24 hours. Create an account to own a watch room!`,
+            isSystemMessage: true,
+          },
+        },
+        ...(user ? { owner: { connect: { id: user.id } } } : {}),
       },
     });
+
+    if (!user?.id) {
+      const startAfter = new Date();
+      const ONE_DAY_IN_MS = 1_000 * 60 * 60 * 24;
+      startAfter.setTime(startAfter.getTime() + ONE_DAY_IN_MS);
+
+      this.queueService.queue(
+        ROOMS_SERVICE_QUEUE.DELETE_ROOM,
+        this.roomsService.deleteRoom,
+        { id: room.id },
+        { startAfter },
+        room.id
+      );
+    }
+
+    return room;
+  }
+
+  async findMyRoom(id: string) {
+    return await this.modelsService.client.room
+      .findMany({
+        where: {
+          owner: {
+            id,
+          },
+        },
+        select: {
+          id: true,
+          name: true,
+          playerStatus: true,
+          onlineGuests: true,
+          videoPlatform: true,
+          onlineUsers: {
+            select: { id: true },
+          },
+          owner: {
+            select: {
+              userId: true,
+            },
+          },
+          createdAt: true,
+          roomIdentificationId: true,
+        },
+      })
+      .then((res) =>
+        res
+          .map((r) => ({
+            owner: r.owner?.userId,
+            videoPlatform: r.videoPlatform,
+            roomIdentificationId: r.roomIdentificationId,
+            id: r.id,
+            name: r.name,
+            online: r.onlineGuests.length + r.onlineUsers.length,
+            thumbnail: (r.playerStatus as any)?.thumbnail as
+              | string
+              | null
+              | undefined,
+            createdAt: r.createdAt,
+          }))
+          .sort((a, b) =>
+            a.createdAt.getTime() < b.createdAt.getTime() ? 1 : -1
+          )
+      );
+  }
+
+  async deleteMyRoom(data: DeleteMyRoomSchema, user: CurrentUser) {
+    const willDeleteRoom = await this.modelsService.client.room.findFirst({
+      where: { id: data.id, owner: { id: user?.id } },
+    });
+
+    if (!willDeleteRoom) throw new TRPCError({ code: "UNAUTHORIZED" });
+
+    return await this.modelsService.client.room.delete({
+      where: { id: data.id },
+    });
+  }
+
+  async getOnlineInfo(data: GetOnlineInfoSchema) {
+    const onlineUsersCount = await this.modelsService.client.user.count({
+      where: {
+        Room: {
+          roomIdentificationId: data.roomIdentificationId,
+        },
+      },
+    });
+
+    return await this.modelsService.client.room
+      .findFirst({
+        where: { roomIdentificationId: data.roomIdentificationId },
+        select: {
+          onlineGuests: true,
+          onlineUsers: {
+            take: 3,
+            select: {
+              name: true,
+              picture: true,
+            },
+          },
+        },
+      })
+      .then((room) => {
+        if (!room) return room;
+
+        const onlineInfo = [] as {
+          name: string | null;
+          picture: string | null;
+        }[];
+
+        for (let i = 0; i < Math.min(room.onlineGuests.length, 3); i++) {
+          onlineInfo.push({ name: "User", picture: null });
+        }
+
+        for (let i = 0; i < room.onlineUsers.length; i++) {
+          onlineInfo.push(room.onlineUsers[i]);
+        }
+
+        return {
+          onlineUsers: room.onlineGuests.length + onlineUsersCount,
+          data: onlineInfo.reverse(),
+        };
+      });
   }
 }
 

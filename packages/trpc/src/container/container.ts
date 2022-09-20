@@ -18,10 +18,17 @@ import TRPCRouter from "../trpc/router";
 import TRPCRoutes from "../trpc/routes";
 import {
     CONTROLLER_TYPES,
+    ROUTER_TYPES,
     SERVICES_TYPES,
     TRPC_ROUTER,
     TRPC_ROUTES,
 } from "../types/container";
+import RoomsRouter from "../modules/rooms/rooms.router";
+import ChatsRouter from "../modules/chats/chats.router";
+import PlayerRouter from "../modules/player/player.router";
+import FavoritedRoomsRouter from "../modules/favorited-rooms/favorited-rooms.router";
+import UsersRouter from "../modules/users/users.router";
+import YoutubeRouter from "../modules/youtube/youtube.router";
 
 const appContainer = new Container();
 
@@ -64,6 +71,24 @@ appContainer
 appContainer
     .bind<YoutubeController>(CONTROLLER_TYPES.Youtube)
     .to(YoutubeController).inRequestScope();
+
+/**
+ * Injected Routes
+ */
+appContainer.bind<RoomsRouter>(ROUTER_TYPES.Rooms).to(RoomsRouter).inSingletonScope();
+appContainer.bind<ChatsRouter>(ROUTER_TYPES.Chats).to(ChatsRouter).inSingletonScope();
+appContainer
+    .bind<PlayerRouter>(ROUTER_TYPES.Player)
+    .to(PlayerRouter).inSingletonScope();
+appContainer
+    .bind<FavoritedRoomsRouter>(ROUTER_TYPES.FavoritedRooms)
+    .to(FavoritedRoomsRouter).inSingletonScope();
+appContainer
+    .bind<UsersRouter>(ROUTER_TYPES.Users)
+    .to(UsersRouter).inSingletonScope();
+appContainer
+    .bind<YoutubeRouter>(ROUTER_TYPES.Youtube)
+    .to(YoutubeRouter).inRequestScope();
 
 /**
  * Injected TRPCRoutes
