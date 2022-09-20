@@ -59,7 +59,7 @@ class PlayerController {
       data.id,
       setTimeout(() => {
         this.playerService.createChatAfterControl({ data });
-      }, 300)
+      }, 1000)
     );
   }
 }
