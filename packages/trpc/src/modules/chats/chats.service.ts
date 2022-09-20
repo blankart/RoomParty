@@ -6,8 +6,11 @@ import type { Chat } from "@rooms2watch/prisma-client";
 import type { CurrentUser } from "../../types/user";
 import ModelsService from "../models/models.service";
 import EmitterInstance from "../../utils/Emitter";
-import RoomsService from "../rooms/rooms.service";
+import type _RoomsService from "../rooms/rooms.service";
 import { RoomSyncIntervalMap } from "../player/player.service";
+import { injectable, inject } from "inversify";
+import { SERVICES_TYPES } from "../../types/container";
+import type RoomsService from "../rooms/rooms.service";
 
 interface EmitterTypes {
   SEND: Chat;
@@ -17,23 +20,18 @@ const TempRoomSessionMap = new Map<string, number>();
 
 export const ChatsEmitter = EmitterInstance.for<EmitterTypes>("CHATS");
 
-class Chats {
-  constructor() {}
-  private static instance?: Chats;
-  static getInstance() {
-    if (!Chats.instance) {
-      Chats.instance = new Chats();
-    }
-
-    return Chats.instance;
-  }
-
+@injectable()
+class ChatsService {
+  constructor(
+    @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
+    @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
+  ) { }
   convertEmoticonsToEmojisInChatsObject(chat: Chat): Chat {
     return { ...chat, message: checkText(chat.message) };
   }
 
   async findChatsByRoomId(id: string) {
-    return await ModelsService.client.room
+    return await this.modelsService.client.room
       .findFirst({
         where: {
           id,
@@ -61,7 +59,7 @@ class Chats {
     userId?: string;
     color: string;
   }) {
-    const newChat = await ModelsService.client.chat.create({
+    const newChat = await this.modelsService.client.chat.create({
       data: {
         name: data.name,
         message: data.message,
@@ -72,13 +70,13 @@ class Chats {
         },
         ...(data.userId
           ? {
-              color: data.color,
-              user: {
-                connect: {
-                  id: data.userId,
-                },
+            color: data.color,
+            user: {
+              connect: {
+                id: data.userId,
               },
-            }
+            },
+          }
           : {}),
       },
     });
@@ -96,7 +94,7 @@ class Chats {
     localStorageSessionId: number,
     user: CurrentUser
   ) {
-    const existingRoom = await ModelsService.client.room.findFirst({
+    const existingRoom = await this.modelsService.client.room.findFirst({
       where: { id },
       include: {
         onlineUsers: {
@@ -109,7 +107,7 @@ class Chats {
     if (!existingRoom) return;
 
     if (!user && !existingRoom.onlineGuests.includes(localStorageSessionId)) {
-      return ModelsService.client.room.update({
+      return this.modelsService.client.room.update({
         where: { id: existingRoom.id },
         data: {
           onlineGuests: [...existingRoom.onlineGuests, localStorageSessionId],
@@ -121,7 +119,7 @@ class Chats {
       user &&
       !existingRoom.onlineUsers.find(({ id }) => id === user.user.id)
     ) {
-      return ModelsService.client.room.update({
+      return this.modelsService.client.room.update({
         where: { id: existingRoom.id },
         data: {
           onlineUsers: {
@@ -139,7 +137,7 @@ class Chats {
     localStorageSessionId: number,
     user: CurrentUser
   ) {
-    const existingRoom = await ModelsService.client.room.findFirst({
+    const existingRoom = await this.modelsService.client.room.findFirst({
       where: { id },
       include: {
         onlineUsers: {
@@ -153,7 +151,7 @@ class Chats {
     if (!existingRoom) return;
 
     if (!user && existingRoom.onlineGuests.includes(localStorageSessionId)) {
-      return ModelsService.client.room.update({
+      return this.modelsService.client.room.update({
         where: { id: existingRoom.id },
         data: {
           onlineGuests: existingRoom.onlineGuests.filter(
@@ -167,7 +165,7 @@ class Chats {
       user &&
       existingRoom.onlineUsers.find(({ id }) => id === user.user.id)
     ) {
-      return ModelsService.client.room.update({
+      return this.modelsService.client.room.update({
         where: { id: existingRoom.id },
         data: {
           onlineUsers: {
@@ -198,7 +196,7 @@ class Chats {
       Promise.all([
         (async () => {
           if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) > 1) return;
-          await ModelsService.client.chat
+          await this.modelsService.client.chat
             .create({
               data: {
                 name: data.name,
@@ -231,7 +229,7 @@ class Chats {
 
         if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) === 0)
           await Promise.all([
-            ModelsService.client.chat
+            this.modelsService.client.chat
               .create({
                 data: {
                   name: data.name,
@@ -258,14 +256,12 @@ class Chats {
             ),
           ]);
 
-        if ((await RoomsService.countNumberOfOnlineInRoom(data.id)) <= 0) {
+        if ((await this.roomsService.countNumberOfOnlineInRoom(data.id)) <= 0) {
           clearInterval(RoomSyncIntervalMap.get(data.id));
         }
       };
     });
   }
 }
-
-const ChatsService = Chats.getInstance();
 
 export default ChatsService;

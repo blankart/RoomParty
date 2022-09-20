@@ -4,6 +4,8 @@ import ModelsService from "../models/models.service";
 import EmitterInstance from "../../utils/Emitter";
 import ChatsService, { ChatsEmitter } from "../chats/chats.service";
 import QueueService from "../queue/queue.service";
+import { inject, injectable } from "inversify";
+import { SERVICES_TYPES } from "../../types/container";
 
 interface EmitterTypes {
   CONTROL: PlayerStatus & { id: string };
@@ -15,17 +17,14 @@ enum PLAYER_SERVICE_QUEUE {
 
 export const PlayerEmitter = EmitterInstance.for<EmitterTypes>("PLAYER");
 export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
-class Player {
-  constructor() {
+@injectable()
+class PlayerService {
+  constructor(
+    @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
+    @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
+    @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
+  ) {
     PlayerEmitter.channel("CONTROL").on("*", this.synchronizeScrubTime);
-  }
-  private static instance?: Player;
-  static getInstance() {
-    if (!Player.instance) {
-      Player.instance = new Player();
-    }
-
-    return Player.instance;
   }
 
   private async synchronizeScrubTime({
@@ -43,7 +42,7 @@ class Player {
         RoomSyncIntervalMap.set(
           id,
           setInterval(() => {
-            ModelsService.client.room
+            this.modelsService.client.room
               .findFirst({
                 where: { id },
                 select: { playerStatus: true },
@@ -52,7 +51,7 @@ class Player {
                 if (!room) return;
                 const { playerStatus } = room;
                 if (playerStatus && typeof playerStatus !== "object") return;
-                await ModelsService.client.room.update({
+                await this.modelsService.client.room.update({
                   where: { id },
                   data: {
                     playerStatus: {
@@ -91,9 +90,8 @@ class Player {
     switch (params.data.statusObject.type) {
       case "PAUSED":
       case "PLAYED":
-        message = `${params.data.statusObject.name} ${
-          params.data.statusObject.type === "PAUSED" ? "paused" : "played"
-        } the video.`;
+        message = `${params.data.statusObject.name} ${params.data.statusObject.type === "PAUSED" ? "paused" : "played"
+          } the video.`;
         break;
       case "CHANGE_URL":
         message = `${params.data.statusObject.name} changed the video (${params.data.statusObject.url})`;
@@ -103,7 +101,7 @@ class Player {
     }
 
     if (!message) return;
-    await ModelsService.client.chat
+    await this.modelsService.client.chat
       .create({
         data: {
           room: {
@@ -119,7 +117,7 @@ class Player {
       .then((res) =>
         ChatsEmitter.channel("SEND").emit(
           params.data.id,
-          ChatsService.convertEmoticonsToEmojisInChatsObject(res)
+          this.chatsService.convertEmoticonsToEmojisInChatsObject(res)
         )
       );
   }
@@ -129,7 +127,7 @@ class Player {
       ...data.statusObject,
       id: data.id,
     });
-    await ModelsService.client.room.update({
+    await this.modelsService.client.room.update({
       where: {
         id: data.id,
       },
@@ -144,7 +142,7 @@ class Player {
     const startAfter = new Date();
     startAfter.setTime(startAfter.getTime() + 1_000);
 
-    QueueService.queue(
+    this.queueService.queue(
       PLAYER_SERVICE_QUEUE.NOTIFY_CONTROL_TO_CHAT,
       this.createChatAfterControl,
       { id: data.id, statusObject: data.statusObject },
@@ -153,7 +151,5 @@ class Player {
     );
   }
 }
-
-const PlayerService = Player.getInstance();
 
 export default PlayerService;

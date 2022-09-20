@@ -8,7 +8,9 @@
     "paths": {
       "@web/*": ["./*"]
     },
-    "types": ["google-one-tap", "google.accounts", "gapi"]
+    "types": ["google-one-tap", "google.accounts", "gapi"],
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true
   },
   "files": ["./types/global.d.ts"]
 }

@@ -1,34 +1,29 @@
+import { injectable } from 'inversify'
 import PgBoss from "pg-boss";
 
 type UnqueuedWork = {
   method: "send";
   params:
-    | [
-        string,
-        (...args: any[]) => any,
-        Record<string, any>,
-        Record<string, any>,
-        string
-      ];
+  | [
+    string,
+    (...args: any[]) => any,
+    Record<string, any>,
+    Record<string, any>,
+    string
+  ];
 };
 
-class Queue {
+@injectable()
+class QueueService {
   private initialized?: boolean;
   private unqueuedWorks: UnqueuedWork[] = [];
+  private pgBossInstance: PgBoss
 
-  constructor(public pgBossInstance: PgBoss) {
+  constructor() {
+    this.pgBossInstance = new PgBoss(process.env.DATABASE_URL!);
     this.initialize();
   }
 
-  private static instance?: Queue;
-  static getInstance() {
-    if (!Queue.instance) {
-      const pgBossInstance = new PgBoss(process.env.DATABASE_URL!);
-      Queue.instance = new Queue(pgBossInstance);
-    }
-
-    return Queue.instance;
-  }
 
   private onStart() {
     this.initialized = true;
@@ -77,7 +72,5 @@ class Queue {
     });
   }
 }
-
-const QueueService = Queue.getInstance();
 
 export default QueueService;

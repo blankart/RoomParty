@@ -2,24 +2,15 @@ import {
   createPrismaClient,
   CustomPrismaClient,
 } from "@rooms2watch/prisma-client";
+import { injectable } from 'inversify'
 
-class Models {
-  private static instance?: Models;
+@injectable()
+class ModelsService {
   client: CustomPrismaClient;
 
   constructor() {
     this.client = createPrismaClient();
   }
-
-  static getInstance() {
-    if (!Models.instance) {
-      Models.instance = new Models();
-    }
-
-    return Models.instance;
-  }
 }
-
-const ModelsService = Models.getInstance();
 
 export default ModelsService;

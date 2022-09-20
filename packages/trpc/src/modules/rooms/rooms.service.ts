@@ -2,6 +2,7 @@ import ChatsService from "../chats/chats.service";
 import ModelsService from "../models/models.service";
 import QueueService from "../queue/queue.service";
 import { CurrentUser } from "../../types/user";
+import { injectable, inject } from "inversify";
 import { TRPCError } from "@trpc/server";
 import {
   CreateSchema,
@@ -9,6 +10,7 @@ import {
   FindByRoomIdentificationIdSchema,
   GetOnlineInfoSchema,
 } from "./rooms.dto";
+import { SERVICES_TYPES } from "../../types/container";
 
 enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",
@@ -17,17 +19,13 @@ enum ROOMS_SERVICE_QUEUE {
 const IDENTIFICATION_ID_MAX_LENGTH = 8;
 const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 
-class Rooms {
-  constructor() {}
-  private static instance?: Rooms;
-  static getInstance() {
-    if (!Rooms.instance) {
-      Rooms.instance = new Rooms();
-    }
-
-    return Rooms.instance;
-  }
-
+@injectable()
+class RoomsService {
+  constructor(
+    @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
+    @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
+    @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
+  ) { }
   private roomIdentificationIdGenerator() {
     let generatedId = "";
 
@@ -40,7 +38,7 @@ class Rooms {
   }
 
   async findByRoomIdentificationId(data: FindByRoomIdentificationIdSchema) {
-    const room = await ModelsService.client.room
+    const room = await this.modelsService.client.room
       .findFirst({
         where: {
           roomIdentificationId: data.roomIdentificationId,
@@ -75,7 +73,7 @@ class Rooms {
           ...res,
           chats: res.chats
             .reverse()
-            .map(ChatsService.convertEmoticonsToEmojisInChatsObject),
+            .map(this.chatsService.convertEmoticonsToEmojisInChatsObject),
         };
       });
 
@@ -89,7 +87,7 @@ class Rooms {
   }
 
   async deleteRoom(data: { data: { id: string } }) {
-    await ModelsService.client.room.delete({
+    await this.modelsService.client.room.delete({
       where: { id: data.data.id },
     });
   }
@@ -98,14 +96,14 @@ class Rooms {
     let roomIdentificationId = this.roomIdentificationIdGenerator();
 
     while (
-      (await ModelsService.client.room.count({
+      (await this.modelsService.client.room.count({
         where: { roomIdentificationId },
       })) > 0
     ) {
       roomIdentificationId = this.roomIdentificationIdGenerator();
     }
 
-    const room = await ModelsService.client.room.create({
+    const room = await this.modelsService.client.room.create({
       data: {
         roomIdentificationId,
         name: data.name,
@@ -127,7 +125,7 @@ class Rooms {
       const ONE_DAY_IN_MS = 1_000 * 60 * 60 * 24;
       startAfter.setTime(startAfter.getTime() + ONE_DAY_IN_MS);
 
-      QueueService.queue(
+      this.queueService.queue(
         ROOMS_SERVICE_QUEUE.DELETE_ROOM,
         this.deleteRoom,
         { id: room.id },
@@ -140,7 +138,7 @@ class Rooms {
   }
 
   async findMyRoom(id: string) {
-    return await ModelsService.client.room
+    return await this.modelsService.client.room
       .findMany({
         where: {
           owner: {
@@ -187,19 +185,19 @@ class Rooms {
   }
 
   async deleteMyRoom(data: DeleteMyRoomSchema, user: CurrentUser) {
-    const willDeleteRoom = await ModelsService.client.room.findFirst({
+    const willDeleteRoom = await this.modelsService.client.room.findFirst({
       where: { id: data.id, owner: { id: user?.id } },
     });
 
     if (!willDeleteRoom) throw new TRPCError({ code: "UNAUTHORIZED" });
 
-    return await ModelsService.client.room.delete({
+    return await this.modelsService.client.room.delete({
       where: { id: data.id },
     });
   }
 
   async getOnlineInfoByRoomIdentificationid(data: GetOnlineInfoSchema) {
-    const onlineUsersCount = await ModelsService.client.user.count({
+    const onlineUsersCount = await this.modelsService.client.user.count({
       where: {
         Room: {
           roomIdentificationId: data.roomIdentificationId,
@@ -207,7 +205,7 @@ class Rooms {
       },
     });
 
-    return await ModelsService.client.room
+    return await this.modelsService.client.room
       .findFirst({
         where: { roomIdentificationId: data.roomIdentificationId },
         select: {
@@ -245,7 +243,7 @@ class Rooms {
   }
 
   async countNumberOfOnlineInRoom(id: string) {
-    const onlineUsers = await ModelsService.client.user.count({
+    const onlineUsers = await this.modelsService.client.user.count({
       where: {
         Room: {
           id,
@@ -253,7 +251,7 @@ class Rooms {
       },
     });
 
-    const onlineGuests = await ModelsService.client.room
+    const onlineGuests = await this.modelsService.client.room
       .findFirst({
         where: { id },
         select: { onlineGuests: true },
@@ -266,7 +264,5 @@ class Rooms {
     return onlineGuests + onlineUsers;
   }
 }
-
-const RoomsService = Rooms.getInstance();
 
 export default RoomsService;

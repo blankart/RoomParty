@@ -1,19 +1,16 @@
 import ModelsService from "../models/models.service";
 import { CurrentUser } from "../../types/user";
 import { TRPCError } from "@trpc/server";
+import { injectable, inject } from "inversify";
+import { SERVICES_TYPES } from "../../types/container";
 
-class FavoritedRooms {
-  constructor() {}
-  private static instance?: FavoritedRooms;
-  static getInstance() {
-    if (!FavoritedRooms.instance) {
-      FavoritedRooms.instance = new FavoritedRooms();
-    }
-    return FavoritedRooms.instance;
-  }
-
+@injectable()
+class FavoritedRoomsService {
+  constructor(
+    @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
+  ) { }
   async toggle(data: { roomId: string }, user: CurrentUser) {
-    const room = await ModelsService.client.room.findFirst({
+    const room = await this.modelsService.client.room.findFirst({
       where: { id: data.roomId },
     });
 
@@ -29,16 +26,16 @@ class FavoritedRooms {
 
     let favoritedRoom;
     try {
-      favoritedRoom = await ModelsService.client.favoritedRoom.findFirst({
+      favoritedRoom = await this.modelsService.client.favoritedRoom.findFirst({
         where: {
           roomId: data.roomId,
           userId: user?.user.id,
         },
       });
-    } catch {}
+    } catch { }
 
     if (!favoritedRoom) {
-      return await ModelsService.client.favoritedRoom.create({
+      return await this.modelsService.client.favoritedRoom.create({
         data: {
           room: {
             connect: {
@@ -54,13 +51,13 @@ class FavoritedRooms {
       });
     }
 
-    return await ModelsService.client.favoritedRoom.delete({
+    return await this.modelsService.client.favoritedRoom.delete({
       where: { id: favoritedRoom.id },
     });
   }
 
   async isRoomFavorited(data: { roomId: string }, user: CurrentUser) {
-    const favoritedRoom = await ModelsService.client.favoritedRoom.findFirst({
+    const favoritedRoom = await this.modelsService.client.favoritedRoom.findFirst({
       where: {
         roomId: data.roomId,
         userId: user?.user.id,
@@ -73,7 +70,7 @@ class FavoritedRooms {
 
   async findMyFavorites(user: CurrentUser) {
     return (
-      await ModelsService.client.favoritedRoom.findMany({
+      await this.modelsService.client.favoritedRoom.findMany({
         where: {
           userId: user?.user.id,
         },
@@ -106,7 +103,5 @@ class FavoritedRooms {
     }));
   }
 }
-
-const FavoritedRoomsService = FavoritedRooms.getInstance();
 
 export default FavoritedRoomsService;

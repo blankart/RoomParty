@@ -1,18 +1,12 @@
 import ytrs from "ytsr";
 import { SearchResponse } from "../../types/youtube";
+import { injectable } from 'inversify'
 
 const SEARCH_LIMIT = 30;
 
-class Youtube {
-  constructor() {}
-  private static instance?: Youtube;
-  static getInstance() {
-    if (!Youtube.instance) {
-      Youtube.instance = new Youtube();
-    }
-
-    return Youtube.instance;
-  }
+@injectable()
+class YoutubeService {
+  constructor() { }
 
   private async getVideosByQ(q: string) {
     const searchFilter = await ytrs.getFilters(q);
@@ -31,7 +25,5 @@ class Youtube {
     return await this.getVideosByQ(q);
   }
 }
-
-const YoutubeService = Youtube.getInstance();
 
 export default YoutubeService;
