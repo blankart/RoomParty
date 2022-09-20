@@ -110,7 +110,7 @@ class RoomsController {
 
       this.queueService.queue(
         ROOMS_SERVICE_QUEUE.DELETE_ROOM,
-        this.roomsService.deleteRoom,
+        this.roomsService.deleteRoom.bind(this.roomsService),
         { id: room.id },
         { startAfter },
         room.id

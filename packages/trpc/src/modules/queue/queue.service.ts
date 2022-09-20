@@ -4,13 +4,13 @@ import PgBoss from "pg-boss";
 type UnqueuedWork = {
   method: "send";
   params:
-  | [
-    string,
-    (...args: any[]) => any,
-    Record<string, any>,
-    Record<string, any>,
-    string
-  ];
+    | [
+        string,
+        (...args: any[]) => any,
+        Record<string, any>,
+        Record<string, any>,
+        string
+      ];
 };
 
 @injectable()

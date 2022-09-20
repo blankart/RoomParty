@@ -35,17 +35,13 @@ import EmitterService from "../modules/emitter/emitter.service";
 import ChatsEmitter from "../modules/chats/chats.emitter";
 import PlayerEmitter from "../modules/player/player.emitter";
 
-const trpcContainerModule = new ContainerModule(bind => {
+const trpcContainerModule = new ContainerModule((bind) => {
   /**
    * Injected Services
    */
-  bind<RoomsService>(SERVICES_TYPES.Rooms)
-    .to(RoomsService)
-    .inSingletonScope();
+  bind<RoomsService>(SERVICES_TYPES.Rooms).to(RoomsService).inSingletonScope();
 
-  bind<ChatsService>(SERVICES_TYPES.Chats)
-    .to(ChatsService)
-    .inSingletonScope();
+  bind<ChatsService>(SERVICES_TYPES.Chats).to(ChatsService).inSingletonScope();
 
   bind<PlayerService>(SERVICES_TYPES.Player)
     .to(PlayerService)
@@ -59,13 +55,9 @@ const trpcContainerModule = new ContainerModule(bind => {
     .to(ModelsService)
     .inSingletonScope();
 
-  bind<QueueService>(SERVICES_TYPES.Queue)
-    .to(QueueService)
-    .inSingletonScope();
+  bind<QueueService>(SERVICES_TYPES.Queue).to(QueueService).inSingletonScope();
 
-  bind<UsersService>(SERVICES_TYPES.Users)
-    .to(UsersService)
-    .inSingletonScope();
+  bind<UsersService>(SERVICES_TYPES.Users).to(UsersService).inSingletonScope();
 
   bind<YoutubeService>(SERVICES_TYPES.Youtube)
     .to(YoutubeService)
@@ -79,9 +71,7 @@ const trpcContainerModule = new ContainerModule(bind => {
    * Injected Emitters
    */
 
-  bind<ChatsEmitter>(EMITTER_TYPES.Chats)
-    .to(ChatsEmitter)
-    .inSingletonScope();
+  bind<ChatsEmitter>(EMITTER_TYPES.Chats).to(ChatsEmitter).inSingletonScope();
 
   bind<PlayerEmitter>(EMITTER_TYPES.Player)
     .to(PlayerEmitter)
@@ -119,29 +109,19 @@ const trpcContainerModule = new ContainerModule(bind => {
    * Injected Routes
    */
 
-  bind<RoomsRouter>(ROUTER_TYPES.Rooms)
-    .to(RoomsRouter)
-    .inSingletonScope();
+  bind<RoomsRouter>(ROUTER_TYPES.Rooms).to(RoomsRouter).inSingletonScope();
 
-  bind<ChatsRouter>(ROUTER_TYPES.Chats)
-    .to(ChatsRouter)
-    .inSingletonScope();
+  bind<ChatsRouter>(ROUTER_TYPES.Chats).to(ChatsRouter).inSingletonScope();
 
-  bind<PlayerRouter>(ROUTER_TYPES.Player)
-    .to(PlayerRouter)
-    .inSingletonScope();
+  bind<PlayerRouter>(ROUTER_TYPES.Player).to(PlayerRouter).inSingletonScope();
 
   bind<FavoritedRoomsRouter>(ROUTER_TYPES.FavoritedRooms)
     .to(FavoritedRoomsRouter)
     .inSingletonScope();
 
-  bind<UsersRouter>(ROUTER_TYPES.Users)
-    .to(UsersRouter)
-    .inSingletonScope();
+  bind<UsersRouter>(ROUTER_TYPES.Users).to(UsersRouter).inSingletonScope();
 
-  bind<YoutubeRouter>(ROUTER_TYPES.Youtube)
-    .to(YoutubeRouter)
-    .inRequestScope();
+  bind<YoutubeRouter>(ROUTER_TYPES.Youtube).to(YoutubeRouter).inRequestScope();
 
   /**
    * Injected TRPCRoutes
@@ -152,8 +132,7 @@ const trpcContainerModule = new ContainerModule(bind => {
    * Injected TRPCRouter
    */
   bind<TRPCRouter>(TRPC_ROUTER).to(TRPCRouter).inSingletonScope();
-})
-
+});
 
 const appContainer = new Container();
 
@@ -161,6 +140,6 @@ if (process.env.NODE_ENV !== "production") {
   appContainer.applyMiddleware(makeLoggerMiddleware());
 }
 
-appContainer.load(trpcContainerModule)
+appContainer.load(trpcContainerModule);
 
 export default appContainer;

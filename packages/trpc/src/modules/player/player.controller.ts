@@ -54,10 +54,13 @@ class PlayerController {
     const startAfter = new Date();
     startAfter.setTime(startAfter.getTime() + 1_000);
 
-    clearTimeout(RoomControlTimeoutMap.get(data.id))
-    RoomControlTimeoutMap.set(data.id, setTimeout(() => {
-      this.playerService.createChatAfterControl({ data })
-    }, 300))
+    clearTimeout(RoomControlTimeoutMap.get(data.id));
+    RoomControlTimeoutMap.set(
+      data.id,
+      setTimeout(() => {
+        this.playerService.createChatAfterControl({ data });
+      }, 300)
+    );
   }
 }
 

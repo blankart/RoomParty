@@ -16,7 +16,7 @@ class EmitterService {
   constructor() {
     this.emitter = new EventEmitter2({
       wildcard: true,
-      delimiter: '.'
+      delimiter: ".",
     });
   }
 
