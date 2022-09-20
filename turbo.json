@@ -25,6 +25,9 @@
     "dev": {
       "cache": false
     },
+    "dev:only": {
+      "cache": false
+    },
     "migrate": {
       "cache": false
     },

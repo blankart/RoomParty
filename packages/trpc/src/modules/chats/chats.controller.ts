@@ -8,11 +8,7 @@ import { injectable, inject } from "inversify";
 import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type RoomsService from "../rooms/rooms.service";
 import type ChatsService from "./chats.service";
-import ChatsEmitter from "./chats.emitter";
-
-interface EmitterTypes {
-  SEND: Chat;
-}
+import type ChatsEmitter from "./chats.emitter";
 
 const TempRoomSessionMap = new Map<string, number>();
 
@@ -23,7 +19,7 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) {}
+  ) { }
   async chats(id: string) {
     return await this.modelsService.client.room
       .findFirst({
@@ -64,13 +60,13 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-              color: data.color,
-              user: {
-                connect: {
-                  id: data.userId,
-                },
+            color: data.color,
+            user: {
+              connect: {
+                id: data.userId,
               },
-            }
+            },
+          }
           : {}),
       },
     });
@@ -91,7 +87,6 @@ class ChatsController {
   ) {
     return new Subscription<Chat & { color: string | null }>((emit) => {
       const onAdd = (data: Chat & { color: string | null }) => {
-        console.log("saw that");
         emit.data(data);
       };
 

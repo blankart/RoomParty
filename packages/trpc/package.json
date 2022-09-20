@@ -9,6 +9,7 @@
     "clean": "rm -rf dist",
     "build": "yarn clean && tsc",
     "dev": "yarn clean && tsc-watch --noClear",
+    "dev:only": "yarn clean && tsc-watch --noClear --onSuccess \"node ./dist/index.js\"",
     "typecheck": "tsc"
   },
   "dependencies": {

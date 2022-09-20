@@ -1,5 +1,5 @@
 import "reflect-metadata";
-import { Container } from "inversify";
+import { Container, ContainerModule } from "inversify";
 import { makeLoggerMiddleware } from "inversify-logger-middleware";
 import ChatsController from "../modules/chats/chats.controller";
 import ChatsService from "../modules/chats/chats.service";
@@ -35,128 +35,132 @@ import EmitterService from "../modules/emitter/emitter.service";
 import ChatsEmitter from "../modules/chats/chats.emitter";
 import PlayerEmitter from "../modules/player/player.emitter";
 
+const trpcContainerModule = new ContainerModule(bind => {
+  /**
+   * Injected Services
+   */
+  bind<RoomsService>(SERVICES_TYPES.Rooms)
+    .to(RoomsService)
+    .inSingletonScope();
+
+  bind<ChatsService>(SERVICES_TYPES.Chats)
+    .to(ChatsService)
+    .inSingletonScope();
+
+  bind<PlayerService>(SERVICES_TYPES.Player)
+    .to(PlayerService)
+    .inSingletonScope();
+
+  bind<FavoritedRoomsService>(SERVICES_TYPES.FavoritedRooms)
+    .to(FavoritedRoomsService)
+    .inSingletonScope();
+
+  bind<ModelsService>(SERVICES_TYPES.Models)
+    .to(ModelsService)
+    .inSingletonScope();
+
+  bind<QueueService>(SERVICES_TYPES.Queue)
+    .to(QueueService)
+    .inSingletonScope();
+
+  bind<UsersService>(SERVICES_TYPES.Users)
+    .to(UsersService)
+    .inSingletonScope();
+
+  bind<YoutubeService>(SERVICES_TYPES.Youtube)
+    .to(YoutubeService)
+    .inSingletonScope();
+
+  bind<EmitterService>(SERVICES_TYPES.Emitter)
+    .to(EmitterService)
+    .inSingletonScope();
+
+  /**
+   * Injected Emitters
+   */
+
+  bind<ChatsEmitter>(EMITTER_TYPES.Chats)
+    .to(ChatsEmitter)
+    .inSingletonScope();
+
+  bind<PlayerEmitter>(EMITTER_TYPES.Player)
+    .to(PlayerEmitter)
+    .inSingletonScope();
+
+  /**
+   * Injected Controller
+   */
+
+  bind<RoomsController>(CONTROLLER_TYPES.Rooms)
+    .to(RoomsController)
+    .inSingletonScope();
+
+  bind<ChatsController>(CONTROLLER_TYPES.Chats)
+    .to(ChatsController)
+    .inSingletonScope();
+
+  bind<PlayerController>(CONTROLLER_TYPES.Player)
+    .to(PlayerController)
+    .inSingletonScope();
+
+  bind<FavoritedRoomsController>(CONTROLLER_TYPES.FavoritedRooms)
+    .to(FavoritedRoomsController)
+    .inSingletonScope();
+
+  bind<UsersController>(CONTROLLER_TYPES.Users)
+    .to(UsersController)
+    .inSingletonScope();
+
+  bind<YoutubeController>(CONTROLLER_TYPES.Youtube)
+    .to(YoutubeController)
+    .inRequestScope();
+
+  /**
+   * Injected Routes
+   */
+
+  bind<RoomsRouter>(ROUTER_TYPES.Rooms)
+    .to(RoomsRouter)
+    .inSingletonScope();
+
+  bind<ChatsRouter>(ROUTER_TYPES.Chats)
+    .to(ChatsRouter)
+    .inSingletonScope();
+
+  bind<PlayerRouter>(ROUTER_TYPES.Player)
+    .to(PlayerRouter)
+    .inSingletonScope();
+
+  bind<FavoritedRoomsRouter>(ROUTER_TYPES.FavoritedRooms)
+    .to(FavoritedRoomsRouter)
+    .inSingletonScope();
+
+  bind<UsersRouter>(ROUTER_TYPES.Users)
+    .to(UsersRouter)
+    .inSingletonScope();
+
+  bind<YoutubeRouter>(ROUTER_TYPES.Youtube)
+    .to(YoutubeRouter)
+    .inRequestScope();
+
+  /**
+   * Injected TRPCRoutes
+   */
+  bind<TRPCRoutes>(TRPC_ROUTES).to(TRPCRoutes).inSingletonScope();
+
+  /**
+   * Injected TRPCRouter
+   */
+  bind<TRPCRouter>(TRPC_ROUTER).to(TRPCRouter).inSingletonScope();
+})
+
+
 const appContainer = new Container();
-
-/**
- * Injected Services
- */
-appContainer
-  .bind<RoomsService>(SERVICES_TYPES.Rooms)
-  .to(RoomsService)
-  .inSingletonScope();
-appContainer
-  .bind<ChatsService>(SERVICES_TYPES.Chats)
-  .to(ChatsService)
-  .inSingletonScope();
-appContainer
-  .bind<PlayerService>(SERVICES_TYPES.Player)
-  .to(PlayerService)
-  .inSingletonScope();
-appContainer
-  .bind<FavoritedRoomsService>(SERVICES_TYPES.FavoritedRooms)
-  .to(FavoritedRoomsService)
-  .inSingletonScope();
-appContainer
-  .bind<ModelsService>(SERVICES_TYPES.Models)
-  .to(ModelsService)
-  .inSingletonScope();
-appContainer
-  .bind<QueueService>(SERVICES_TYPES.Queue)
-  .to(QueueService)
-  .inSingletonScope();
-appContainer
-  .bind<UsersService>(SERVICES_TYPES.Users)
-  .to(UsersService)
-  .inSingletonScope();
-appContainer
-  .bind<YoutubeService>(SERVICES_TYPES.Youtube)
-  .to(YoutubeService)
-  .inSingletonScope();
-appContainer
-  .bind<EmitterService>(SERVICES_TYPES.Emitter)
-  .to(EmitterService)
-  .inSingletonScope();
-
-/**
- * Injected Emitters
- */
-appContainer
-  .bind<ChatsEmitter>(EMITTER_TYPES.Chats)
-  .to(ChatsEmitter)
-  .inSingletonScope();
-appContainer
-  .bind<PlayerEmitter>(EMITTER_TYPES.Player)
-  .to(PlayerEmitter)
-  .inSingletonScope();
-
-/**
- * Injected Controller
- */
-appContainer
-  .bind<RoomsController>(CONTROLLER_TYPES.Rooms)
-  .to(RoomsController)
-  .inSingletonScope();
-appContainer
-  .bind<ChatsController>(CONTROLLER_TYPES.Chats)
-  .to(ChatsController)
-  .inSingletonScope();
-appContainer
-  .bind<PlayerController>(CONTROLLER_TYPES.Player)
-  .to(PlayerController)
-  .inSingletonScope();
-appContainer
-  .bind<FavoritedRoomsController>(CONTROLLER_TYPES.FavoritedRooms)
-  .to(FavoritedRoomsController)
-  .inSingletonScope();
-appContainer
-  .bind<UsersController>(CONTROLLER_TYPES.Users)
-  .to(UsersController)
-  .inSingletonScope();
-appContainer
-  .bind<YoutubeController>(CONTROLLER_TYPES.Youtube)
-  .to(YoutubeController)
-  .inRequestScope();
-
-/**
- * Injected Routes
- */
-appContainer
-  .bind<RoomsRouter>(ROUTER_TYPES.Rooms)
-  .to(RoomsRouter)
-  .inSingletonScope();
-appContainer
-  .bind<ChatsRouter>(ROUTER_TYPES.Chats)
-  .to(ChatsRouter)
-  .inSingletonScope();
-appContainer
-  .bind<PlayerRouter>(ROUTER_TYPES.Player)
-  .to(PlayerRouter)
-  .inSingletonScope();
-appContainer
-  .bind<FavoritedRoomsRouter>(ROUTER_TYPES.FavoritedRooms)
-  .to(FavoritedRoomsRouter)
-  .inSingletonScope();
-appContainer
-  .bind<UsersRouter>(ROUTER_TYPES.Users)
-  .to(UsersRouter)
-  .inSingletonScope();
-appContainer
-  .bind<YoutubeRouter>(ROUTER_TYPES.Youtube)
-  .to(YoutubeRouter)
-  .inRequestScope();
-
-/**
- * Injected TRPCRoutes
- */
-appContainer.bind<TRPCRoutes>(TRPC_ROUTES).to(TRPCRoutes).inSingletonScope();
-
-/**
- * Injected TRPCRouter
- */
-appContainer.bind<TRPCRouter>(TRPC_ROUTER).to(TRPCRouter).inSingletonScope();
 
 if (process.env.NODE_ENV !== "production") {
   appContainer.applyMiddleware(makeLoggerMiddleware());
 }
+
+appContainer.load(trpcContainerModule)
 
 export default appContainer;

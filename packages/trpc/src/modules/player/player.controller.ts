@@ -1,26 +1,17 @@
 import { Subscription } from "@trpc/server";
 import type { PlayerStatus } from "../../types/player";
 import type ModelsService from "../models/models.service";
-import type QueueService from "../queue/queue.service";
 import { inject, injectable } from "inversify";
 import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type PlayerService from "./player.service";
 import PlayerEmitter from "./player.emitter";
 
-interface EmitterTypes {
-  CONTROL: PlayerStatus & { id: string };
-}
-
-enum PLAYER_SERVICE_QUEUE {
-  NOTIFY_CONTROL_TO_CHAT = "NOTIFY_CONTROL_TO_CHAT",
-}
-
 export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
+export const RoomControlTimeoutMap = new Map<string, NodeJS.Timeout>();
 @injectable()
 class PlayerController {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
-    @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
     @inject(SERVICES_TYPES.Player) private playerService: PlayerService,
     @inject(EMITTER_TYPES.Player) private playerEmitter: PlayerEmitter
   ) {
@@ -63,13 +54,10 @@ class PlayerController {
     const startAfter = new Date();
     startAfter.setTime(startAfter.getTime() + 1_000);
 
-    this.queueService.queue(
-      PLAYER_SERVICE_QUEUE.NOTIFY_CONTROL_TO_CHAT,
-      this.playerService.createChatAfterControl,
-      { id: data.id, statusObject: data.statusObject },
-      { startAfter },
-      data.id
-    );
+    clearTimeout(RoomControlTimeoutMap.get(data.id))
+    RoomControlTimeoutMap.set(data.id, setTimeout(() => {
+      this.playerService.createChatAfterControl({ data })
+    }, 300))
   }
 }
 
