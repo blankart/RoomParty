@@ -1,9 +1,8 @@
-import { injectable } from 'inversify'
+import { injectable } from "inversify";
 
 @injectable()
 class UsersService {
-  constructor(
-  ) { }
+  constructor() {}
 }
 
 export default UsersService;

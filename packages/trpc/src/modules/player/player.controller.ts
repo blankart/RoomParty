@@ -24,7 +24,9 @@ class PlayerController {
     @inject(SERVICES_TYPES.Player) private playerService: PlayerService,
     @inject(EMITTER_TYPES.Player) private playerEmitter: PlayerEmitter
   ) {
-    this.playerEmitter.emitter.channel("CONTROL").on("*", this.playerService.synchronizeScrubTime);
+    this.playerEmitter.emitter
+      .channel("CONTROL")
+      .on("*", this.playerService.synchronizeScrubTime);
   }
 
   async statusSubscription(data: { id: string; name: string }) {

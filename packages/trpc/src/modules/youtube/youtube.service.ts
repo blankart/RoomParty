@@ -1,12 +1,12 @@
 import ytrs from "ytsr";
 import type { SearchResponse } from "../../types/youtube";
-import { injectable } from 'inversify'
+import { injectable } from "inversify";
 
 const SEARCH_LIMIT = 30;
 
 @injectable()
 class YoutubeService {
-  constructor() { }
+  constructor() {}
   async getVideosByQ(q: string) {
     const searchFilter = await ytrs.getFilters(q);
 

@@ -11,7 +11,7 @@ import { SERVICES_TYPES } from "../../types/container";
 class ChatsService {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
   convertEmoticonsToEmojisInChatsObject(chat: Chat): Chat {
     return { ...chat, message: checkText(chat.message) };
   }

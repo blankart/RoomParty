@@ -2,7 +2,7 @@ import {
   createPrismaClient,
   CustomPrismaClient,
 } from "@rooms2watch/prisma-client";
-import { injectable } from 'inversify'
+import { injectable } from "inversify";
 
 @injectable()
 class ModelsService {

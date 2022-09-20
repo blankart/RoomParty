@@ -8,7 +8,7 @@ import { SERVICES_TYPES } from "../../types/container";
 class FavoritedRoomsController {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
   async toggle(data: { roomId: string }, user: CurrentUser) {
     const room = await this.modelsService.client.room.findFirst({
       where: { id: data.roomId },
@@ -32,7 +32,7 @@ class FavoritedRoomsController {
           userId: user?.user.id,
         },
       });
-    } catch { }
+    } catch {}
 
     if (!favoritedRoom) {
       return await this.modelsService.client.favoritedRoom.create({
@@ -57,12 +57,13 @@ class FavoritedRoomsController {
   }
 
   async isRoomFavorited(data: { roomId: string }, user: CurrentUser) {
-    const favoritedRoom = await this.modelsService.client.favoritedRoom.findFirst({
-      where: {
-        roomId: data.roomId,
-        userId: user?.user.id,
-      },
-    });
+    const favoritedRoom =
+      await this.modelsService.client.favoritedRoom.findFirst({
+        where: {
+          roomId: data.roomId,
+          userId: user?.user.id,
+        },
+      });
 
     if (!!favoritedRoom) return true;
     return false;

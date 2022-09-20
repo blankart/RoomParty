@@ -1,2 +1,2 @@
-export { createRootRouter } from './trpc'
-export type { AppRouter } from './trpc'
+export { createRootRouter } from "./trpc";
+export type { AppRouter } from "./trpc";

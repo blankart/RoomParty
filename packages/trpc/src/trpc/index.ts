@@ -6,4 +6,4 @@ export function createRootRouter() {
   return appContainer.get<TRPCRoutes>(TRPC_ROUTES).createRootRouter();
 }
 
-export type AppRouter = ReturnType<typeof createRootRouter>
+export type AppRouter = ReturnType<typeof createRootRouter>;

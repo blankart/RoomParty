@@ -4,19 +4,18 @@ import { SERVICES_TYPES } from "../../types/container";
 import EmitterService from "../emitter/emitter.service";
 
 interface EmitterTypes {
-    SEND: Chat;
+  SEND: Chat;
 }
 
 @injectable()
 class ChatsEmitter {
-    constructor(
-        @inject(SERVICES_TYPES.Emitter) private emitterService: EmitterService
-    ) {
-    }
+  constructor(
+    @inject(SERVICES_TYPES.Emitter) private emitterService: EmitterService
+  ) {}
 
-    get emitter() {
-        return this.emitterService.for<EmitterTypes>('CHATS')
-    }
+  get emitter() {
+    return this.emitterService.for<EmitterTypes>("CHATS");
+  }
 }
 
-export default ChatsEmitter
+export default ChatsEmitter;

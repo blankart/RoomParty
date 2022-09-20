@@ -12,9 +12,8 @@ class PlayerService {
   constructor(
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
-    @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter,
-  ) {
-  }
+    @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
+  ) {}
 
   async synchronizeScrubTime({
     id,
@@ -65,8 +64,9 @@ class PlayerService {
     switch (params.data.statusObject.type) {
       case "PAUSED":
       case "PLAYED":
-        message = `${params.data.statusObject.name} ${params.data.statusObject.type === "PAUSED" ? "paused" : "played"
-          } the video.`;
+        message = `${params.data.statusObject.name} ${
+          params.data.statusObject.type === "PAUSED" ? "paused" : "played"
+        } the video.`;
         break;
       case "CHANGE_URL":
         message = `${params.data.statusObject.name} changed the video (${params.data.statusObject.url})`;
@@ -76,24 +76,25 @@ class PlayerService {
     }
 
     if (!message) return;
-    const chat = await this.modelsService.client.chat
-      .create({
-        data: {
-          room: {
-            connect: {
-              id: params.data.id,
-            },
+    const chat = await this.modelsService.client.chat.create({
+      data: {
+        room: {
+          connect: {
+            id: params.data.id,
           },
-          name: "Player Status",
-          isSystemMessage: true,
-          message,
         },
-      })
+        name: "Player Status",
+        isSystemMessage: true,
+        message,
+      },
+    });
 
-    this.chatsEmitter.emitter.channel("SEND").emit(
-      params.data.id,
-      this.chatsService.convertEmoticonsToEmojisInChatsObject(chat)
-    )
+    this.chatsEmitter.emitter
+      .channel("SEND")
+      .emit(
+        params.data.id,
+        this.chatsService.convertEmoticonsToEmojisInChatsObject(chat)
+      );
   }
 }
 

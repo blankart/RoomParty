@@ -2,7 +2,7 @@ import { injectable } from "inversify";
 
 @injectable()
 class FavoritedRoomsService {
-  constructor() { }
+  constructor() {}
 }
 
 export default FavoritedRoomsService;

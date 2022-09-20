@@ -23,7 +23,7 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) { }
+  ) {}
   async chats(id: string) {
     return await this.modelsService.client.room
       .findFirst({
@@ -64,21 +64,23 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-            color: data.color,
-            user: {
-              connect: {
-                id: data.userId,
+              color: data.color,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });
 
-    this.chatsEmitter.emitter.channel("SEND").emit(
-      data.id,
-      this.chatsService.convertEmoticonsToEmojisInChatsObject(newChat)
-    );
+    this.chatsEmitter.emitter
+      .channel("SEND")
+      .emit(
+        data.id,
+        this.chatsService.convertEmoticonsToEmojisInChatsObject(newChat)
+      );
 
     return newChat;
   }
@@ -89,7 +91,7 @@ class ChatsController {
   ) {
     return new Subscription<Chat & { color: string | null }>((emit) => {
       const onAdd = (data: Chat & { color: string | null }) => {
-        console.log('saw that')
+        console.log("saw that");
         emit.data(data);
       };
 
@@ -116,13 +118,19 @@ class ChatsController {
               },
             })
             .then((res) =>
-              this.chatsEmitter.emitter.channel("SEND").emit(
-                data.id,
-                this.chatsService.convertEmoticonsToEmojisInChatsObject(res)
-              )
+              this.chatsEmitter.emitter
+                .channel("SEND")
+                .emit(
+                  data.id,
+                  this.chatsService.convertEmoticonsToEmojisInChatsObject(res)
+                )
             );
         })(),
-        this.chatsService.incrementOnlineCount(data.id, data.localStorageSessionId, user),
+        this.chatsService.incrementOnlineCount(
+          data.id,
+          data.localStorageSessionId,
+          user
+        ),
       ]);
 
       return async () => {
@@ -149,10 +157,12 @@ class ChatsController {
                 },
               })
               .then((res) =>
-                this.chatsEmitter.emitter.channel("SEND").emit(
-                  data.id,
-                  this.chatsService.convertEmoticonsToEmojisInChatsObject(res)
-                )
+                this.chatsEmitter.emitter
+                  .channel("SEND")
+                  .emit(
+                    data.id,
+                    this.chatsService.convertEmoticonsToEmojisInChatsObject(res)
+                  )
               ),
 
             this.chatsService.decrementOnlineCount(

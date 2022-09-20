@@ -12,9 +12,9 @@ class EventEmitter2 extends _EventEmitter2 {
 
 @injectable()
 class EmitterService {
-  emitter: EventEmitter2
+  emitter: EventEmitter2;
   constructor() {
-    this.emitter = new EventEmitter2()
+    this.emitter = new EventEmitter2();
   }
 
   private generateKeyWithChannel<T>(

@@ -8,8 +8,8 @@ const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 @injectable()
 class RoomsService {
   constructor(
-    @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
-  ) { }
+    @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
+  ) {}
   roomIdentificationIdGenerator() {
     let generatedId = "";
 

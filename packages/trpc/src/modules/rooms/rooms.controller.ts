@@ -24,7 +24,7 @@ class RoomsController {
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService
-  ) { }
+  ) {}
   async findByRoomIdentificationId(data: FindByRoomIdentificationIdSchema) {
     const room = await this.modelsService.client.room
       .findFirst({
@@ -75,7 +75,8 @@ class RoomsController {
   }
 
   async create(data: CreateSchema, user: CurrentUser) {
-    let roomIdentificationId = this.roomsService.roomIdentificationIdGenerator();
+    let roomIdentificationId =
+      this.roomsService.roomIdentificationIdGenerator();
 
     while (
       (await this.modelsService.client.room.count({
