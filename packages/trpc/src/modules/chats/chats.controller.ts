@@ -1,16 +1,14 @@
 import { Subscription } from "@trpc/server";
-
 import type { Chat } from "@rooms2watch/prisma-client";
-
 import type { CurrentUser } from "../../types/user";
-import ModelsService from "../models/models.service";
-import EmitterInstance from "../../utils/Emitter";
+import type ModelsService from "../models/models.service";
 import type _RoomsService from "../rooms/rooms.service";
 import { RoomSyncIntervalMap } from "../player/player.service";
 import { injectable, inject } from "inversify";
-import { SERVICES_TYPES } from "../../types/container";
+import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type RoomsService from "../rooms/rooms.service";
-import ChatsService from "./chats.service";
+import type ChatsService from "./chats.service";
+import ChatsEmitter from "./chats.emitter";
 
 interface EmitterTypes {
   SEND: Chat;
@@ -18,14 +16,13 @@ interface EmitterTypes {
 
 const TempRoomSessionMap = new Map<string, number>();
 
-export const ChatsEmitter = EmitterInstance.for<EmitterTypes>("CHATS");
-
 @injectable()
 class ChatsController {
   constructor(
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
-    @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService
+    @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
+    @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
   ) { }
   async chats(id: string) {
     return await this.modelsService.client.room
@@ -78,7 +75,7 @@ class ChatsController {
       },
     });
 
-    ChatsEmitter.channel("SEND").emit(
+    this.chatsEmitter.emitter.channel("SEND").emit(
       data.id,
       this.chatsService.convertEmoticonsToEmojisInChatsObject(newChat)
     );
@@ -92,10 +89,11 @@ class ChatsController {
   ) {
     return new Subscription<Chat & { color: string | null }>((emit) => {
       const onAdd = (data: Chat & { color: string | null }) => {
+        console.log('saw that')
         emit.data(data);
       };
 
-      ChatsEmitter.channel("SEND").on(data.id, onAdd);
+      this.chatsEmitter.emitter.channel("SEND").on(data.id, onAdd);
       TempRoomSessionMap.set(
         JSON.stringify(data),
         (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) + 1
@@ -118,7 +116,7 @@ class ChatsController {
               },
             })
             .then((res) =>
-              ChatsEmitter.channel("SEND").emit(
+              this.chatsEmitter.emitter.channel("SEND").emit(
                 data.id,
                 this.chatsService.convertEmoticonsToEmojisInChatsObject(res)
               )
@@ -133,7 +131,7 @@ class ChatsController {
           Math.max(0, (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) - 1)
         );
 
-        ChatsEmitter.channel("SEND").off(data.id, onAdd);
+        this.chatsEmitter.emitter.channel("SEND").off(data.id, onAdd);
 
         if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) === 0)
           await Promise.all([
@@ -151,7 +149,7 @@ class ChatsController {
                 },
               })
               .then((res) =>
-                ChatsEmitter.channel("SEND").emit(
+                this.chatsEmitter.emitter.channel("SEND").emit(
                   data.id,
                   this.chatsService.convertEmoticonsToEmojisInChatsObject(res)
                 )

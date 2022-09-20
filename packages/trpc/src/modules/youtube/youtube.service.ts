@@ -1,5 +1,5 @@
 import ytrs from "ytsr";
-import { SearchResponse } from "../../types/youtube";
+import type { SearchResponse } from "../../types/youtube";
 import { injectable } from 'inversify'
 
 const SEARCH_LIMIT = 30;

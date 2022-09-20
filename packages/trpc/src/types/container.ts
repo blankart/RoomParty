@@ -7,6 +7,12 @@ export const SERVICES_TYPES = {
     Queue: Symbol("QueueService"),
     Users: Symbol("UsersService"),
     Youtube: Symbol("YoutubeService"),
+    Emitter: Symbol("EmitterService"),
+};
+
+export const EMITTER_TYPES = {
+    Chats: Symbol("ChatsEmitter"),
+    Player: Symbol("PlayerEmitter"),
 };
 
 export const CONTROLLER_TYPES = {

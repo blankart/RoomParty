@@ -1,8 +1,8 @@
 import zod from "zod";
 import { inject, injectable } from "inversify";
 import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
-import TRPCRouter from "../../trpc/router";
-import FavoritedRoomsController from "./favorited-rooms.controller";
+import type TRPCRouter from "../../trpc/router";
+import type FavoritedRoomsController from "./favorited-rooms.controller";
 
 export const FAVORITED_ROOMS_ROUTER_NAME = "favorited-rooms";
 

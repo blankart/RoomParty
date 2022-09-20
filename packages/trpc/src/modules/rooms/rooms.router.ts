@@ -1,4 +1,3 @@
-import { TRPCError } from "@trpc/server";
 import {
     createSchema,
     deleteMyRoomSchema,
@@ -7,10 +6,9 @@ import {
 } from "./rooms.schema";
 
 import { injectable, inject } from "inversify";
-import { CONTROLLER_TYPES, SERVICES_TYPES, TRPC_ROUTER } from "../../types/container";
-import type RoomsService from "./rooms.service";
+import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
 import TRPCRouter from "../../trpc/router";
-import RoomsController from "./rooms.controller";
+import type RoomsController from "./rooms.controller";
 
 export const ROOMS_ROUTER_NAME = "rooms";
 

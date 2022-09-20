@@ -1,9 +1,9 @@
 import zod from "zod";
-import { PlayerStatus } from "../../types/player";
+import type { PlayerStatus } from "../../types/player";
 import { inject, injectable } from "inversify";
 import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
-import TRPCRouter from "../../trpc/router";
-import PlayerController from "./player.controller";
+import type TRPCRouter from "../../trpc/router";
+import type PlayerController from "./player.controller";
 
 export const PLAYER_ROUTER_NAME = "player";
 

@@ -1,17 +1,17 @@
-import ChatsService from "../chats/chats.service";
-import ModelsService from "../models/models.service";
-import QueueService from "../queue/queue.service";
-import { CurrentUser } from "../../types/user";
+import type ChatsService from "../chats/chats.service";
+import type ModelsService from "../models/models.service";
+import type QueueService from "../queue/queue.service";
+import type { CurrentUser } from "../../types/user";
 import { injectable, inject } from "inversify";
 import { TRPCError } from "@trpc/server";
-import {
+import type {
   CreateSchema,
   DeleteMyRoomSchema,
   FindByRoomIdentificationIdSchema,
   GetOnlineInfoSchema,
 } from "./rooms.dto";
 import { SERVICES_TYPES } from "../../types/container";
-import RoomsService from "./rooms.service";
+import type RoomsService from "./rooms.service";
 
 enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",

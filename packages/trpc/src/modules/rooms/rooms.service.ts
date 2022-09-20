@@ -1,4 +1,4 @@
-import ModelsService from "../models/models.service";
+import type ModelsService from "../models/models.service";
 import { injectable, inject } from "inversify";
 import { SERVICES_TYPES } from "../../types/container";
 

@@ -1,4 +1,4 @@
-import ModelsService from "../models/models.service";
+import type ModelsService from "../models/models.service";
 import { CurrentUser } from "../../types/user";
 import { TRPCError } from "@trpc/server";
 import { injectable, inject } from "inversify";

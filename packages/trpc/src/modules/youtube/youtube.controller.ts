@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify'
 import { SERVICES_TYPES } from "../../types/container";
-import YoutubeService from "./youtube.service";
+import type YoutubeService from "./youtube.service";
 
 
 @injectable()

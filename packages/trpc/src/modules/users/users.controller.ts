@@ -1,6 +1,6 @@
 import { inject, injectable } from 'inversify'
 import { SERVICES_TYPES } from '../../types/container';
-import ModelsService from "../models/models.service";
+import type ModelsService from "../models/models.service";
 
 @injectable()
 class UsersController {

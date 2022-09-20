@@ -3,7 +3,7 @@ import { checkText } from "smile2emoji";
 import type { Chat } from "@rooms2watch/prisma-client";
 
 import type { CurrentUser } from "../../types/user";
-import ModelsService from "../models/models.service";
+import type ModelsService from "../models/models.service";
 import { injectable, inject } from "inversify";
 import { SERVICES_TYPES } from "../../types/container";
 

@@ -1,22 +1,18 @@
 import { PlayerStatus } from "../../types/player";
-import ModelsService from "../models/models.service";
-import EmitterInstance from "../../utils/Emitter";
-import ChatsService from "../chats/chats.service";
+import type ModelsService from "../models/models.service";
+import type ChatsService from "../chats/chats.service";
 import { inject, injectable } from "inversify";
-import { SERVICES_TYPES } from "../../types/container";
-import { ChatsEmitter } from "../chats/chats.controller";
+import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
+import ChatsEmitter from "../chats/chats.emitter";
 
-interface EmitterTypes {
-  CONTROL: PlayerStatus & { id: string };
-}
-
-export const PlayerEmitter = EmitterInstance.for<EmitterTypes>("PLAYER");
 export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
+
 @injectable()
 class PlayerService {
   constructor(
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
+    @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter,
   ) {
   }
 
@@ -80,7 +76,7 @@ class PlayerService {
     }
 
     if (!message) return;
-    await this.modelsService.client.chat
+    const chat = await this.modelsService.client.chat
       .create({
         data: {
           room: {
@@ -93,12 +89,11 @@ class PlayerService {
           message,
         },
       })
-      .then((res) =>
-        ChatsEmitter.channel("SEND").emit(
-          params.data.id,
-          this.chatsService.convertEmoticonsToEmojisInChatsObject(res)
-        )
-      );
+
+    this.chatsEmitter.emitter.channel("SEND").emit(
+      params.data.id,
+      this.chatsService.convertEmoticonsToEmojisInChatsObject(chat)
+    )
   }
 }
 

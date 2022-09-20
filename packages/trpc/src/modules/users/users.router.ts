@@ -1,7 +1,7 @@
 import { inject, injectable } from 'inversify'
-import TRPCRouter from '../../trpc/router';
+import type TRPCRouter from '../../trpc/router';
 import { CONTROLLER_TYPES, TRPC_ROUTER } from '../../types/container';
-import UsersController from './users.controller';
+import type UsersController from './users.controller';
 
 export const USERS_ROUTER_NAME = "users";
 

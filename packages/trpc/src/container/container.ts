@@ -1,5 +1,6 @@
 import "reflect-metadata";
 import { Container } from "inversify";
+import { makeLoggerMiddleware } from 'inversify-logger-middleware'
 import ChatsController from "../modules/chats/chats.controller";
 import ChatsService from "../modules/chats/chats.service";
 import FavoritedRoomsController from "../modules/favorited-rooms/favorited-rooms.controller";
@@ -18,6 +19,7 @@ import TRPCRouter from "../trpc/router";
 import TRPCRoutes from "../trpc/routes";
 import {
     CONTROLLER_TYPES,
+    EMITTER_TYPES,
     ROUTER_TYPES,
     SERVICES_TYPES,
     TRPC_ROUTER,
@@ -29,6 +31,9 @@ import PlayerRouter from "../modules/player/player.router";
 import FavoritedRoomsRouter from "../modules/favorited-rooms/favorited-rooms.router";
 import UsersRouter from "../modules/users/users.router";
 import YoutubeRouter from "../modules/youtube/youtube.router";
+import EmitterService from "../modules/emitter/emitter.service";
+import ChatsEmitter from "../modules/chats/chats.emitter";
+import PlayerEmitter from "../modules/player/player.emitter";
 
 const appContainer = new Container();
 
@@ -53,6 +58,19 @@ appContainer
 appContainer
     .bind<YoutubeService>(SERVICES_TYPES.Youtube)
     .to(YoutubeService).inSingletonScope();
+appContainer
+    .bind<EmitterService>(SERVICES_TYPES.Emitter)
+    .to(EmitterService).inSingletonScope();
+
+/**
+ * Injected Emitters
+ */
+appContainer
+    .bind<ChatsEmitter>(EMITTER_TYPES.Chats)
+    .to(ChatsEmitter).inSingletonScope();
+appContainer
+    .bind<PlayerEmitter>(EMITTER_TYPES.Player)
+    .to(PlayerEmitter).inSingletonScope();
 
 /**
  * Injected Controller
@@ -99,5 +117,9 @@ appContainer.bind<TRPCRoutes>(TRPC_ROUTES).to(TRPCRoutes).inSingletonScope();
  * Injected TRPCRouter
  */
 appContainer.bind<TRPCRouter>(TRPC_ROUTER).to(TRPCRouter).inSingletonScope();
+
+if (process.env.NODE_ENV !== 'production') {
+    appContainer.applyMiddleware(makeLoggerMiddleware())
+}
 
 export default appContainer;

@@ -1,4 +1,5 @@
 import _EventEmitter2 from "eventemitter2";
+import { injectable } from "inversify";
 
 class EventEmitter2 extends _EventEmitter2 {
   emit(type: any, ...args: any[]) {
@@ -9,21 +10,11 @@ class EventEmitter2 extends _EventEmitter2 {
   }
 }
 
-class Emitter {
-  constructor(private emitter: EventEmitter2) {}
-  static instance: Emitter;
-
-  static getInstance() {
-    if (!Emitter.instance) {
-      Emitter.instance = new Emitter(
-        new EventEmitter2({
-          wildcard: true,
-          delimiter: ".",
-        })
-      );
-    }
-
-    return Emitter.instance;
+@injectable()
+class EmitterService {
+  emitter: EventEmitter2
+  constructor() {
+    this.emitter = new EventEmitter2()
   }
 
   private generateKeyWithChannel<T>(
@@ -74,6 +65,4 @@ class Emitter {
   }
 }
 
-const EmitterInstance = Emitter.getInstance();
-
-export default EmitterInstance;
+export default EmitterService;

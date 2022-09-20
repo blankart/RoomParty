@@ -1,8 +1,8 @@
 import zod from "zod";
 import { inject, injectable } from 'inversify'
 import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
-import TRPCRouter from "../../trpc/router";
-import YoutubeController from "./youtube.controller";
+import type TRPCRouter from "../../trpc/router";
+import type YoutubeController from "./youtube.controller";
 
 export const YOUTUBE_ROUTER_NAME = "youtube";
 

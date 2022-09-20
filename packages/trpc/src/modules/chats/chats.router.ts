@@ -1,8 +1,8 @@
 import zod from "zod";
 import { injectable, inject } from "inversify";
 import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
-import TRPCRouter from "../../trpc/router";
-import ChatsController from "./chats.controller";
+import type TRPCRouter from "../../trpc/router";
+import type ChatsController from "./chats.controller";
 
 export const CHATS_ROUTER_NAME = "chats";
 
