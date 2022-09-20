@@ -17,7 +17,10 @@ class PlayerController {
   ) {
     this.playerEmitter.emitter
       .channel("CONTROL")
-      .on("*", this.playerService.synchronizeScrubTime);
+      .on(
+        "*",
+        this.playerService.synchronizeScrubTime.bind(this.playerService)
+      );
   }
 
   async statusSubscription(data: { id: string; name: string }) {

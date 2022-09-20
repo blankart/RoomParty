@@ -3,6 +3,7 @@ import {
   deleteMyRoomSchema,
   findByRoomIdentificationIdSchema,
   getOnlineInfoSchema,
+  requestForTransientSchema,
 } from "./rooms.schema";
 
 import { injectable, inject } from "inversify";
@@ -17,7 +18,7 @@ class RoomsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Rooms) private roomsController: RoomsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) {}
+  ) { }
   router() {
     const self = this;
     return this.trpcRouter
@@ -56,12 +57,23 @@ class RoomsRouter {
   routerWithUser() {
     const self = this;
 
-    return this.trpcRouter.createRouterWithUser().mutation("create", {
-      input: createSchema,
-      async resolve({ input, ctx }) {
-        return await self.roomsController.create(input, ctx.user);
-      },
-    });
+    return this.trpcRouter
+      .createRouterWithUser()
+      .mutation("create", {
+        input: createSchema,
+        async resolve({ input, ctx }) {
+          return await self.roomsController.create(input, ctx.user);
+        },
+      })
+      .query("requestForTransient", {
+        input: requestForTransientSchema,
+        async resolve({ ctx, input }) {
+          return await self.roomsController.requestForTransient(
+            input,
+            ctx.user
+          );
+        },
+      });
   }
 }
 

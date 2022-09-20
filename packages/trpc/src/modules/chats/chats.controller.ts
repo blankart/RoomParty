@@ -1,4 +1,4 @@
-import { Subscription } from "@trpc/server";
+import { Subscription, TRPCError } from "@trpc/server";
 import type { Chat } from "@rooms2watch/prisma-client";
 import type { CurrentUser } from "../../types/user";
 import type ModelsService from "../models/models.service";
@@ -82,9 +82,27 @@ class ChatsController {
   }
 
   async chatSubscription(
-    data: { id: string; name: string; localStorageSessionId: number },
+    data: {
+      id: string;
+      name: string;
+      localStorageSessionId: number;
+      roomTransientId: string;
+    },
     user: CurrentUser
   ) {
+    const tempRoomSessionMapKey = JSON.stringify(data);
+
+    const maybeRoomTransient =
+      await this.modelsService.client.roomTransient.findFirst({
+        where: { id: data.roomTransientId },
+      });
+
+    if (!maybeRoomTransient)
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You are not allowed to enter this room.",
+      });
+
     return new Subscription<Chat & { color: string | null }>((emit) => {
       const onAdd = (data: Chat & { color: string | null }) => {
         emit.data(data);
@@ -92,8 +110,8 @@ class ChatsController {
 
       this.chatsEmitter.emitter.channel("SEND").on(data.id, onAdd);
       TempRoomSessionMap.set(
-        JSON.stringify(data),
-        (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) + 1
+        tempRoomSessionMapKey,
+        (TempRoomSessionMap.get(tempRoomSessionMapKey) ?? 0) + 1
       );
 
       Promise.all([
@@ -121,22 +139,17 @@ class ChatsController {
                 )
             );
         })(),
-        this.chatsService.incrementOnlineCount(
-          data.id,
-          data.localStorageSessionId,
-          user
-        ),
       ]);
 
       return async () => {
         TempRoomSessionMap.set(
-          JSON.stringify(data),
-          Math.max(0, (TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) - 1)
+          tempRoomSessionMapKey,
+          Math.max(0, (TempRoomSessionMap.get(tempRoomSessionMapKey) ?? 0) - 1)
         );
 
         this.chatsEmitter.emitter.channel("SEND").off(data.id, onAdd);
 
-        if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) === 0)
+        if ((TempRoomSessionMap.get(tempRoomSessionMapKey) ?? 0) === 0)
           await Promise.all([
             this.modelsService.client.chat
               .create({
@@ -160,11 +173,16 @@ class ChatsController {
                   )
               ),
 
-            this.chatsService.decrementOnlineCount(
-              data.id,
-              data.localStorageSessionId,
-              user
-            ),
+            this.modelsService.client.room.update({
+              where: { id: data.id },
+              data: {
+                RoomTransient: {
+                  delete: {
+                    id: data.roomTransientId,
+                  },
+                },
+              },
+            }),
           ]);
 
         if ((await this.roomsService.countNumberOfOnlineInRoom(data.id)) <= 0) {

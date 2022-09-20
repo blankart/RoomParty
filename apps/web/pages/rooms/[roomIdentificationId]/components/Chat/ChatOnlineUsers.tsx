@@ -30,15 +30,18 @@ export default function ChatOnlineUsers(props: ChatOnlineUsersProps) {
     5_000
   );
 
-  const first3OnlineInfo = useMemo(() => data?.data?.slice(0, 3) ?? [], [data]);
+  const first3OnlineInfo = useMemo(
+    () => data?.usersForDisplay?.slice(0, 3) ?? [],
+    [data]
+  );
 
   if (!first3OnlineInfo?.length) return null;
 
   return (
     <div
       className="tooltip tooltip-right tooltip-primary"
-      data-tip={`${data?.onlineUsers} online user${
-        (data?.data?.length ?? 0) > 1 ? "s" : ""
+      data-tip={`${data?.count} online user${
+        (data?.count ?? 0) > 1 ? "s" : ""
       }`}
     >
       <button className="inline-block p-1 -space-x-3 align-middle avatar-group">

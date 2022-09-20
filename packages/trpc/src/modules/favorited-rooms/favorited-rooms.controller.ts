@@ -80,9 +80,10 @@ class FavoritedRoomsController {
             select: {
               id: true,
               name: true,
+              RoomTransient: {
+                select: { id: true },
+              },
               thumbnailUrl: true,
-              onlineGuests: true,
-              onlineUsers: true,
               playerStatus: true,
               videoPlatform: true,
               roomIdentificationId: true,
@@ -98,9 +99,7 @@ class FavoritedRoomsController {
       thumbnailUrl:
         favoritedRoom.room.thumbnailUrl ??
         (favoritedRoom as any).room.playerStatus?.thumbnailUrl,
-      online:
-        favoritedRoom.room.onlineGuests.length +
-        favoritedRoom.room.onlineUsers.length,
+      online: favoritedRoom.room.RoomTransient.length,
     }));
   }
 }

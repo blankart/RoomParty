@@ -27,6 +27,7 @@ model User {
   accounts      Account[]
   Chat          Chat[]
   FavoritedRoom FavoritedRoom[]
+  RoomTransient RoomTransient[]
 }
 
 model FavoritedRoom {
@@ -44,7 +45,6 @@ model Room {
   playerStatus         Json?
   accountId            String?
   thumbnailUrl         String?
-  onlineGuests         Int[]           @default([])
   description          String?
   password             String?
   private              Boolean         @default(false)
@@ -54,7 +54,17 @@ model Room {
   owner                Account?        @relation(fields: [accountId], references: [id], onDelete: Cascade)
   chats                Chat[]
   FavoritedRoom        FavoritedRoom[]
-  onlineUsers          User[]
+  User                 User[]
+  RoomTransient        RoomTransient[]
+}
+
+model RoomTransient {
+  id                    String  @id @default(cuid())
+  localStorageSessionid Int
+  user                  User?   @relation(fields: [userId], references: [id])
+  userId                String?
+  room                  Room    @relation(fields: [roomId], references: [id])
+  roomId                String
 }
 
 model Chat {

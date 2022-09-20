@@ -9,6 +9,7 @@ import type {
   DeleteMyRoomSchema,
   FindByRoomIdentificationIdSchema,
   GetOnlineInfoSchema,
+  RequestForTransientSchema,
 } from "./rooms.dto";
 import { SERVICES_TYPES } from "../../types/container";
 import type RoomsService from "./rooms.service";
@@ -24,7 +25,7 @@ class RoomsController {
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService
-  ) {}
+  ) { }
   async findByRoomIdentificationId(data: FindByRoomIdentificationIdSchema) {
     const room = await this.modelsService.client.room
       .findFirst({
@@ -121,6 +122,17 @@ class RoomsController {
   }
 
   async findMyRoom(id: string) {
+    const roomTransientCount =
+      await this.modelsService.client.roomTransient.count({
+        where: {
+          room: {
+            owner: {
+              id,
+            },
+          },
+        },
+      });
+
     return await this.modelsService.client.room
       .findMany({
         where: {
@@ -131,12 +143,7 @@ class RoomsController {
         select: {
           id: true,
           name: true,
-          playerStatus: true,
-          onlineGuests: true,
           videoPlatform: true,
-          onlineUsers: {
-            select: { id: true },
-          },
           owner: {
             select: {
               userId: true,
@@ -144,6 +151,7 @@ class RoomsController {
           },
           createdAt: true,
           roomIdentificationId: true,
+          playerStatus: true,
         },
       })
       .then((res) =>
@@ -154,7 +162,7 @@ class RoomsController {
             roomIdentificationId: r.roomIdentificationId,
             id: r.id,
             name: r.name,
-            online: r.onlineGuests.length + r.onlineUsers.length,
+            online: roomTransientCount,
             thumbnail: (r.playerStatus as any)?.thumbnail as
               | string
               | null
@@ -180,24 +188,25 @@ class RoomsController {
   }
 
   async getOnlineInfo(data: GetOnlineInfoSchema) {
-    const onlineUsersCount = await this.modelsService.client.user.count({
-      where: {
-        Room: {
-          roomIdentificationId: data.roomIdentificationId,
+    const roomTransientCount =
+      await this.modelsService.client.roomTransient.count({
+        where: {
+          room: {
+            roomIdentificationId: data.roomIdentificationId,
+          },
         },
-      },
-    });
+      });
 
     return await this.modelsService.client.room
       .findFirst({
         where: { roomIdentificationId: data.roomIdentificationId },
         select: {
-          onlineGuests: true,
-          onlineUsers: {
+          RoomTransient: {
             take: 3,
-            select: {
-              name: true,
-              picture: true,
+            include: {
+              user: {
+                select: { name: true, picture: true },
+              },
             },
           },
         },
@@ -205,24 +214,103 @@ class RoomsController {
       .then((room) => {
         if (!room) return room;
 
-        const onlineInfo = [] as {
-          name: string | null;
-          picture: string | null;
-        }[];
-
-        for (let i = 0; i < Math.min(room.onlineGuests.length, 3); i++) {
-          onlineInfo.push({ name: "User", picture: null });
-        }
-
-        for (let i = 0; i < room.onlineUsers.length; i++) {
-          onlineInfo.push(room.onlineUsers[i]);
-        }
-
         return {
-          onlineUsers: room.onlineGuests.length + onlineUsersCount,
-          data: onlineInfo.reverse(),
+          count: roomTransientCount,
+          usersForDisplay: room.RoomTransient.map((rt) => {
+            if (!rt.user) {
+              return { name: "Guest", picture: null };
+            }
+
+            return { name: rt.user.name, picture: rt.user.picture };
+          }),
         };
       });
+  }
+
+  async requestForTransient(
+    data: RequestForTransientSchema,
+    user: CurrentUser
+  ) {
+    const maybeExistingTransient =
+      await this.modelsService.client.roomTransient.findFirst({
+        where: {
+          AND: [
+            { localStorageSessionid: data.localStorageSessionId },
+            {
+              room: {
+                roomIdentificationId: data.roomIdentificationId,
+              },
+            },
+          ],
+        },
+        include: {
+          user: { select: { id: true } }
+        }
+      });
+
+    if (maybeExistingTransient) {
+      console.log({
+        where: { id: maybeExistingTransient.id },
+        data: {
+          user: {
+            ...(user
+              ? {
+                connect: {
+                  id: user.user.id,
+                },
+              }
+              : {
+                disconnect: true,
+              }),
+          },
+        },
+      })
+      await this.modelsService.client.roomTransient.update({
+        where: { id: maybeExistingTransient.id },
+        data: {
+          user: {
+            ...(user
+              ? {
+                connect: {
+                  id: user.user.id,
+                },
+              }
+              : {
+                disconnect: true,
+              }),
+          },
+        },
+      });
+      return maybeExistingTransient;
+    }
+
+    const room = await this.findByRoomIdentificationId({
+      roomIdentificationId: data.roomIdentificationId,
+    });
+
+    if (!room)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Room does not exist.",
+      });
+
+    return await this.modelsService.client.roomTransient.create({
+      data: {
+        ...(user ? {
+          user: {
+            connect: {
+              id: user?.user.id,
+            },
+          },
+        } : {}),
+        localStorageSessionid: data.localStorageSessionId,
+        room: {
+          connect: {
+            id: room.id,
+          },
+        },
+      },
+    });
   }
 }
 

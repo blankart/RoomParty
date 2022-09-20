@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, } from "react";
 import shallow from "zustand/shallow";
 import uniqBy from "lodash.uniqby";
 
@@ -77,6 +77,13 @@ export default function useChat(props: ChatProps) {
     chatsFetchedOnceRef.current = true;
   }, [data, roomStore.chats]);
 
+  const { data: roomTransient } = trpc.useQuery(['rooms.requestForTransient', {
+    roomIdentificationId: router.query?.roomIdentificationId! as string,
+    localStorageSessionId: sessionId!
+  }], {
+    enabled: !!router.query?.roomIdentificationId && !!sessionId
+  })
+
   trpc.useSubscription(
     [
       "chats.chatSubscription",
@@ -84,10 +91,11 @@ export default function useChat(props: ChatProps) {
         id: roomStore.id!,
         name: roomStore.userName,
         localStorageSessionId: roomStore.localStorageSessionId!,
+        roomTransientId: roomTransient?.id!
       },
     ],
     {
-      enabled: shouldEnableQueries,
+      enabled: shouldEnableQueries && !!roomTransient?.id,
       onNext: (data) => {
         roomStore.addChat(data);
         removeUnusedLocalStorageItems();

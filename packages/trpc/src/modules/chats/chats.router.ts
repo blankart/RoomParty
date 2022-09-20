@@ -47,6 +47,7 @@ class ChatsRouter {
           id: zod.string(),
           name: zod.string(),
           localStorageSessionId: zod.number(),
+          roomTransientId: zod.string(),
         }),
         async resolve({ input, ctx }) {
           return await self.chatsController.chatSubscription(input, ctx.user);

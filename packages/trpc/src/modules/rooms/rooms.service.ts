@@ -10,6 +10,7 @@ class RoomsService {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
   ) {}
+
   roomIdentificationIdGenerator() {
     let generatedId = "";
 
@@ -28,25 +29,13 @@ class RoomsService {
   }
 
   async countNumberOfOnlineInRoom(id: string) {
-    const onlineUsers = await this.modelsService.client.user.count({
+    return await this.modelsService.client.roomTransient.count({
       where: {
-        Room: {
+        room: {
           id,
         },
       },
     });
-
-    const onlineGuests = await this.modelsService.client.room
-      .findFirst({
-        where: { id },
-        select: { onlineGuests: true },
-      })
-      .then((room) => {
-        if (!room) return 0;
-        return room.onlineGuests?.length;
-      });
-
-    return onlineGuests + onlineUsers;
   }
 }
 
