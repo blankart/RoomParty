@@ -77,11 +77,12 @@ export default function useChat(props: ChatProps) {
     chatsFetchedOnceRef.current = true;
   }, [data, roomStore.chats]);
 
-  const { data: roomTransient } = trpc.useQuery(['rooms.requestForTransient', {
+  const { data: roomTransient } = trpc.useQuery(['rooms.requestForRoomTransient', {
     roomIdentificationId: router.query?.roomIdentificationId! as string,
-    localStorageSessionId: sessionId!
+    localStorageSessionId: sessionId!,
+    userName: roomStore.userName
   }], {
-    enabled: !!router.query?.roomIdentificationId && !!sessionId
+    enabled: !!router.query?.roomIdentificationId && !!sessionId && !!roomStore.userName
   })
 
   trpc.useSubscription(

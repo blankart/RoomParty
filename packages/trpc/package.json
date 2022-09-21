@@ -19,7 +19,6 @@
     "@trpc/server": "^9.27.2",
     "eventemitter2": "^6.4.9",
     "inversify": "^6.0.1",
-    "inversify-logger-middleware": "^3.1.0",
     "nookies": "^2.5.2",
     "pg-boss": "^8.0.0",
     "reflect-metadata": "^0.1.13",

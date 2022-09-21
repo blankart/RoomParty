@@ -3,7 +3,7 @@ import {
   deleteMyRoomSchema,
   findByRoomIdentificationIdSchema,
   getOnlineInfoSchema,
-  requestForTransientSchema,
+  requestForRoomTransientSchema,
 } from "./rooms.schema";
 
 import { injectable, inject } from "inversify";
@@ -65,10 +65,10 @@ class RoomsRouter {
           return await self.roomsController.create(input, ctx.user);
         },
       })
-      .query("requestForTransient", {
-        input: requestForTransientSchema,
+      .query("requestForRoomTransient", {
+        input: requestForRoomTransientSchema,
         async resolve({ ctx, input }) {
-          return await self.roomsController.requestForTransient(
+          return await self.roomsController.requestForRoomTransient(
             input,
             ctx.user
           );

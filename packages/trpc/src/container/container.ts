@@ -1,6 +1,5 @@
 import "reflect-metadata";
 import { Container, ContainerModule } from "inversify";
-import { makeLoggerMiddleware } from "inversify-logger-middleware";
 import ChatsController from "../modules/chats/chats.controller";
 import ChatsService from "../modules/chats/chats.service";
 import FavoritedRoomsController from "../modules/favorited-rooms/favorited-rooms.controller";
@@ -135,10 +134,6 @@ const trpcContainerModule = new ContainerModule((bind) => {
 });
 
 const appContainer = new Container();
-
-if (process.env.NODE_ENV !== "production") {
-  appContainer.applyMiddleware(makeLoggerMiddleware());
-}
 
 appContainer.load(trpcContainerModule);
 

@@ -6,6 +6,6 @@ const { withSuperjson } = require("next-superjson");
 // });
 
 module.exports = withSuperjson()({
-  reactStrictMode: true,
+  // reactStrictMode: true,
   pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
 });

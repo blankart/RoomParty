@@ -3,7 +3,6 @@ import useDebouncedEffect from "@web/hooks/useDebouncedEffect";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
-import { CgMoreAlt } from "react-icons/cg";
 import { useRoomsStore } from "../../store/rooms";
 
 interface ChatOnlineUsersProps {}
@@ -61,7 +60,7 @@ export default function ChatOnlineUsers(props: ChatOnlineUsersProps) {
                 />
               ) : (
                 <div className="!m-0 w-full h-full text-[.9rem] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-primary rounded-full">
-                  U
+                  {onlineInfo.name?.substring(0, 1)?.toUpperCase() ?? "U"}
                 </div>
               )}
             </div>

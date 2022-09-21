@@ -175,9 +175,9 @@ class ChatsController {
 
             this.modelsService.client.roomTransient.findFirst({
               where: { id: data.roomTransientId }
-            }).then(roomTransient => {
+            }).then(async roomTransient => {
               if (!roomTransient) return
-              this.modelsService.client.roomTransient.delete({
+              await this.modelsService.client.roomTransient.delete({
                 where: { id: data.roomTransientId }
               })
             })

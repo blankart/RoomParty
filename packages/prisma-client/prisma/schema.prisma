@@ -65,6 +65,7 @@ model RoomTransient {
   userId                String?
   room                  Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId                String
+  name                  String
 }
 
 model Chat {

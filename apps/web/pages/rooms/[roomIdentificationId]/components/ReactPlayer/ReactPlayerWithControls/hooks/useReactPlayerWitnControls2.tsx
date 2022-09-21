@@ -41,8 +41,8 @@ export default function useReactPlayerWithControls2(): {
     setMuted,
   } = useReactPlayerContext();
 
-  const { userName } = useRoomsStore(
-    (s) => ({ userName: s.userName }),
+  const { userName, thumbnail } = useRoomsStore(
+    (s) => ({ userName: s.userName, thumbnail: s.thumbnail }),
     shallow
   );
 
@@ -87,7 +87,7 @@ export default function useReactPlayerWithControls2(): {
         type: "PLAYED",
         time: scrubTime,
         url: url!,
-        thumbnail: "",
+        thumbnail,
         tabSessionId: 123,
       },
     });
@@ -101,7 +101,7 @@ export default function useReactPlayerWithControls2(): {
         type: "PAUSED",
         time: scrubTime,
         url: url ?? "",
-        thumbnail: "",
+        thumbnail,
         tabSessionId: 123,
       },
     });
@@ -117,7 +117,7 @@ export default function useReactPlayerWithControls2(): {
         type: "SEEK_TO",
         time,
         url: url ?? "",
-        thumbnail: "",
+        thumbnail,
         tabSessionId: 123,
       },
     });

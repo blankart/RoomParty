@@ -23,7 +23,8 @@ export const createSchema = zod.object({
     .max(20, "Room name must have at most 20 characters"),
 });
 
-export const requestForTransientSchema = zod.object({
+export const requestForRoomTransientSchema = zod.object({
   roomIdentificationId,
   localStorageSessionId: zod.number(),
+  userName: zod.string()
 });

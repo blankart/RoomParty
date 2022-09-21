@@ -122,17 +122,6 @@ class RoomsController {
   }
 
   async findMyRoom(id: string) {
-    const roomTransientCount =
-      await this.modelsService.client.roomTransient.count({
-        where: {
-          room: {
-            owner: {
-              id,
-            },
-          },
-        },
-      });
-
     return await this.modelsService.client.room
       .findMany({
         where: {
@@ -152,6 +141,9 @@ class RoomsController {
           createdAt: true,
           roomIdentificationId: true,
           playerStatus: true,
+          RoomTransient: {
+            select: { id: true }
+          }
         },
       })
       .then((res) =>
@@ -162,7 +154,7 @@ class RoomsController {
             roomIdentificationId: r.roomIdentificationId,
             id: r.id,
             name: r.name,
-            online: roomTransientCount,
+            online: r.RoomTransient.length,
             thumbnail: (r.playerStatus as any)?.thumbnail as
               | string
               | null
@@ -218,7 +210,7 @@ class RoomsController {
           count: roomTransientCount,
           usersForDisplay: room.RoomTransient.map((rt) => {
             if (!rt.user) {
-              return { name: "Guest", picture: null };
+              return { name: rt.name, picture: null };
             }
 
             return { name: rt.user.name, picture: rt.user.picture };
@@ -227,7 +219,7 @@ class RoomsController {
       });
   }
 
-  async requestForTransient(
+  async requestForRoomTransient(
     data: RequestForTransientSchema,
     user: CurrentUser
   ) {
@@ -247,6 +239,7 @@ class RoomsController {
           user: { select: { id: true } }
         }
       });
+
 
     if (maybeExistingTransient) {
       await this.modelsService.client.roomTransient.update({
@@ -280,6 +273,7 @@ class RoomsController {
 
     return await this.modelsService.client.roomTransient.create({
       data: {
+        name: data.userName,
         ...(user ? {
           user: {
             connect: {
