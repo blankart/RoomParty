@@ -68,10 +68,12 @@ export default function ChatOnlineUsers(props: ChatOnlineUsersProps) {
           </div>
         ))}
 
-        {first3OnlineInfo.length > 3 && (
+        {(data?.count ?? 0) > 3 && (
           <div className="avatar placeholder">
             <div className="w-6 h-6 text-xs bg-neutral-focus text-neutral-content">
-              <CgMoreAlt className="w-6 h-6 bg-neutral-focus" />
+              <div className="!m-0 w-full h-full text-[.9rem] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-primary rounded-full">
+                +{data?.count ?? 0}
+              </div>
             </div>
           </div>
         )}

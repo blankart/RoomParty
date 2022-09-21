@@ -37,7 +37,7 @@ export default function Chat(props: ChatProps) {
 
       <div
         className={classNames(
-          "relative h-[50vh] lg:h-screen flex flex-col shadow-xl",
+          "relative h-[50%] lg:h-screen flex flex-col shadow-xl",
           !ctx.collapsed ? "w-0" : "w-full lg:w-[400px]"
         )}
       >
@@ -46,7 +46,7 @@ export default function Chat(props: ChatProps) {
           onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}
         />
-        <section className="flex flex-col justify-end flex-1 h-[50vh] lg:h-screen bg-base-100">
+        <section className="flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100">
           <div
             ref={ctx.chatsRef}
             className={classNames("p-2 overflow-y-auto relative flex-1", {

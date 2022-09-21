@@ -29,7 +29,7 @@ export default function ReactPlayerWithControlsSetup(
 
       <div
         className={classNames(
-          "!w-20 h-auto absolute z-10 top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col items-center gap-4",
+          "!w-20 h-auto absolute z-[11] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col items-center gap-4",
           {
             "pointer-events-none": !ctx.isLoading,
           }
@@ -54,7 +54,7 @@ export default function ReactPlayerWithControlsSetup(
 
       <div
         className={classNames(
-          "absolute inset-0 w-full p-10 overflow-y-auto bg-base-100/90 duration-100",
+          "absolute inset-0 w-full z-[10] p-10 overflow-y-auto bg-base-100/90 duration-100",
           {
             "opacity-0 pointer-events-none": !ctx.showVideoSearch,
           }

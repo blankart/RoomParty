@@ -5,7 +5,6 @@ import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWith
 import { trpc } from "@web/api";
 import useDebouncedState from "@web/hooks/useDebouncedState";
 import numeral from "numeral";
-import { useControlMutation } from "./useReactPlayerWithControls";
 
 export function useReactPlayerWithControlsSetup(
   props: ReactPlayerWithControlsSetupProps
@@ -52,7 +51,7 @@ export function useReactPlayerWithControlsSetup(
     refetchOnWindowFocus: false,
   });
 
-  const control = useControlMutation();
+  const { mutateAsync: control } = trpc.useMutation(["player.control"]);
 
   function onSelectLink(url: string, thumbnail: string) {
     control({

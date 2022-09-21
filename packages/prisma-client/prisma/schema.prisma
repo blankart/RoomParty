@@ -61,9 +61,9 @@ model Room {
 model RoomTransient {
   id                    String  @id @default(cuid())
   localStorageSessionid Int
-  user                  User?   @relation(fields: [userId], references: [id])
+  user                  User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
   userId                String?
-  room                  Room    @relation(fields: [roomId], references: [id])
+  room                  Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId                String
 }
 

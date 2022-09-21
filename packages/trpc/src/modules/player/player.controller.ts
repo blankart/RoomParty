@@ -7,7 +7,6 @@ import type PlayerService from "./player.service";
 import PlayerEmitter from "./player.emitter";
 
 export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
-export const RoomControlTimeoutMap = new Map<string, NodeJS.Timeout>();
 @injectable()
 class PlayerController {
   constructor(
@@ -57,13 +56,7 @@ class PlayerController {
     const startAfter = new Date();
     startAfter.setTime(startAfter.getTime() + 1_000);
 
-    clearTimeout(RoomControlTimeoutMap.get(data.id));
-    RoomControlTimeoutMap.set(
-      data.id,
-      setTimeout(() => {
-        this.playerService.createChatAfterControl({ data });
-      }, 1000)
-    );
+    this.playerService.createChatAfterControl({ data });
   }
 }
 

@@ -11,11 +11,11 @@ export default function ReactPlayer({
 }: ReactPlayerProps & { reactPlayerRef: RefObject<_ReactPlayer> }) {
   return (
     <_ReactPlayer
-      {...props}
       ref={reactPlayerRef}
       config={{
         youtube: YOUTUBE_PLAYER_CONFIG,
       }}
+      {...props}
     />
   );
 }

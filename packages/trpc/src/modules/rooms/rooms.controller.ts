@@ -249,22 +249,6 @@ class RoomsController {
       });
 
     if (maybeExistingTransient) {
-      console.log({
-        where: { id: maybeExistingTransient.id },
-        data: {
-          user: {
-            ...(user
-              ? {
-                connect: {
-                  id: user.user.id,
-                },
-              }
-              : {
-                disconnect: true,
-              }),
-          },
-        },
-      })
       await this.modelsService.client.roomTransient.update({
         where: { id: maybeExistingTransient.id },
         data: {

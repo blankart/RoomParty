@@ -7,11 +7,11 @@ import type { PlayerStatus } from "@rooms2watch/trpc";
 
 import { trpc } from "@web/api";
 import Chat from "@web/pages/rooms/[roomIdentificationId]/components/Chat/Chat";
-import ReactPlayerWithControls from "@web/pages/rooms/[roomIdentificationId]/components/ReactPlayer/ReactPlayerWithControls/ReactPlayerWithControls";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import { useMe } from "@web/context/AuthContext";
 import { DARK_THEME } from "@web/components/DashboardLayout/DashboardLayout";
-import { ReactPlayerProvider } from "./components/ReactPlayer/ReactPlayerWithControls/context/ReactPlayerWithControlsContext";
+import { ReactPlayerProvider } from "./components/ReactPlayer/context/ReactPlayerContext";
+import ReactPlayerWithControls2 from "./components/ReactPlayer/ReactPlayerWithControls/ReactPlayerWithControls2";
 
 export default function RoomPage() {
   const { set, id } = useRoomsStore(
@@ -72,7 +72,7 @@ export default function RoomPage() {
         <>
           <Suspense>
             <ReactPlayerProvider>
-              <ReactPlayerWithControls />
+              <ReactPlayerWithControls2 />
             </ReactPlayerProvider>
             <Chat />
           </Suspense>
