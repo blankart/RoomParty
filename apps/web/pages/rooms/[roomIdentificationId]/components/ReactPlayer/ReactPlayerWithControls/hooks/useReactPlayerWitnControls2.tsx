@@ -39,6 +39,7 @@ export default function useReactPlayerWithControls2(): {
     setVolume,
     isMuted,
     setMuted,
+    getInternalPlayer,
   } = useReactPlayerContext();
 
   const { userName, thumbnail } = useRoomsStore(
@@ -139,7 +140,8 @@ export default function useReactPlayerWithControls2(): {
 
   function onNext(newPlayerStatus: PlayerStatus) {
     if (newPlayerStatus.type === "PLAYED") {
-      playVideo();
+      // playVideo();
+      getInternalPlayer()?.playVideo?.() ?? getInternalPlayer()?.play?.();
       return;
     }
 
