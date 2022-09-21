@@ -14,7 +14,7 @@ class PlayerService {
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) { }
+  ) {}
 
   async synchronizeScrubTime({
     id,
@@ -64,12 +64,17 @@ class PlayerService {
 
     switch (params.data.statusObject.type) {
       case "SEEK_TO":
-        message = `${params.data.statusObject.name} jumped the video to ${convertTimeToFormattedTime(params.data.statusObject.time)}.`;
-        break
+        message = `${
+          params.data.statusObject.name
+        } jumped the video to ${convertTimeToFormattedTime(
+          params.data.statusObject.time
+        )}.`;
+        break;
       case "PAUSED":
       case "PLAYED":
-        message = `${params.data.statusObject.name} ${params.data.statusObject.type === "PAUSED" ? "paused" : "played"
-          } the video.`;
+        message = `${params.data.statusObject.name} ${
+          params.data.statusObject.type === "PAUSED" ? "paused" : "played"
+        } the video.`;
         break;
       case "CHANGE_URL":
         message = `${params.data.statusObject.name} changed the video (${params.data.statusObject.url})`;

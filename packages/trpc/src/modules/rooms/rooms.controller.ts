@@ -25,7 +25,7 @@ class RoomsController {
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService
-  ) { }
+  ) {}
   async findByRoomIdentificationId(data: FindByRoomIdentificationIdSchema) {
     const room = await this.modelsService.client.room
       .findFirst({
@@ -142,8 +142,8 @@ class RoomsController {
           roomIdentificationId: true,
           playerStatus: true,
           RoomTransient: {
-            select: { id: true }
-          }
+            select: { id: true },
+          },
         },
       })
       .then((res) =>
@@ -236,10 +236,9 @@ class RoomsController {
           ],
         },
         include: {
-          user: { select: { id: true } }
-        }
+          user: { select: { id: true } },
+        },
       });
-
 
     if (maybeExistingTransient) {
       await this.modelsService.client.roomTransient.update({
@@ -248,13 +247,13 @@ class RoomsController {
           user: {
             ...(user
               ? {
-                connect: {
-                  id: user.user.id,
-                },
-              }
+                  connect: {
+                    id: user.user.id,
+                  },
+                }
               : {
-                disconnect: true,
-              }),
+                  disconnect: true,
+                }),
           },
         },
       });
@@ -274,13 +273,15 @@ class RoomsController {
     return await this.modelsService.client.roomTransient.create({
       data: {
         name: data.userName,
-        ...(user ? {
-          user: {
-            connect: {
-              id: user?.user.id,
-            },
-          },
-        } : {}),
+        ...(user
+          ? {
+              user: {
+                connect: {
+                  id: user?.user.id,
+                },
+              },
+            }
+          : {}),
         localStorageSessionid: data.localStorageSessionId,
         room: {
           connect: {

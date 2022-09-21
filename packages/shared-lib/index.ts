@@ -6,5 +6,3 @@ export {
   CHAT_LOCAL_STORAGE_SESSION_KEY,
   LOCAL_STORAGE_LAST_VISITED_ROOM,
 } from "./constants";
-
-

@@ -18,7 +18,7 @@ class RoomsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Rooms) private roomsController: RoomsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
   router() {
     const self = this;
     return this.trpcRouter

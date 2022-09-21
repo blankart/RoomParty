@@ -19,7 +19,7 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) { }
+  ) {}
   async chats(id: string) {
     return await this.modelsService.client.room
       .findFirst({
@@ -60,13 +60,13 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-            color: data.color,
-            user: {
-              connect: {
-                id: data.userId,
+              color: data.color,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });
@@ -173,14 +173,16 @@ class ChatsController {
                   )
               ),
 
-            this.modelsService.client.roomTransient.findFirst({
-              where: { id: data.roomTransientId }
-            }).then(async roomTransient => {
-              if (!roomTransient) return
-              await this.modelsService.client.roomTransient.delete({
-                where: { id: data.roomTransientId }
+            this.modelsService.client.roomTransient
+              .findFirst({
+                where: { id: data.roomTransientId },
               })
-            })
+              .then(async (roomTransient) => {
+                if (!roomTransient) return;
+                await this.modelsService.client.roomTransient.delete({
+                  where: { id: data.roomTransientId },
+                });
+              }),
           ]);
 
         if ((await this.roomsService.countNumberOfOnlineInRoom(data.id)) <= 0) {

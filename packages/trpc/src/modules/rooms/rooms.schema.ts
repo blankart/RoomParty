@@ -26,5 +26,5 @@ export const createSchema = zod.object({
 export const requestForRoomTransientSchema = zod.object({
   roomIdentificationId,
   localStorageSessionId: zod.number(),
-  userName: zod.string()
+  userName: zod.string(),
 });
