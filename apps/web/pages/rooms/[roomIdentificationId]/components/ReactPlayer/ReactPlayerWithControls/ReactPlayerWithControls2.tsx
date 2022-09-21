@@ -17,7 +17,7 @@ const ReactPlayer = dynamic(
 );
 
 export default function ReactPlayerWithControls2() {
-  const { reactPlayerProps } = useReactPlayerContext();
+  const { reactPlayerProps, url } = useReactPlayerContext();
   const { control, player, setup, roomInfo } = useReactPlayerWithControls2();
   return (
     <Suspense>
@@ -26,10 +26,12 @@ export default function ReactPlayerWithControls2() {
           <Suspense>
             <ReactPlayerWithControlsSetup {...setup} />
             <div className="relative w-full h-full">
-              <button
-                className="absolute inset-0 z-[1]"
-                onClick={!control.isPlayed ? control.onPlay : control.onPause}
-              />
+              {!!url && (
+                <button
+                  className="absolute inset-0 z-[1]"
+                  onClick={!control.isPlayed ? control.onPlay : control.onPause}
+                />
+              )}
               <ReactPlayer
                 pip
                 stopOnUnmount

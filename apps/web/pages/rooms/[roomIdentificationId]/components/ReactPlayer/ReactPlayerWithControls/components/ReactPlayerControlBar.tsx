@@ -64,9 +64,9 @@ export default function ReactPlayerControlBar(
         onClick={props.isPlayed ? props.onPause : props.onPlay}
       >
         {props.isPlayed ? (
-          <FaPause className="w-full h-auto" />
+          <FaPause className="w-4 h-auto" />
         ) : (
-          <FaPlay className="w-full h-auto" />
+          <FaPlay className="w-4 h-auto" />
         )}
       </button>
       <div className="flex items-center flex-1 p-2">
