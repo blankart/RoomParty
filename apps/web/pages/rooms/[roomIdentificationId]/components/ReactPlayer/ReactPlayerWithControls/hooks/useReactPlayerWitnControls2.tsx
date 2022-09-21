@@ -4,7 +4,7 @@ import { InferQueryOutput } from "@web/types/trpc";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef } from "react";
-import { ReactPlayerProps } from "react-player";
+import type { ReactPlayerProps } from "react-player";
 import { useReactPlayerContext } from "../../context/ReactPlayerContext";
 import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWithControlsSetup";
 import { ReactPlayerControlBarProps } from "../components/ReactPlayerControlBar";
@@ -140,8 +140,7 @@ export default function useReactPlayerWithControls2(): {
 
   function onNext(newPlayerStatus: PlayerStatus) {
     if (newPlayerStatus.type === "PLAYED") {
-      // playVideo();
-      getInternalPlayer()?.playVideo?.() ?? getInternalPlayer()?.play?.();
+      playVideo();
       return;
     }
 
