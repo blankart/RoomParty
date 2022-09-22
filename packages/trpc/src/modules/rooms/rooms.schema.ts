@@ -51,7 +51,7 @@ export const getSettingsSchema = zod.object({
   id: zod.string(),
 });
 
-export const getRoomPermissionsSchema = zod.object({
+export const getRoomInitialMetadataSchema = zod.object({
   roomIdentificationId,
 });
 
@@ -59,3 +59,8 @@ export const validatePasswordSchema = zod.object({
   password: zod.string(),
   roomIdentificationId,
 });
+
+export const subscribeToRoomMetadataSchema = zod.object({
+  roomIdentificationId,
+  password: zod.string(),
+})

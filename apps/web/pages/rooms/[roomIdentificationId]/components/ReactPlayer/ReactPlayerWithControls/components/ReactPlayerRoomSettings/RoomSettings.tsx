@@ -121,7 +121,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
         />
       </div>
       <div className="form-control">
-        <div className="input-group">
+        <div className="flex items-center input-group">
           <Input
             label="Enter your password"
             disabled={!isPrivate}

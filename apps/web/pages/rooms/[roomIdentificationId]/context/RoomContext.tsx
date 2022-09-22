@@ -17,6 +17,8 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { RoomsSchema } from "@web/../../packages/trpc/schema";
 import ChatNamePrompt from "../components/Chat/ChatNamePrompt";
 import { useMe } from "@web/context/AuthContext";
+import { useRoomsStore } from "../store/rooms";
+import { useToast } from "@web/pages/components/Toast";
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 
@@ -139,9 +141,10 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
     isLoading: isRoomLoading,
     error,
     isIdle,
+    refetch: refetchRoomInitialMetadata,
   } = trpc.useQuery(
     [
-      "rooms.getRoomPermissions",
+      "rooms.getRoomInitialMetadata",
       { roomIdentificationId: roomIdentificationId! },
     ],
     {
@@ -149,6 +152,7 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
     }
   );
 
+  const context = trpc.useContext();
   const [password, setPassword] = useState<string | null>(null);
   const [roomTransientId, setRoomTransientId] = useState<string | null>(null);
   const [localStorageSessionId, setLocalStorageSessionId] = useLocalStorage<
@@ -161,7 +165,16 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
 
   const userName = user?.user?.name ?? userNameFromLocalStorage ?? "";
 
-  trpc.useQuery(
+  const shouldBeAllowedToQuery =
+    !!roomPermissions &&
+    (roomPermissions.isAuthorizedToEnter
+      ? !!roomIdentificationId && !!localStorageSessionId && !!userName
+      : !!roomIdentificationId &&
+        !!localStorageSessionId &&
+        !!userName &&
+        !!password);
+
+  const { refetch: refetchRequestForRoomTransient } = trpc.useQuery(
     [
       "rooms.requestForRoomTransient",
       {
@@ -172,16 +185,13 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
       },
     ],
     {
-      enabled:
-        !!roomPermissions &&
-        (roomPermissions.isAuthorizedToEnter
-          ? !!roomIdentificationId && !!localStorageSessionId && !!userName
-          : !!roomIdentificationId &&
-            !!localStorageSessionId &&
-            !!userName &&
-            !!password),
+      enabled: shouldBeAllowedToQuery,
       onSuccess(data) {
         setRoomTransientId(data.id);
+      },
+      onError() {
+        setPassword(null);
+        setRoomTransientId(null);
       },
     }
   );
@@ -192,6 +202,45 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
       Math.floor((Math.random() * 1_000_000_000) % 1_000_000_000)
     );
   }, []);
+
+  const { add } = useToast();
+
+  trpc.useSubscription(
+    [
+      "rooms.subscribeToRoomMetadata",
+      {
+        roomIdentificationId: roomIdentificationId!,
+        password: password ?? "",
+      },
+    ],
+    {
+      enabled: shouldBeAllowedToQuery,
+      onNext(data) {
+        if (useRoomsStore.getState().owner === user?.user.id) return;
+
+        if (data.type === "CHANGED_PASSWORD") {
+          refetchRoomInitialMetadata();
+          refetchRequestForRoomTransient();
+          add(
+            "The owner has changed the password. Please re-enter the password."
+          );
+          return;
+        }
+
+        if (data.type === "CHANGED_ROOM_PRIVACY") {
+          context.invalidateQueries(["rooms.findByRoomIdentificationId"]);
+          if (data.value) {
+            refetchRoomInitialMetadata();
+            refetchRequestForRoomTransient();
+            add("The owner has set the room to private.");
+            return;
+          } else {
+            add("The owner has set the room to public.");
+          }
+        }
+      },
+    }
+  );
 
   if (isRoomLoading || isIdle) {
     return (

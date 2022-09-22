@@ -33,6 +33,7 @@ import YoutubeRouter from "../modules/youtube/youtube.router";
 import EmitterService from "../modules/emitter/emitter.service";
 import ChatsEmitter from "../modules/chats/chats.emitter";
 import PlayerEmitter from "../modules/player/player.emitter";
+import RoomsEmitter from "../modules/rooms/rooms.emitter";
 
 const trpcContainerModule = new ContainerModule((bind) => {
   /**
@@ -71,6 +72,7 @@ const trpcContainerModule = new ContainerModule((bind) => {
    */
 
   bind<ChatsEmitter>(EMITTER_TYPES.Chats).to(ChatsEmitter).inSingletonScope();
+  bind<RoomsEmitter>(EMITTER_TYPES.Rooms).to(RoomsEmitter).inSingletonScope();
 
   bind<PlayerEmitter>(EMITTER_TYPES.Player)
     .to(PlayerEmitter)

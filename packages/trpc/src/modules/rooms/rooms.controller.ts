@@ -3,24 +3,28 @@ import type ModelsService from "../models/models.service";
 import type QueueService from "../queue/queue.service";
 import type { CurrentUser } from "../../types/user";
 import { injectable, inject } from "inversify";
-import { TRPCError } from "@trpc/server";
+import { Subscription, TRPCError } from "@trpc/server";
 import type {
   CreateSchema,
   DeleteMyRoomSchema,
   FindByRoomIdentificationIdSchema,
   GetOnlineInfoSchema,
-  GetRoomPermissionsSchema,
+  GetRoomInitialMetadataSchema,
   GetSettingsSchema,
   RequestForTransientSchema,
   SaveSettingsSchema,
+  SubscribeToRoomMetadataSchema,
   ValidatePasswordSchema,
 } from "./rooms.dto";
-import { SERVICES_TYPES } from "../../types/container";
+import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type RoomsService from "./rooms.service";
+import RoomsEmitter from "./rooms.emitter";
 
 enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",
 }
+
+export type RoomMetadata = { type: 'CHANGED_ROOM_PRIVACY', value: boolean } | { type: 'CHANGED_PASSWORD' }
 
 @injectable()
 class RoomsController {
@@ -28,8 +32,9 @@ class RoomsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
-    @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService
-  ) {}
+    @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
+    @inject(EMITTER_TYPES.Rooms) private roomsEmitter: RoomsEmitter
+  ) { }
   async findByRoomIdentificationId(
     data: FindByRoomIdentificationIdSchema,
     user: CurrentUser
@@ -283,15 +288,15 @@ class RoomsController {
             },
             ...(user
               ? [
-                  {
-                    user: {
-                      id: user.user.id,
-                    },
-                    room: {
-                      roomIdentificationId: data.roomIdentificationId,
-                    },
+                {
+                  user: {
+                    id: user.user.id,
                   },
-                ]
+                  room: {
+                    roomIdentificationId: data.roomIdentificationId,
+                  },
+                },
+              ]
               : []),
           ],
         },
@@ -316,21 +321,21 @@ class RoomsController {
 
       const updateObject = user
         ? {
-            name: data.userName,
-            user: {
-              connect: {
-                id: user.user.id,
-              },
+          name: data.userName,
+          user: {
+            connect: {
+              id: user.user.id,
             },
-          }
+          },
+        }
         : !!maybeExistingTransientUser
-        ? {
+          ? {
             name: data.userName,
             user: {
               disconnect: true,
             },
           }
-        : {
+          : {
             name: data.userName,
           };
 
@@ -348,12 +353,12 @@ class RoomsController {
         name: data.userName ?? "User",
         ...(user
           ? {
-              user: {
-                connect: {
-                  id: user?.user.id,
-                },
+            user: {
+              connect: {
+                id: user?.user.id,
               },
-            }
+            },
+          }
           : {}),
         localStorageSessionid: data.localStorageSessionId,
         room: {
@@ -391,6 +396,19 @@ class RoomsController {
       },
     });
 
+    if (maybeExistingRoom.private !== data.private) {
+      this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').emit(maybeExistingRoom.roomIdentificationId, {
+        type: 'CHANGED_ROOM_PRIVACY',
+        value: data.private
+      })
+    }
+
+    if (maybeExistingRoom.password !== data.password) {
+      this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').emit(maybeExistingRoom.roomIdentificationId, {
+        type: 'CHANGED_PASSWORD',
+      })
+    }
+
     return "Successfully updated room settings.";
   }
 
@@ -418,7 +436,7 @@ class RoomsController {
     return maybeExistingRoom;
   }
 
-  async getRoomPermissions(data: GetRoomPermissionsSchema, user: CurrentUser) {
+  async getRoomInitialMetadata(data: GetRoomInitialMetadataSchema, user: CurrentUser) {
     const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(
       data.roomIdentificationId,
       user
@@ -454,6 +472,24 @@ class RoomsController {
       });
 
     return true as const;
+  }
+
+  async subscribeToRoomMetadata(data: SubscribeToRoomMetadataSchema, user: CurrentUser) {
+    const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(data.roomIdentificationId, user, data.password)
+
+    if (!isAuthorizedToEnter) throw new TRPCError({ code: 'UNAUTHORIZED' })
+
+    return new Subscription<RoomMetadata>(emit => {
+      const onAdd = (data: RoomMetadata) => {
+        emit.data(data)
+      }
+
+      this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').on(data.roomIdentificationId, onAdd)
+
+      return () => {
+        this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').off(data.roomIdentificationId, onAdd)
+      }
+    })
   }
 }
 

@@ -13,6 +13,7 @@ export const SERVICES_TYPES = {
 export const EMITTER_TYPES = {
   Chats: Symbol("ChatsEmitter"),
   Player: Symbol("PlayerEmitter"),
+  Rooms: Symbol("RoomsEmitter"),
 };
 
 export const CONTROLLER_TYPES = {

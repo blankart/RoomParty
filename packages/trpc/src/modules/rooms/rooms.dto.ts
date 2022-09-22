@@ -7,8 +7,9 @@ import {
   requestForRoomTransientSchema,
   saveSettingsSchema,
   getSettingsSchema,
-  getRoomPermissionsSchema,
+  getRoomInitialMetadataSchema,
   validatePasswordSchema,
+  subscribeToRoomMetadataSchema,
 } from "./rooms.schema";
 
 export type FindByRoomIdentificationIdSchema = zod.TypeOf<
@@ -29,8 +30,10 @@ export type SaveSettingsSchema = zod.TypeOf<typeof saveSettingsSchema>;
 
 export type GetSettingsSchema = zod.TypeOf<typeof getSettingsSchema>;
 
-export type GetRoomPermissionsSchema = zod.TypeOf<
-  typeof getRoomPermissionsSchema
+export type GetRoomInitialMetadataSchema = zod.TypeOf<
+  typeof getRoomInitialMetadataSchema
 >;
 
 export type ValidatePasswordSchema = zod.TypeOf<typeof validatePasswordSchema>;
+
+export type SubscribeToRoomMetadataSchema = zod.TypeOf<typeof subscribeToRoomMetadataSchema>

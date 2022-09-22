@@ -18,12 +18,12 @@ interface InputProps
 }
 
 function InputWithoutForwardedRef(
-  props: InputProps,
+  { wrapperClassName, ...props }: InputProps,
   ref: ForwardedRef<HTMLInputElement>
 ) {
   const id = useId();
   return (
-    <div className={classNames(props.wrapperClassName)}>
+    <div className={classNames(wrapperClassName)}>
       {props.label && (
         <label
           htmlFor={"input-" + id}
