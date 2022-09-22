@@ -1,3 +1,4 @@
+import Input from "@web/components/Input/Input";
 import classNames from "classnames";
 import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
@@ -16,7 +17,12 @@ interface ChatTextareaProps {
 }
 
 export default function ChatTextarea(props: ChatTextareaProps) {
-  const { register, handleSubmit, reset } = useForm<ChatTextareaForm>({
+  const {
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm<ChatTextareaForm>({
     mode: "onSubmit",
   });
 
@@ -31,10 +37,16 @@ export default function ChatTextarea(props: ChatTextareaProps) {
         onSubmit={handleSubmit(onSend)}
         className="flex flex-col w-full p-2 gap-y-2"
       >
-        <input
-          {...register("message")}
+        <Input
+          {...register("message", {
+            maxLength: {
+              value: 50,
+              message: "Chat should not exceed 50 characters.",
+            },
+          })}
           disabled={props.disabled}
-          className="p-2 resize-none input bg-slate-700/50 textarea"
+          className="p-2 input bg-slate-700/50"
+          error={errors?.message?.message}
         />
         <div className="flex justify-between">
           <div>

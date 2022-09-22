@@ -8,7 +8,7 @@ interface ChatItemProps extends ChatsQueryOutput {
 
 export default function ChatItem(props: ChatItemProps) {
   return (
-    <div className="p-1 break-all hover:bg-slate-600/20">
+    <div className="w-full p-1 break-word hover:bg-slate-600/20">
       {props.isSystemMessage ? (
         <>
           <span className="block py-2 text-xs italic text-center opacity-50 md:text-sm">
@@ -16,7 +16,7 @@ export default function ChatItem(props: ChatItemProps) {
           </span>
         </>
       ) : (
-        <div className="text-xs md:text-sm">
+        <div className="text-xs break-words md:text-sm">
           <b style={props.color ? { color: props.color } : {}}>
             {props.name}
             {props.userId === props.owner && (
