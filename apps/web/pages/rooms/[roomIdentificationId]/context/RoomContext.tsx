@@ -42,6 +42,7 @@ interface RoomModalProps {
   roomTransientId: string | null;
   setRoomTransientId: (newPassword: string | null) => any;
   localStorageSessionId?: number;
+  name: string;
 }
 
 function RoomWrapper(props: {
@@ -55,7 +56,7 @@ function RoomWrapper(props: {
         rooms2watch
       </h1>
       <div className="w-[min(400px,100%)] p-8 shadow-2xl">
-        <div className="flex gap-2 py-2 text-xl font-bold">{props.title}</div>
+        <div className="py-2 space-x-2 text-xl font-bold">{props.title}</div>
         {props.children}
       </div>
     </div>
@@ -102,7 +103,11 @@ function RoomPasswordPrompt(props: RoomModalProps) {
     <RoomWrapper
       title={
         <>
-          Enter room password <FaKey className="w-4 h-auto" />
+          <span className="inline-block font-normal">
+            Enter room password for
+          </span>{" "}
+          {props.name}{" "}
+          <FaKey className="inline-block w-4 h-auto align-middle" />
         </>
       }
     >
@@ -208,6 +213,7 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
   ) {
     return (
       <RoomPasswordPrompt
+        name={roomPermissions.name}
         roomIdentificationId={roomIdentificationId}
         password={password}
         setPassword={setPassword}

@@ -134,7 +134,7 @@ export default function ReactPlayerRoomInfo(props: ReactPlayerRoomInfoProps) {
 
           <div
             className="tooltip tooltip-primary tooltip-left"
-            data-tip={"Share with your frients"}
+            data-tip="Share with your friends"
           >
             <button
               className="btn btn-ghost btn-sm btn-circle"

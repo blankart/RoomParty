@@ -400,7 +400,8 @@ class RoomsController {
       select: {
         id: true,
         roomIdentificationId: true,
-        private: true
+        private: true,
+        name: true
       }
     })
 
