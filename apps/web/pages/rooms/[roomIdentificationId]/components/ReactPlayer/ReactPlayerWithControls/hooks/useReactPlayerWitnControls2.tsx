@@ -125,7 +125,10 @@ export default function useReactPlayerWithControls2(): {
     });
   }
 
-  const debouncedOnSeek = useCallback(debounce(onSeek, 300), []);
+  const debouncedOnSeek = useCallback(debounce(onSeek, 300), [
+    isControlsDisabled,
+    findByRoomIdentificationIdResponse?.id,
+  ]);
 
   async function onSeek(time: number) {
     if (isControlsDisabled) return;
