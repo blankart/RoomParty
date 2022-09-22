@@ -1,4 +1,4 @@
-import { Suspense, useState } from "react";
+import { memo, useState } from "react";
 import _debounce from "lodash.debounce";
 import { InferQueryOutput } from "@web/types/trpc";
 import { FiShare } from "react-icons/fi";
@@ -22,7 +22,9 @@ type FindByRoomIdentificationIdResponse =
 
 interface ReactPlayerRoomInfoProps extends FindByRoomIdentificationIdResponse {}
 
-export default function ReactPlayerRoomInfo(props: ReactPlayerRoomInfoProps) {
+export default memo(function ReactPlayerRoomInfo(
+  props: ReactPlayerRoomInfoProps
+) {
   const router = useRouter();
   const trpcContext = trpc.useContext();
   const { user } = useMe();
@@ -184,4 +186,4 @@ export default function ReactPlayerRoomInfo(props: ReactPlayerRoomInfoProps) {
       </div>
     </>
   );
-}
+});

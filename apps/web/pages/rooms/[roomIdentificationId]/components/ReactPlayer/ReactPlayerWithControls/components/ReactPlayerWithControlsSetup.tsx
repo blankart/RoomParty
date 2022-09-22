@@ -5,10 +5,11 @@ import { FaSpinner } from "react-icons/fa";
 import ClickableCard from "@web/components/Card/ClickableCard";
 
 import { useReactPlayerWithControlsSetup } from "../hooks/useReactPlayerWithControlsSetup";
+import { memo } from "react";
 
 export interface ReactPlayerWithControlsSetupProps {}
 
-export default function ReactPlayerWithControlsSetup(
+export default memo(function ReactPlayerWithControlsSetup(
   props: ReactPlayerWithControlsSetupProps
 ) {
   const ctx = useReactPlayerWithControlsSetup(props);
@@ -110,4 +111,4 @@ export default function ReactPlayerWithControlsSetup(
       </div>
     </>
   );
-}
+});

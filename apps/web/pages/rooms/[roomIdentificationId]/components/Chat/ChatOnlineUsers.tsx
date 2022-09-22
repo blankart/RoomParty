@@ -2,13 +2,13 @@ import { trpc } from "@web/api";
 import useDebouncedEffect from "@web/hooks/useDebouncedEffect";
 import classNames from "classnames";
 import { useRouter } from "next/router";
-import { useMemo } from "react";
+import { memo, useMemo } from "react";
 import { useRoomContext } from "../../context/RoomContext";
 import { useRoomsStore } from "../../store/rooms";
 
 interface ChatOnlineUsersProps {}
 
-export default function ChatOnlineUsers(props: ChatOnlineUsersProps) {
+export default memo(function ChatOnlineUsers(props: ChatOnlineUsersProps) {
   const router = useRouter();
   const { password } = useRoomContext();
   const roomIdentificationId = router.query.roomIdentificationId as string;
@@ -81,4 +81,4 @@ export default function ChatOnlineUsers(props: ChatOnlineUsersProps) {
       </button>
     </div>
   );
-}
+});

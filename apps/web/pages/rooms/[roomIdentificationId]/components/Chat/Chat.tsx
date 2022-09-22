@@ -1,14 +1,8 @@
 import classNames from "classnames";
 import { FaSpinner } from "react-icons/fa";
 import dynamic from "next/dynamic";
-
-import Modal from "@web/components/Modal/Modal";
-
 import useChat from "./useChat";
-const ChatNamePrompt = dynamic(() => import("./ChatNamePrompt"), {
-  ssr: false,
-  suspense: true,
-});
+import { memo } from "react";
 const ChatItem = dynamic(() => import("./ChatItem"), {
   ssr: false,
   suspense: true,
@@ -20,7 +14,7 @@ const ChatTextarea = dynamic(() => import("./ChatTextarea"), {
 
 export interface ChatProps {}
 
-export default function Chat(props: ChatProps) {
+export default memo(function Chat(props: ChatProps) {
   const ctx = useChat(props);
 
   return (
@@ -64,4 +58,4 @@ export default function Chat(props: ChatProps) {
       </div>
     </>
   );
-}
+});
