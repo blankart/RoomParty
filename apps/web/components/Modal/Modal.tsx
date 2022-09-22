@@ -6,7 +6,7 @@ interface ModalProps {
   onClose: () => any;
   open: boolean;
   children?: React.ReactNode;
-  title?: string;
+  title?: string | React.ReactNode;
   bodyClassName?: string;
   containerClassName?: string;
   closeOnClickOutside?: boolean;
@@ -49,7 +49,7 @@ export default function Modal(props: ModalProps) {
             )}
 
             {!!props.title && (
-              <h1 className="py-4 text-2xl font-bold text-center break-words">
+              <h1 className="py-2 text-xl font-bold text-center break-words md:py-4 md:text-2xl">
                 {props.title}
               </h1>
             )}

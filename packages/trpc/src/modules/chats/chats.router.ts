@@ -11,7 +11,7 @@ class ChatsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Chats) private chatsController: ChatsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) {}
+  ) { }
 
   router() {
     const self = this;
@@ -48,6 +48,7 @@ class ChatsRouter {
           name: zod.string(),
           localStorageSessionId: zod.number(),
           roomTransientId: zod.string(),
+          password: zod.string().optional(),
         }),
         async resolve({ input, ctx }) {
           return await self.chatsController.chatSubscription(input, ctx.user);

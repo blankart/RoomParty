@@ -3,7 +3,10 @@ import {
   deleteMyRoomSchema,
   findByRoomIdentificationIdSchema,
   getOnlineInfoSchema,
+  getRoomPermissionsSchema,
+  getSettingsSchema,
   requestForRoomTransientSchema,
+  saveSettingsSchema,
 } from "./rooms.schema";
 
 import { injectable, inject } from "inversify";
@@ -18,23 +21,12 @@ class RoomsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Rooms) private roomsController: RoomsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) {}
+  ) { }
   router() {
     const self = this;
     return this.trpcRouter
       .createRouter()
-      .query("findByRoomIdentificationId", {
-        input: findByRoomIdentificationIdSchema,
-        async resolve({ input }) {
-          return await self.roomsController.findByRoomIdentificationId(input);
-        },
-      })
-      .query("getOnlineInfo", {
-        input: getOnlineInfoSchema,
-        async resolve({ input }) {
-          return await self.roomsController.getOnlineInfo(input);
-        },
-      });
+      ;
   }
 
   protectedRouter() {
@@ -51,6 +43,19 @@ class RoomsRouter {
         async resolve({ input, ctx }) {
           return self.roomsController.deleteMyRoom(input, ctx.user);
         },
+      })
+      .mutation('saveSettings', {
+        input: saveSettingsSchema,
+        async resolve({ input, ctx }) {
+          return await self.roomsController.saveSettings(input, ctx.user)
+        }
+      })
+      .query('getSettings', {
+        input: getSettingsSchema,
+        output: saveSettingsSchema,
+        async resolve({ ctx, input }) {
+          return await self.roomsController.getSettings(input, ctx.user)
+        }
       });
   }
 
@@ -73,7 +78,29 @@ class RoomsRouter {
             ctx.user
           );
         },
-      });
+      })
+      .query("findByRoomIdentificationId", {
+        input: findByRoomIdentificationIdSchema,
+        async resolve({ input, ctx }) {
+          return await self.roomsController.findByRoomIdentificationId(input, ctx.user);
+        },
+      })
+      .query("getOnlineInfo", {
+        input: getOnlineInfoSchema,
+        async resolve({ input, ctx }) {
+          return await self.roomsController.getOnlineInfo(input, ctx.user);
+        },
+      })
+      .query('getRoomPermissions', {
+        input: getRoomPermissionsSchema,
+        async resolve({ ctx, input }) {
+          return await self.roomsController.getRoomPermissions(
+            input,
+            ctx.user
+          )
+        }
+      })
+      ;
   }
 }
 

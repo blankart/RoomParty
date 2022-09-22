@@ -11,6 +11,12 @@ import { ImExit } from "react-icons/im";
 import Modal from "@web/components/Modal/Modal";
 import { useRouter } from "next/router";
 
+const ReactPlayerRoomSettings = dynamic(
+  () => import("./ReactPlayerRoomSettings/ReactPlayerRoomSettings"),
+  { ssr: false }
+);
+import dynamic from "next/dynamic";
+
 type FindByRoomIdentificationIdResponse =
   InferQueryOutput<"rooms.findByRoomIdentificationId">;
 
@@ -24,11 +30,14 @@ export default function ReactPlayerRoomInfo(props: ReactPlayerRoomInfoProps) {
     trpc.useQuery(["favorited-rooms.isRoomFavorited", { roomId: props.id }], {
       enabled: !!user && !!props.id,
     });
+
   const showFavoriteButton =
     !!props.id &&
     !!user &&
     !!props.owner &&
     user.user.id !== props.owner.userId;
+
+  const showSettingsButton = !!user && user.user.id === props.owner?.userId;
 
   const { mutateAsync: toggle } = trpc.useMutation(["favorited-rooms.toggle"]);
 
@@ -118,6 +127,8 @@ export default function ReactPlayerRoomInfo(props: ReactPlayerRoomInfoProps) {
           )}
         </div>
         <div className="flex gap-2">
+          {showSettingsButton && <ReactPlayerRoomSettings id={props.id} />}
+
           <div
             className="tooltip tooltip-primary tooltip-left"
             data-tip={"Share with your frients"}

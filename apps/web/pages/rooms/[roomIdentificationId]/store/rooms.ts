@@ -9,7 +9,6 @@ export interface RoomsStore {
   collapsed: boolean;
   showPrompt: boolean;
   tabSessionId: number;
-  localStorageSessionId?: number;
   owner?: string;
   videoPlatform?: string;
   ownerName?: string | null;

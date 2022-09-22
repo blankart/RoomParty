@@ -22,7 +22,7 @@ export default function JoinARoomCard(props: JoinARoomCardProps) {
     formState: { errors },
     setError,
     watch,
-  } = useForm<RoomsDTO.FindByRoomIdentificationIdSchema>({
+  } = useForm<RoomsDTO.GetRoomPermissionsSchema>({
     mode: "onSubmit",
     resolver: zodResolver(RoomsSchema.findByRoomIdentificationIdSchema),
   });
@@ -31,25 +31,22 @@ export default function JoinARoomCard(props: JoinARoomCardProps) {
 
   const formData = watch();
 
-  const { isFetching } = trpc.useQuery(
-    ["rooms.findByRoomIdentificationId", formData],
-    {
-      enabled: enableQuery,
-      onSuccess(data) {
-        router.push("/rooms/[room]", `/rooms/${data.roomIdentificationId}`);
-        setEnableQuery(false);
-      },
-      onError(err) {
-        setError("roomIdentificationId", {
-          type: "custom",
-          message: err.message,
-        });
-        setEnableQuery(false);
-      },
-    }
-  );
+  const { isFetching } = trpc.useQuery(["rooms.getRoomPermissions", formData], {
+    enabled: enableQuery,
+    onSuccess(data) {
+      router.push("/rooms/[room]", `/rooms/${data.roomIdentificationId}`);
+      setEnableQuery(false);
+    },
+    onError(err) {
+      setError("roomIdentificationId", {
+        type: "custom",
+        message: err.message,
+      });
+      setEnableQuery(false);
+    },
+  });
 
-  async function onJoinRoom(data: RoomsDTO.FindByRoomIdentificationIdSchema) {
+  async function onJoinRoom(data: RoomsDTO.GetRoomPermissionsSchema) {
     setEnableQuery(true);
   }
 

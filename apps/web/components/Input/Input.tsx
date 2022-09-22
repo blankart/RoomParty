@@ -14,6 +14,7 @@ interface InputProps
   > {
   error?: string;
   label?: string;
+  wrapperClassName?: string;
 }
 
 function InputWithoutForwardedRef(
@@ -22,10 +23,10 @@ function InputWithoutForwardedRef(
 ) {
   const id = useId();
   return (
-    <div>
+    <div className={classNames(props.wrapperClassName)}>
       {props.label && (
         <label htmlFor={"input-" + id} className="mb-1 text-sm">
-          props.label
+          {props.label}
         </label>
       )}
       <input

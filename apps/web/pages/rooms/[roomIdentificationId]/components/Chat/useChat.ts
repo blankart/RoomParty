@@ -17,6 +17,7 @@ import { ChatProps } from "./Chat";
 import randomColor from "randomcolor";
 import { ChatNamePromptForm } from "./ChatNamePrompt";
 import { ChatTextareaForm } from "./ChatTextarea";
+import { useRoomPermissionsContext } from "../../context/RoomPermissionsContext";
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 const getLocalStorageColorName = (id: string) =>
@@ -36,19 +37,18 @@ export default function useChat(props: ChatProps) {
       chatsLength: s.chatsLength,
       showPrompt: s.showPrompt,
       name: s.name,
-      localStorageSessionId: s.localStorageSessionId,
     }),
     shallow
   );
+
+  const { localStorageSessionId, roomTransientId, password } = useRoomPermissionsContext()
+
   const { user, isLoading, isIdle } = useMe();
   const shouldEnableQueries =
-    !!roomStore.id && !!roomStore.userName && !!roomStore.localStorageSessionId;
+    !!roomStore.id && !!roomStore.userName && !!localStorageSessionId;
 
   const chatsRef = useRef<HTMLDivElement>(null);
 
-  const [sessionId, setSessionId] = useLocalStorage<undefined | number>(
-    CHAT_LOCAL_STORAGE_SESSION_KEY
-  );
   const [userNameFromLocalStorage, setUserNameFromLocalStorage] =
     useLocalStorage<string | undefined>(
       getLocalStorageKeyName(roomStore?.id ?? "")
@@ -69,6 +69,7 @@ export default function useChat(props: ChatProps) {
 
   const chatsFetchedOnceRef = useRef<boolean>(false);
 
+
   useEffect(() => {
     if (chatsFetchedOnceRef.current || !data || !roomStore.chats) return;
     roomStore.set({
@@ -77,35 +78,19 @@ export default function useChat(props: ChatProps) {
     chatsFetchedOnceRef.current = true;
   }, [data, roomStore.chats]);
 
-  const { data: roomTransient } = trpc.useQuery(
-    [
-      "rooms.requestForRoomTransient",
-      {
-        roomIdentificationId: router.query?.roomIdentificationId! as string,
-        localStorageSessionId: sessionId!,
-        userName: roomStore.userName,
-      },
-    ],
-    {
-      enabled:
-        !!router.query?.roomIdentificationId &&
-        !!sessionId &&
-        !!roomStore.userName,
-    }
-  );
-
   trpc.useSubscription(
     [
       "chats.chatSubscription",
       {
         id: roomStore.id!,
         name: roomStore.userName,
-        localStorageSessionId: roomStore.localStorageSessionId!,
-        roomTransientId: roomTransient?.id!,
+        localStorageSessionId: localStorageSessionId!,
+        roomTransientId: roomTransientId!,
+        password: password ?? '',
       },
     ],
     {
-      enabled: shouldEnableQueries && !!roomTransient?.id,
+      enabled: shouldEnableQueries && !!roomTransientId,
       onNext: (data) => {
         roomStore.addChat(data);
         removeUnusedLocalStorageItems();
@@ -157,16 +142,6 @@ export default function useChat(props: ChatProps) {
 
   useEffect(() => {
     if (!roomStore.id) return;
-    if (sessionId) {
-      roomStore.set({ localStorageSessionId: sessionId });
-      return;
-    }
-    const newLocalStorageSessionId = Math.floor(
-      (Math.random() * 1_000_000_000) % 1_000_000_000
-    );
-
-    setSessionId(newLocalStorageSessionId);
-    roomStore.set({ localStorageSessionId: newLocalStorageSessionId });
     removeUnusedLocalStorageItems();
   }, []);
 

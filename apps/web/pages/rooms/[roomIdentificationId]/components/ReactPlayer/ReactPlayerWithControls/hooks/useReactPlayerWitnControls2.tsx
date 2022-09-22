@@ -10,6 +10,7 @@ import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWith
 import { ReactPlayerControlBarProps } from "../components/ReactPlayerControlBar";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import shallow from "zustand/shallow";
+import { useRoomPermissionsContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomPermissionsContext";
 
 export default function useReactPlayerWithControls2(): {
   control: ReactPlayerControlBarProps;
@@ -47,11 +48,16 @@ export default function useReactPlayerWithControls2(): {
     shallow
   );
 
+  const { password } = useRoomPermissionsContext();
+
   const { data: findByRoomIdentificationIdResponse, isFetchedAfterMount } =
     trpc.useQuery(
       [
         "rooms.findByRoomIdentificationId",
-        { roomIdentificationId: roomIdentificationId! },
+        {
+          roomIdentificationId: roomIdentificationId!,
+          password: password ?? "",
+        },
       ],
       {
         enabled: !!roomIdentificationId,
@@ -176,7 +182,6 @@ export default function useReactPlayerWithControls2(): {
   }, [isReady, isFetchedAfterMount, findByRoomIdentificationIdResponse]);
 
   function onReady() {
-    console.log({ scrubTime, isPlayed });
     scrubTime && seekTo(scrubTime, "seconds", !isPlayed);
   }
 

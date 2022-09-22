@@ -5,6 +5,9 @@ import {
   getOnlineInfoSchema,
   findByRoomIdentificationIdSchema,
   requestForRoomTransientSchema,
+  saveSettingsSchema,
+  getSettingsSchema,
+  getRoomPermissionsSchema,
 } from "./rooms.schema";
 
 export type FindByRoomIdentificationIdSchema = zod.TypeOf<
@@ -20,3 +23,9 @@ export type CreateSchema = zod.TypeOf<typeof createSchema>;
 export type RequestForTransientSchema = zod.TypeOf<
   typeof requestForRoomTransientSchema
 >;
+
+export type SaveSettingsSchema = zod.TypeOf<typeof saveSettingsSchema>
+
+export type GetSettingsSchema = zod.TypeOf<typeof getSettingsSchema>
+
+export type GetRoomPermissionsSchema = zod.TypeOf<typeof getRoomPermissionsSchema>

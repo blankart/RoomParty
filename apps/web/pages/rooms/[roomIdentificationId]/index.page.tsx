@@ -12,8 +12,12 @@ import { useMe } from "@web/context/AuthContext";
 import { DARK_THEME } from "@web/components/DashboardLayout/DashboardLayout";
 import { ReactPlayerProvider } from "./components/ReactPlayer/context/ReactPlayerContext";
 import ReactPlayerWithControls2 from "./components/ReactPlayer/ReactPlayerWithControls/ReactPlayerWithControls2";
+import {
+  RoomPermissionsProvider,
+  useRoomPermissionsContext,
+} from "./context/RoomPermissionsContext";
 
-export default function RoomPage() {
+function RoomIdentificationId() {
   const { set, id } = useRoomsStore(
     (s) => ({
       set: s.set,
@@ -21,6 +25,7 @@ export default function RoomPage() {
     }),
     shallow
   );
+  const { password } = useRoomPermissionsContext();
   const router = useRouter();
   const roomIdentificationId = router.query.roomIdentificationId as string;
   const { user, isLoading: isUserLoading, hasUserInitialized } = useMe();
@@ -30,7 +35,10 @@ export default function RoomPage() {
     error,
     isIdle,
   } = trpc.useQuery(
-    ["rooms.findByRoomIdentificationId", { roomIdentificationId }],
+    [
+      "rooms.findByRoomIdentificationId",
+      { roomIdentificationId, password: password ?? "" },
+    ],
     {
       enabled: !!roomIdentificationId && router.isReady,
     }
@@ -82,4 +90,12 @@ export default function RoomPage() {
   );
 }
 
-(RoomPage as any).forcedTheme = DARK_THEME;
+export default function RoomIdentificationIdPage() {
+  return (
+    <RoomPermissionsProvider>
+      <RoomIdentificationId />
+    </RoomPermissionsProvider>
+  );
+}
+
+(RoomIdentificationIdPage as any).forcedTheme = DARK_THEME;

@@ -2,16 +2,19 @@ import type ChatsService from "../chats/chats.service";
 import type ModelsService from "../models/models.service";
 import type QueueService from "../queue/queue.service";
 import type { CurrentUser } from "../../types/user";
-import { injectable, inject } from "inversify";
+import { injectable, inject, METADATA_KEY } from "inversify";
 import { TRPCError } from "@trpc/server";
 import type {
   CreateSchema,
   DeleteMyRoomSchema,
   FindByRoomIdentificationIdSchema,
   GetOnlineInfoSchema,
+  GetRoomPermissionsSchema,
+  GetSettingsSchema,
   RequestForTransientSchema,
+  SaveSettingsSchema,
 } from "./rooms.dto";
-import { SERVICES_TYPES } from "../../types/container";
+import { SERVICES_TYPES, TRPC_ROUTES } from "../../types/container";
 import type RoomsService from "./rooms.service";
 
 enum ROOMS_SERVICE_QUEUE {
@@ -25,8 +28,13 @@ class RoomsController {
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService
-  ) {}
-  async findByRoomIdentificationId(data: FindByRoomIdentificationIdSchema) {
+  ) { }
+  async findByRoomIdentificationId(data: FindByRoomIdentificationIdSchema, user: CurrentUser) {
+
+    const isAuthorizedToEnter = this.roomsService.isAuthorizedToEnterRoom(data.roomIdentificationId, user, data.password)
+
+    if (!isAuthorizedToEnter) throw new TRPCError({ code: 'UNAUTHORIZED' })
+
     const room = await this.modelsService.client.room
       .findFirst({
         where: {
@@ -65,6 +73,7 @@ class RoomsController {
             .map(this.chatsService.convertEmoticonsToEmojisInChatsObject),
         };
       });
+
 
     if (!room)
       throw new TRPCError({
@@ -179,7 +188,10 @@ class RoomsController {
     });
   }
 
-  async getOnlineInfo(data: GetOnlineInfoSchema) {
+  async getOnlineInfo(data: GetOnlineInfoSchema, user: CurrentUser) {
+    const isAuthorizedToEnter = this.roomsService.isAuthorizedToEnterRoom(data.roomIdentificationId, user, data.password)
+
+    if (!isAuthorizedToEnter) throw new TRPCError({ code: 'UNAUTHORIZED' })
     const roomTransientCount =
       await this.modelsService.client.roomTransient.count({
         where: {
@@ -223,6 +235,26 @@ class RoomsController {
     data: RequestForTransientSchema,
     user: CurrentUser
   ) {
+
+    const room = await this.modelsService.client.room.findFirst({
+      where: { roomIdentificationId: data.roomIdentificationId },
+      include: {
+        owner: {
+          select: {
+            id: true
+          }
+        }
+      }
+    });
+
+    if (!room)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Room does not exist.",
+      });
+
+    const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(data.roomIdentificationId, user, data.password)
+
     const maybeExistingTransient =
       await this.modelsService.client.roomTransient.findFirst({
         where: {
@@ -235,15 +267,15 @@ class RoomsController {
             },
             ...(user
               ? [
-                  {
-                    user: {
-                      id: user.user.id,
-                    },
-                    room: {
-                      roomIdentificationId: data.roomIdentificationId,
-                    },
+                {
+                  user: {
+                    id: user.user.id,
                   },
-                ]
+                  room: {
+                    roomIdentificationId: data.roomIdentificationId,
+                  },
+                },
+              ]
               : []),
           ],
         },
@@ -252,24 +284,29 @@ class RoomsController {
         },
       });
 
+    if (!isAuthorizedToEnter) {
+      if (maybeExistingTransient) await this.modelsService.client.roomTransient.delete({ where: { id: maybeExistingTransient.id } })
+      throw new TRPCError({ code: 'UNAUTHORIZED', message: 'You are not allowed to enter this room.' })
+    }
+
     if (maybeExistingTransient) {
       const maybeExistingTransientUser = maybeExistingTransient.user;
 
       const updateObject = user
         ? {
-            user: {
-              connect: {
-                id: user.user.id,
-              },
+          user: {
+            connect: {
+              id: user.user.id,
             },
-          }
+          },
+        }
         : !!maybeExistingTransientUser
-        ? {
+          ? {
             user: {
               disconnect: true,
             },
           }
-        : {};
+          : {};
 
       if (Object.keys(updateObject).length)
         await this.modelsService.client.roomTransient.update({
@@ -280,27 +317,17 @@ class RoomsController {
       return maybeExistingTransient;
     }
 
-    const room = await this.findByRoomIdentificationId({
-      roomIdentificationId: data.roomIdentificationId,
-    });
-
-    if (!room)
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Room does not exist.",
-      });
-
     return await this.modelsService.client.roomTransient.create({
       data: {
-        name: data.userName,
+        name: data.userName ?? 'User',
         ...(user
           ? {
-              user: {
-                connect: {
-                  id: user?.user.id,
-                },
+            user: {
+              connect: {
+                id: user?.user.id,
               },
-            }
+            },
+          }
           : {}),
         localStorageSessionid: data.localStorageSessionId,
         room: {
@@ -311,6 +338,69 @@ class RoomsController {
       },
     });
   }
+
+  async saveSettings(data: SaveSettingsSchema, user: CurrentUser) {
+    const maybeExistingRoom = await this.modelsService.client.room.findFirst({
+      where: {
+        id: data.id,
+        owner: {
+          user: {
+            id: user?.user.id
+          }
+        }
+      }
+    })
+
+    if (!maybeExistingRoom) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'You are not authorized to edit this room.' })
+
+    await this.modelsService.client.room.update({
+      where: { id: data.id },
+      data: {
+        private: data.private,
+        password: data.password
+      }
+    })
+
+    return 'Successfully updated room settings.'
+  }
+
+  async getSettings(data: GetSettingsSchema, user: CurrentUser) {
+    const maybeExistingRoom = await this.modelsService.client.room.findFirst({
+      where: {
+        id: data.id,
+        owner: {
+          id: user?.id
+        }
+      },
+      select: {
+        id: true,
+        password: true,
+        private: true
+      }
+    })
+
+    if (!maybeExistingRoom) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'You are not allowed to access this room\'s settings' })
+
+    return maybeExistingRoom
+  }
+
+  async getRoomPermissions(data: GetRoomPermissionsSchema, user: CurrentUser) {
+    const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(data.roomIdentificationId, user)
+
+    const room = await this.modelsService.client.room.findFirst({
+      where: { roomIdentificationId: data.roomIdentificationId },
+      select: {
+        id: true,
+        roomIdentificationId: true,
+        private: true
+      }
+    })
+
+    if (!room) throw new TRPCError({ code: 'NOT_FOUND', message: 'Room not found.' })
+
+    return { ...room, isAuthorizedToEnter }
+  }
+
 }
 
 export default RoomsController;

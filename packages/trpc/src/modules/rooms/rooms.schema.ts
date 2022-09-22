@@ -6,10 +6,12 @@ const roomIdentificationId = zod
 
 export const findByRoomIdentificationIdSchema = zod.object({
   roomIdentificationId,
+  password: zod.string().optional()
 });
 
 export const getOnlineInfoSchema = zod.object({
   roomIdentificationId,
+  password: zod.string().optional()
 });
 
 export const deleteMyRoomSchema = zod.object({
@@ -26,5 +28,23 @@ export const createSchema = zod.object({
 export const requestForRoomTransientSchema = zod.object({
   roomIdentificationId,
   localStorageSessionId: zod.number(),
-  userName: zod.string(),
+  userName: zod.string().optional(),
+  password: zod.string().optional()
 });
+
+export const saveSettingsSchema = zod.object({
+  id: zod.string(),
+  private: zod.boolean(),
+  password: zod.string().min(8, 'Password must have a minimum of 5 characters').optional().nullable()
+}).refine(schema => schema.private ? !!schema.password : true, {
+  message: 'Password is required.',
+  path: ['password']
+})
+
+export const getSettingsSchema = zod.object({
+  id: zod.string()
+})
+
+export const getRoomPermissionsSchema = zod.object({
+  roomIdentificationId
+})

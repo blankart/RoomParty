@@ -1,6 +1,8 @@
 import type ModelsService from "../models/models.service";
 import { injectable, inject } from "inversify";
 import { SERVICES_TYPES } from "../../types/container";
+import { CurrentUser } from "../../types/user";
+import { TRPCError } from "@trpc/server";
 
 const IDENTIFICATION_ID_MAX_LENGTH = 8;
 const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
@@ -9,7 +11,7 @@ const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 class RoomsService {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) {}
+  ) { }
 
   roomIdentificationIdGenerator() {
     let generatedId = "";
@@ -36,6 +38,45 @@ class RoomsService {
         },
       },
     });
+  }
+
+  async isAuthorizedToEnterRoom(roomIdentificationId: string, user: CurrentUser, password?: string) {
+    const room = await this.modelsService.client.room.findFirst({
+      where: { roomIdentificationId },
+      include: {
+        owner: {
+          select: {
+            id: true
+          }
+        }
+      }
+    });
+
+    if (!room)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Room does not exist.",
+      });
+
+    let isAuthorizedToEnter = false
+    if (user) {
+      if (user.id === room.owner?.id) {
+        isAuthorizedToEnter = true
+      } else if (room.private) {
+        if (room.password === password) isAuthorizedToEnter = true
+      } else {
+        isAuthorizedToEnter = true
+      }
+    } else {
+      if (room.private) {
+        if (room.password === password) isAuthorizedToEnter = true
+      } else {
+        isAuthorizedToEnter = true
+      }
+    }
+
+    return isAuthorizedToEnter
+
   }
 }
 
