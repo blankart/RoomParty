@@ -22,9 +22,7 @@ export default function ChatTextarea(props: ChatTextareaProps) {
 
   function onSend(data: ChatTextareaForm) {
     props.onSend(data);
-    setTimeout(() => {
-      reset({ message: "" });
-    }, 1);
+    reset({ message: "" });
   }
 
   return (
@@ -33,15 +31,10 @@ export default function ChatTextarea(props: ChatTextareaProps) {
         onSubmit={handleSubmit(onSend)}
         className="flex flex-col w-full p-2 gap-y-2"
       >
-        <textarea
+        <input
           {...register("message")}
           disabled={props.disabled}
-          className="h-20 p-2 resize-none bg-slate-700/50 textarea"
-          onKeyDown={(e) => {
-            if (e.key === "Enter" && !e.shiftKey) {
-              handleSubmit(onSend)();
-            }
-          }}
+          className="p-2 resize-none input bg-slate-700/50 textarea"
         />
         <div className="flex justify-between">
           <div>
