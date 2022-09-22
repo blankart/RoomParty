@@ -34,7 +34,7 @@ export default function ReactPlayerWithControls2() {
             <ReactPlayerWithControlsSetup {...setup} />
           )}
           <div className="relative w-full h-full">
-            {!!url && hasInitiallyPlayed && (
+            {((!!url && hasInitiallyPlayed) || control.isControlsDisabled) && (
               <button
                 className="absolute inset-0 z-[1]"
                 onClick={

@@ -2,8 +2,10 @@ import { Suspense, useEffect } from "react";
 import shallow from "zustand/shallow";
 import Error from "next/error";
 import { useRouter } from "next/router";
+import { NextSeo } from "next-seo";
 
 import type { PlayerStatus } from "@rooms2watch/trpc";
+import { APP_NAME } from "@rooms2watch/shared-lib";
 
 import { trpc } from "@web/api";
 import Chat from "@web/pages/rooms/[roomIdentificationId]/components/Chat/Chat";
@@ -13,6 +15,8 @@ import { DARK_THEME } from "@web/components/DashboardLayout/DashboardLayout";
 import { ReactPlayerProvider } from "./components/ReactPlayer/context/ReactPlayerContext";
 import ReactPlayerWithControls2 from "./components/ReactPlayer/ReactPlayerWithControls/ReactPlayerWithControls2";
 import { RoomProvider, useRoomContext } from "./context/RoomContext";
+import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
+import thumbnail from "@web/public/images/thumbnail.png";
 
 function RoomIdentificationId() {
   const { set, id } = useRoomsStore(
@@ -85,12 +89,40 @@ function RoomIdentificationId() {
   );
 }
 
-export default function RoomIdentificationIdPage() {
+export default function RoomIdentificationIdPage(
+  props: InferGetServerSidePropsType<typeof getServerSideProps>
+) {
+  const title = `Join my ${APP_NAME} room!`;
+  const canonical = `${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${props.roomIdentificationId}`;
+  const description =
+    "If you have someone you want to watch a movie with, but everyone's busy, this is the perfect solution. You'll be able to watch movies together with your friends at home whenever you want!";
+
   return (
-    <RoomProvider>
-      <RoomIdentificationId />
-    </RoomProvider>
+    <>
+      <NextSeo
+        title={title}
+        canonical={canonical}
+        description={description}
+        openGraph={{
+          title,
+          description,
+          url: canonical,
+          images: [{ url: thumbnail.src }],
+        }}
+      />
+      <RoomProvider>
+        <RoomIdentificationId />
+      </RoomProvider>
+    </>
   );
+}
+
+export async function getServerSideProps(ctx: GetServerSidePropsContext) {
+  return {
+    props: {
+      roomIdentificationId: ctx.params?.roomIdentificationId as string,
+    },
+  };
 }
 
 (RoomIdentificationIdPage as any).forcedTheme = DARK_THEME;
