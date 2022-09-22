@@ -47,11 +47,9 @@ function RoomIdentificationId() {
     set({
       id: room.id,
       name: room.name,
-      chats: room.chats,
       scrubTime: playerStatus?.time,
       url: playerStatus?.url,
       type: playerStatus?.type,
-      userName: user?.user?.name ?? "",
       thumbnail: playerStatus?.thumbnail,
       owner: room.owner?.userId,
       videoPlatform: room.videoPlatform,

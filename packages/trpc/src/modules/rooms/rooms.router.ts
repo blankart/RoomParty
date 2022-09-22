@@ -7,6 +7,7 @@ import {
   getSettingsSchema,
   requestForRoomTransientSchema,
   saveSettingsSchema,
+  validatePasswordSchema,
 } from "./rooms.schema";
 
 import { injectable, inject } from "inversify";
@@ -26,6 +27,12 @@ class RoomsRouter {
     const self = this;
     return this.trpcRouter
       .createRouter()
+      .mutation('validatePassword', {
+        input: validatePasswordSchema,
+        async resolve({ input }) {
+          return self.roomsController.validatePassword(input)
+        }
+      })
       ;
   }
 

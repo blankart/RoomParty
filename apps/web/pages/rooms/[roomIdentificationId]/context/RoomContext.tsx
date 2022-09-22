@@ -1,24 +1,36 @@
 import { trpc } from "@web/api";
 import Button from "@web/components/Button/Button";
 import Input from "@web/components/Input/Input";
-import Modal from "@web/components/Modal/Modal";
 import useLocalStorage from "@web/hooks/useLocalStorage";
 import Error from "next/error";
 import { useRouter } from "next/router";
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { FaKey, FaSpinner } from "react-icons/fa";
-import { CHAT_LOCAL_STORAGE_SESSION_KEY } from "@rooms2watch/shared-lib";
+import {
+  CHAT_LOCAL_STORAGE_SESSION_KEY,
+  CHAT_NAME_KEY,
+} from "@rooms2watch/shared-lib";
+import { BsPlayCircleFill } from "react-icons/bs";
+import { RoomsDTO } from "@web/../../packages/trpc/dto";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { RoomsSchema } from "@web/../../packages/trpc/schema";
+import ChatNamePrompt from "../components/Chat/ChatNamePrompt";
+import { useMe } from "@web/context/AuthContext";
+
+const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 
 interface RoomContextState {
   password: string | null;
   localStorageSessionId?: number;
   roomTransientId: string | null;
+  userName: string;
 }
 
 export const RoomContext = createContext<RoomContextState>({
   password: null,
   roomTransientId: null,
+  userName: "",
 });
 
 export const useRoomContext = () => useContext(RoomContext);
@@ -32,54 +44,66 @@ interface RoomModalProps {
   localStorageSessionId?: number;
 }
 
-function RoomModal(props: RoomModalProps) {
-  const [enableQuery, setEnableQuery] = useState(false);
+function RoomWrapper(props: {
+  title?: React.ReactNode;
+  children?: React.ReactNode;
+}) {
+  return (
+    <div className="absolute inset-0 flex flex-col items-center justify-center prose max-w-none">
+      <h1 className="text-3xl font-bold md:text-5xl">
+        <BsPlayCircleFill className="inline mr-4" />
+        rooms2watch
+      </h1>
+      <div className="w-[min(400px,100%)] p-8 shadow-2xl">
+        <div className="flex gap-2 py-2 text-xl font-bold">{props.title}</div>
+        {props.children}
+      </div>
+    </div>
+  );
+}
+
+function RoomPasswordPrompt(props: RoomModalProps) {
   const {
     handleSubmit,
     register,
     formState: { errors },
     watch,
     setError,
-  } = useForm<{ password: string }>({
+    setValue,
+  } = useForm<RoomsDTO.ValidatePasswordSchema>({
     mode: "onSubmit",
+    resolver: zodResolver(RoomsSchema.validatePasswordSchema),
   });
 
-  trpc.useQuery(
-    [
-      "rooms.requestForRoomTransient",
-      {
-        roomIdentificationId: props.roomIdentificationId!,
-        localStorageSessionId: props.localStorageSessionId!,
-        ...watch(),
-      },
-    ],
+  const { mutateAsync: validatePassword } = trpc.useMutation(
+    ["rooms.validatePassword"],
     {
-      enabled: !!enableQuery,
-      onSettled() {
-        setEnableQuery(false);
-      },
-      onSuccess(data) {
-        props.setPassword(watch().password);
-        props.setRoomTransientId(data.id);
-      },
       onError(error) {
         setError("password", { message: error.message });
+      },
+      onSuccess() {
+        props.setPassword(watch().password);
       },
     }
   );
 
-  function onSubmit() {
-    setEnableQuery(true);
+  useEffect(() => {
+    if (!props.roomIdentificationId) return;
+    setValue("roomIdentificationId", props.roomIdentificationId);
+  }, [props.roomIdentificationId]);
+
+  async function onSubmit(data: RoomsDTO.ValidatePasswordSchema) {
+    try {
+      await validatePassword(data);
+    } catch (e) {}
   }
 
   return (
-    <Modal
-      onClose={() => {}}
-      open={true}
+    <RoomWrapper
       title={
-        <div className="flex gap-2">
+        <>
           Enter room password <FaKey className="w-4 h-auto" />
-        </div>
+        </>
       }
     >
       <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
@@ -90,17 +114,18 @@ function RoomModal(props: RoomModalProps) {
           type="password"
           placeholder="********"
           className="mt-4"
-          {...register("password", { required: "Password is required." })}
+          {...register("password")}
           error={errors?.password?.message}
         />
         <Button className="w-full mt-2 btn-sm">Let me in</Button>
       </form>
-    </Modal>
+    </RoomWrapper>
   );
 }
 
 export function RoomProvider(props: { children?: React.ReactNode }) {
   const router = useRouter();
+  const { user } = useMe();
   const roomIdentificationId = router.query.roomIdentificationId as
     | string
     | undefined;
@@ -108,6 +133,7 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
     data: roomPermissions,
     isLoading: isRoomLoading,
     error,
+    isIdle,
   } = trpc.useQuery(
     [
       "rooms.getRoomPermissions",
@@ -123,6 +149,12 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
   const [localStorageSessionId, setLocalStorageSessionId] = useLocalStorage<
     undefined | number
   >(CHAT_LOCAL_STORAGE_SESSION_KEY);
+  const [userNameFromLocalStorage, setUserNameFromLocalStorage] =
+    useLocalStorage<string | undefined>(
+      getLocalStorageKeyName(roomIdentificationId ?? "")
+    );
+
+  const userName = user?.user?.name ?? userNameFromLocalStorage ?? "";
 
   trpc.useQuery(
     [
@@ -130,13 +162,19 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
       {
         roomIdentificationId: roomIdentificationId!,
         localStorageSessionId: localStorageSessionId!,
+        password: password ?? "",
+        userName,
       },
     ],
     {
       enabled:
-        !!roomIdentificationId &&
-        !!localStorageSessionId &&
-        roomPermissions?.isAuthorizedToEnter,
+        !!roomPermissions &&
+        (roomPermissions.isAuthorizedToEnter
+          ? !!roomIdentificationId && !!localStorageSessionId && !!userName
+          : !!roomIdentificationId &&
+            !!localStorageSessionId &&
+            !!userName &&
+            !!password),
       onSuccess(data) {
         setRoomTransientId(data.id);
       },
@@ -150,7 +188,7 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
     );
   }, []);
 
-  if (isRoomLoading) {
+  if (isRoomLoading || isIdle) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">
         <FaSpinner className="w-10 h-auto animate-spin" />
@@ -169,7 +207,7 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
     !roomTransientId
   ) {
     return (
-      <RoomModal
+      <RoomPasswordPrompt
         roomIdentificationId={roomIdentificationId}
         password={password}
         setPassword={setPassword}
@@ -180,9 +218,26 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
     );
   }
 
+  if (roomPermissions && !userName) {
+    return (
+      <RoomWrapper title={<>Enter your name</>}>
+        <div className="flex flex-col">
+          <ChatNamePrompt
+            onSetName={(prompt) => setUserNameFromLocalStorage(prompt.name)}
+          />
+        </div>
+      </RoomWrapper>
+    );
+  }
+
   return (
     <RoomContext.Provider
-      value={{ password, localStorageSessionId, roomTransientId }}
+      value={{
+        password,
+        localStorageSessionId,
+        roomTransientId,
+        userName,
+      }}
     >
       {props.children}
     </RoomContext.Provider>

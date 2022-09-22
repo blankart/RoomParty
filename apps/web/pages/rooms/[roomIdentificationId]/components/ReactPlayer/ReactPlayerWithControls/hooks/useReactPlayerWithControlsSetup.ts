@@ -5,6 +5,7 @@ import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWith
 import { trpc } from "@web/api";
 import useDebouncedState from "@web/hooks/useDebouncedState";
 import numeral from "numeral";
+import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
 
 export function useReactPlayerWithControlsSetup(
   props: ReactPlayerWithControlsSetupProps
@@ -14,10 +15,11 @@ export function useReactPlayerWithControlsSetup(
   const [q, debouncedQ, setQ] = useDebouncedState("", 300);
   const [showVideoSearch, setShowVideoSearch] = useState(false);
 
-  const { id, userName, tabSessionId, url } = useRoomsStore(
+  const { userName } = useRoomContext()
+
+  const { id, tabSessionId, url } = useRoomsStore(
     (s) => ({
       id: s.id,
-      userName: s.userName,
       tabSessionId: s.tabSessionId,
       url: s.url,
     }),

@@ -5,9 +5,7 @@ export interface RoomsStore {
   chats?: Chat[];
   id?: string;
   name?: string;
-  userName: string;
   collapsed: boolean;
-  showPrompt: boolean;
   tabSessionId: number;
   owner?: string;
   videoPlatform?: string;
@@ -27,8 +25,6 @@ export interface RoomsStore {
 export const useRoomsStore = create<RoomsStore>((set, get) => ({
   chats: [],
   collapsed: true,
-  showPrompt: false,
-  userName: "",
 
   isPlayed: true,
   scrubTime: 0,

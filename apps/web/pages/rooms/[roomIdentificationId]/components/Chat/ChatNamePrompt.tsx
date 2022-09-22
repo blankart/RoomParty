@@ -1,3 +1,4 @@
+import Button from "@web/components/Button/Button";
 import Input from "@web/components/Input/Input";
 import { useForm } from "react-hook-form";
 
@@ -35,7 +36,7 @@ export default function ChatNamePrompt(props: ChatNamePromptProps) {
           error={errors.name?.message}
         />
 
-        <button className="w-full btn btn-primary">Let me in!</button>
+        <Button className="w-full btn btn-sm">Let me in!</Button>
       </form>
     </>
   );

@@ -43,12 +43,12 @@ export default function useReactPlayerWithControls2(): {
     hasInitiallyPlayed,
   } = useReactPlayerContext();
 
-  const { userName, thumbnail } = useRoomsStore(
-    (s) => ({ userName: s.userName, thumbnail: s.thumbnail }),
+  const { thumbnail } = useRoomsStore(
+    (s) => ({ thumbnail: s.thumbnail }),
     shallow
   );
 
-  const { password } = useRoomContext();
+  const { password, userName } = useRoomContext();
 
   const { data: findByRoomIdentificationIdResponse, isFetchedAfterMount } =
     trpc.useQuery(
@@ -135,7 +135,7 @@ export default function useReactPlayerWithControls2(): {
       "player.statusSubscription",
       {
         id: findByRoomIdentificationIdResponse?.id!,
-        name: "Sample Name",
+        name: userName!,
       },
     ],
     {

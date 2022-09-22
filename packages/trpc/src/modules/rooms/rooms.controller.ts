@@ -2,7 +2,7 @@ import type ChatsService from "../chats/chats.service";
 import type ModelsService from "../models/models.service";
 import type QueueService from "../queue/queue.service";
 import type { CurrentUser } from "../../types/user";
-import { injectable, inject, METADATA_KEY } from "inversify";
+import { injectable, inject } from "inversify";
 import { TRPCError } from "@trpc/server";
 import type {
   CreateSchema,
@@ -13,8 +13,9 @@ import type {
   GetSettingsSchema,
   RequestForTransientSchema,
   SaveSettingsSchema,
+  ValidatePasswordSchema,
 } from "./rooms.dto";
-import { SERVICES_TYPES, TRPC_ROUTES } from "../../types/container";
+import { SERVICES_TYPES } from "../../types/container";
 import type RoomsService from "./rooms.service";
 
 enum ROOMS_SERVICE_QUEUE {
@@ -296,6 +297,7 @@ class RoomsController {
 
       const updateObject = user
         ? {
+          name: data.userName,
           user: {
             connect: {
               id: user.user.id,
@@ -304,11 +306,14 @@ class RoomsController {
         }
         : !!maybeExistingTransientUser
           ? {
+            name: data.userName,
             user: {
               disconnect: true,
             },
           }
-          : {};
+          : {
+            name: data.userName,
+          };
 
       if (Object.keys(updateObject).length)
         await this.modelsService.client.roomTransient.update({
@@ -403,6 +408,13 @@ class RoomsController {
     return { ...room, isAuthorizedToEnter }
   }
 
+  async validatePassword(data: ValidatePasswordSchema) {
+    const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(data.roomIdentificationId, null, data.password)
+
+    if (!isAuthorizedToEnter) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'You are not allowed to enter this room' })
+
+    return true as const
+  }
 }
 
 export default RoomsController;

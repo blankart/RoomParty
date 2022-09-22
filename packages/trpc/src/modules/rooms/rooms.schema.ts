@@ -48,3 +48,8 @@ export const getSettingsSchema = zod.object({
 export const getRoomPermissionsSchema = zod.object({
   roomIdentificationId
 })
+
+export const validatePasswordSchema = zod.object({
+  password: zod.string(),
+  roomIdentificationId
+})

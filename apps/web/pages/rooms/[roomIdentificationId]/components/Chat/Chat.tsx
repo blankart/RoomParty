@@ -25,16 +25,6 @@ export default function Chat(props: ChatProps) {
 
   return (
     <>
-      <Modal
-        onClose={() => {}}
-        open={ctx.showPrompt}
-        containerClassName="w-[min(400px,100%)]"
-        bodyClassName="flex flex-col w-full gap-4"
-        title={`Welcome to ${ctx.name}'s room!`}
-      >
-        <ChatNamePrompt onSetName={ctx.onSetName} />
-      </Modal>
-
       <div
         className={classNames(
           "relative h-[50%] lg:h-screen flex flex-col shadow-xl",

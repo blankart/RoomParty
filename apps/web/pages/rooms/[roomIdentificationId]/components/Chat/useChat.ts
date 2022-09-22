@@ -31,28 +31,22 @@ export default function useChat(props: ChatProps) {
       collapsed: s.collapsed,
       id: s.id,
       set: s.set,
-      userName: s.userName,
       chats: s.chats,
       addChat: s.addChat,
       chatsLength: s.chatsLength,
-      showPrompt: s.showPrompt,
       name: s.name,
     }),
     shallow
   );
 
-  const { localStorageSessionId, roomTransientId, password } = useRoomContext()
+  const { localStorageSessionId, roomTransientId, password, userName } = useRoomContext()
 
-  const { user, isLoading, isIdle } = useMe();
+  const { user, isLoading } = useMe();
   const shouldEnableQueries =
-    !!roomStore.id && !!roomStore.userName && !!localStorageSessionId;
+    !!roomStore.id && !!userName && !!localStorageSessionId;
 
   const chatsRef = useRef<HTMLDivElement>(null);
 
-  const [userNameFromLocalStorage, setUserNameFromLocalStorage] =
-    useLocalStorage<string | undefined>(
-      getLocalStorageKeyName(roomStore?.id ?? "")
-    );
   const [
     userNameChatColorFromLocalStorage,
     setUserNameChatColorFromLocalStorage,
@@ -67,8 +61,8 @@ export default function useChat(props: ChatProps) {
     enabled: !!roomStore.id,
   });
 
-  const chatsFetchedOnceRef = useRef<boolean>(false);
 
+  const chatsFetchedOnceRef = useRef<boolean>(false);
 
   useEffect(() => {
     if (chatsFetchedOnceRef.current || !data || !roomStore.chats) return;
@@ -83,7 +77,7 @@ export default function useChat(props: ChatProps) {
       "chats.chatSubscription",
       {
         id: roomStore.id!,
-        name: roomStore.userName,
+        name: userName,
         localStorageSessionId: localStorageSessionId!,
         roomTransientId: roomTransientId!,
         password: password ?? '',
@@ -107,28 +101,19 @@ export default function useChat(props: ChatProps) {
     });
   }
 
-  function setName(newName: string) {
-    roomStore.set({ userName: newName, showPrompt: false });
-    roomStore.id && setUserNameFromLocalStorage(newName);
-  }
-
   function onSend(data: ChatTextareaForm) {
     if (!data.message?.trim()) return;
     if (!roomStore.id) return;
     let color = userNameChatColorFromLocalStorage;
     if (!color) color = randomColor();
     send({
-      name: roomStore.userName,
+      name: userName,
       message: data.message,
       id: roomStore.id,
       userId: user?.user?.id,
       color,
     });
     setUserNameChatColorFromLocalStorage(color);
-  }
-
-  function onSetName(data: ChatNamePromptForm) {
-    setName(data.name);
   }
 
   useEffect(() => {
@@ -153,34 +138,17 @@ export default function useChat(props: ChatProps) {
       )?.[1];
       if (
         key.startsWith(CHAT_NAME_KEY) &&
-        !maybeMatchedId?.startsWith(roomStore.id)
+        !maybeMatchedId?.startsWith(roomStore.id) && !maybeMatchedId?.startsWith(router.query.roomIdentificationId as string)
       ) {
         localStorage.removeItem(key);
       }
     }
   }
 
-  useEffect(() => {
-    if (isLoading && isIdle) return;
-    if (roomStore.userName || user) {
-      roomStore.set({ showPrompt: false });
-      return;
-    }
-    if (!roomStore.id) return;
-    if (!userNameFromLocalStorage) {
-      roomStore.set({ showPrompt: true });
-      return;
-    } else {
-      roomStore.set({ userName: userNameFromLocalStorage });
-    }
-
-    if (!roomStore.id) return;
-  }, [roomStore.id, roomStore.userName, isLoading, user, isIdle]);
-
   return {
     ...roomStore,
     chatsRef,
-    onSetName,
+    userName,
     onSend,
     shouldEnableQueries,
     user,
