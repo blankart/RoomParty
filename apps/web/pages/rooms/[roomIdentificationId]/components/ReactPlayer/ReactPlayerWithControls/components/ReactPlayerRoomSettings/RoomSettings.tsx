@@ -103,7 +103,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
       )}
 
       <div className="flex items-center gap-4">
-        <p className="!m-0">Set room password</p>
+        <p className="text-sm md:text-md !m-0">Set room password</p>
         <Input
           type="checkbox"
           className="w-auto toggle toggle-primary toggle-sm"
@@ -117,13 +117,14 @@ export default function RoomSettings(props: RoomSettingsProps) {
             type={showPassword ? "text" : "password"}
             placeholder="Set room password"
             error={errors?.password?.message}
+            className="input-sm md:input-md"
             wrapperClassName="w-full"
             {...register("password")}
           />
           <div
             role="button"
             className={classNames(
-              "btn btn-primary btn-ghost",
+              "btn btn-primary btn-ghost btn-sm md:btn-md",
               !isPrivate && "btn-disabled"
             )}
             onClick={() => setShowPassword(!showPassword)}

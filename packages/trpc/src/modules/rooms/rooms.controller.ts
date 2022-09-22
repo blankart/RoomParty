@@ -153,12 +153,14 @@ class RoomsController {
           RoomTransient: {
             select: { id: true },
           },
+          private: true
         },
       })
       .then((res) =>
         res
           .map((r) => ({
             owner: r.owner?.userId,
+            private: r.private,
             videoPlatform: r.videoPlatform,
             roomIdentificationId: r.roomIdentificationId,
             id: r.id,

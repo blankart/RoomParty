@@ -3,14 +3,14 @@ import useDebouncedEffect from "@web/hooks/useDebouncedEffect";
 import classNames from "classnames";
 import { useRouter } from "next/router";
 import { useMemo } from "react";
-import { useRoomPermissionsContext } from "../../context/RoomPermissionsContext";
+import { useRoomContext } from "../../context/RoomContext";
 import { useRoomsStore } from "../../store/rooms";
 
 interface ChatOnlineUsersProps {}
 
 export default function ChatOnlineUsers(props: ChatOnlineUsersProps) {
   const router = useRouter();
-  const { password } = useRoomPermissionsContext();
+  const { password } = useRoomContext();
   const roomIdentificationId = router.query.roomIdentificationId as string;
   const { data, refetch } = trpc.useQuery(
     ["rooms.getOnlineInfo", { roomIdentificationId, password: password ?? "" }],

@@ -17,7 +17,7 @@ import { ChatProps } from "./Chat";
 import randomColor from "randomcolor";
 import { ChatNamePromptForm } from "./ChatNamePrompt";
 import { ChatTextareaForm } from "./ChatTextarea";
-import { useRoomPermissionsContext } from "../../context/RoomPermissionsContext";
+import { useRoomContext } from "../../context/RoomContext";
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 const getLocalStorageColorName = (id: string) =>
@@ -41,7 +41,7 @@ export default function useChat(props: ChatProps) {
     shallow
   );
 
-  const { localStorageSessionId, roomTransientId, password } = useRoomPermissionsContext()
+  const { localStorageSessionId, roomTransientId, password } = useRoomContext()
 
   const { user, isLoading, isIdle } = useMe();
   const shouldEnableQueries =

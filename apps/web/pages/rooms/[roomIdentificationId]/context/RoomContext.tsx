@@ -10,22 +10,20 @@ import { useForm } from "react-hook-form";
 import { FaKey, FaSpinner } from "react-icons/fa";
 import { CHAT_LOCAL_STORAGE_SESSION_KEY } from "@rooms2watch/shared-lib";
 
-interface RoomPermissionsContextState {
+interface RoomContextState {
   password: string | null;
   localStorageSessionId?: number;
   roomTransientId: string | null;
 }
 
-export const RoomPermissionsContext =
-  createContext<RoomPermissionsContextState>({
-    password: null,
-    roomTransientId: null,
-  });
+export const RoomContext = createContext<RoomContextState>({
+  password: null,
+  roomTransientId: null,
+});
 
-export const useRoomPermissionsContext = () =>
-  useContext(RoomPermissionsContext);
+export const useRoomContext = () => useContext(RoomContext);
 
-interface RoomPermissionsModalProps {
+interface RoomModalProps {
   roomIdentificationId?: string;
   password: string | null;
   setPassword: (newPassword: string | null) => any;
@@ -34,7 +32,7 @@ interface RoomPermissionsModalProps {
   localStorageSessionId?: number;
 }
 
-function RoomPermissionsModal(props: RoomPermissionsModalProps) {
+function RoomModal(props: RoomModalProps) {
   const [enableQuery, setEnableQuery] = useState(false);
   const {
     handleSubmit,
@@ -101,14 +99,14 @@ function RoomPermissionsModal(props: RoomPermissionsModalProps) {
   );
 }
 
-export function RoomPermissionsProvider(props: { children?: React.ReactNode }) {
+export function RoomProvider(props: { children?: React.ReactNode }) {
   const router = useRouter();
   const roomIdentificationId = router.query.roomIdentificationId as
     | string
     | undefined;
   const {
     data: roomPermissions,
-    isLoading: isRoomPermissionsLoading,
+    isLoading: isRoomLoading,
     error,
   } = trpc.useQuery(
     [
@@ -152,7 +150,7 @@ export function RoomPermissionsProvider(props: { children?: React.ReactNode }) {
     );
   }, []);
 
-  if (isRoomPermissionsLoading) {
+  if (isRoomLoading) {
     return (
       <div className="absolute inset-0 flex items-center justify-center">
         <FaSpinner className="w-10 h-auto animate-spin" />
@@ -160,7 +158,7 @@ export function RoomPermissionsProvider(props: { children?: React.ReactNode }) {
     );
   }
 
-  if (!isRoomPermissionsLoading && error) {
+  if (!isRoomLoading && error) {
     return <Error statusCode={error.data?.httpStatus ?? 404} />;
   }
 
@@ -171,7 +169,7 @@ export function RoomPermissionsProvider(props: { children?: React.ReactNode }) {
     !roomTransientId
   ) {
     return (
-      <RoomPermissionsModal
+      <RoomModal
         roomIdentificationId={roomIdentificationId}
         password={password}
         setPassword={setPassword}
@@ -183,10 +181,10 @@ export function RoomPermissionsProvider(props: { children?: React.ReactNode }) {
   }
 
   return (
-    <RoomPermissionsContext.Provider
+    <RoomContext.Provider
       value={{ password, localStorageSessionId, roomTransientId }}
     >
       {props.children}
-    </RoomPermissionsContext.Provider>
+    </RoomContext.Provider>
   );
 }

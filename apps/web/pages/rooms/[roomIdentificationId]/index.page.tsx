@@ -12,10 +12,7 @@ import { useMe } from "@web/context/AuthContext";
 import { DARK_THEME } from "@web/components/DashboardLayout/DashboardLayout";
 import { ReactPlayerProvider } from "./components/ReactPlayer/context/ReactPlayerContext";
 import ReactPlayerWithControls2 from "./components/ReactPlayer/ReactPlayerWithControls/ReactPlayerWithControls2";
-import {
-  RoomPermissionsProvider,
-  useRoomPermissionsContext,
-} from "./context/RoomPermissionsContext";
+import { RoomProvider, useRoomContext } from "./context/RoomContext";
 
 function RoomIdentificationId() {
   const { set, id } = useRoomsStore(
@@ -25,7 +22,7 @@ function RoomIdentificationId() {
     }),
     shallow
   );
-  const { password } = useRoomPermissionsContext();
+  const { password } = useRoomContext();
   const router = useRouter();
   const roomIdentificationId = router.query.roomIdentificationId as string;
   const { user, isLoading: isUserLoading, hasUserInitialized } = useMe();
@@ -92,9 +89,9 @@ function RoomIdentificationId() {
 
 export default function RoomIdentificationIdPage() {
   return (
-    <RoomPermissionsProvider>
+    <RoomProvider>
       <RoomIdentificationId />
-    </RoomPermissionsProvider>
+    </RoomProvider>
   );
 }
 

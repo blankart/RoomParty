@@ -10,7 +10,7 @@ import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWith
 import { ReactPlayerControlBarProps } from "../components/ReactPlayerControlBar";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import shallow from "zustand/shallow";
-import { useRoomPermissionsContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomPermissionsContext";
+import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
 
 export default function useReactPlayerWithControls2(): {
   control: ReactPlayerControlBarProps;
@@ -48,7 +48,7 @@ export default function useReactPlayerWithControls2(): {
     shallow
   );
 
-  const { password } = useRoomPermissionsContext();
+  const { password } = useRoomContext();
 
   const { data: findByRoomIdentificationIdResponse, isFetchedAfterMount } =
     trpc.useQuery(

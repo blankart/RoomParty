@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { Suspense, useState } from "react";
 import _debounce from "lodash.debounce";
 import { InferQueryOutput } from "@web/types/trpc";
 import { FiShare } from "react-icons/fi";

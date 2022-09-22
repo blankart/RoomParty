@@ -2,6 +2,7 @@ import Link from "next/link";
 import { IoMdMore } from "react-icons/io";
 
 import { InferQueryOutput } from "@web/types/trpc";
+import { FaLock } from "react-icons/fa";
 
 export type FindMyRoomQueryOutput =
   InferQueryOutput<"rooms.findMyRoom">[number];
@@ -32,6 +33,9 @@ export default function RoomItem(props: RoomItemProps) {
           <span className="inline rounded-full badge badge-success badge-sm">
             {props.videoPlatform}
           </span>
+          {props.private && (
+            <FaLock className="inline w-3 h-auto align-middle" />
+          )}
         </div>
         <p className="!m-0">{props.online} online users</p>
 
