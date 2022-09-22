@@ -11,6 +11,7 @@ import { ReactPlayerControlBarProps } from "../components/ReactPlayerControlBar"
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import shallow from "zustand/shallow";
 import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
+import { useMe } from "@web/context/AuthContext";
 
 export default function useReactPlayerWithControls2(): {
   control: ReactPlayerControlBarProps;
@@ -47,6 +48,8 @@ export default function useReactPlayerWithControls2(): {
     (s) => ({ thumbnail: s.thumbnail }),
     shallow
   );
+
+  const { user } = useMe();
 
   const { password, userName } = useRoomContext();
 
@@ -86,7 +89,14 @@ export default function useReactPlayerWithControls2(): {
 
   const { mutateAsync: control } = trpc.useMutation(["player.control"]);
 
+  const isControlsDisabled = !!findByRoomIdentificationIdResponse
+    ? user && user.user.id === findByRoomIdentificationIdResponse?.owner?.userId
+      ? false
+      : findByRoomIdentificationIdResponse?.videoControlRights === "OwnerOnly"
+    : false;
+
   async function onPlay() {
+    if (isControlsDisabled) return;
     await control({
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
@@ -101,6 +111,7 @@ export default function useReactPlayerWithControls2(): {
   }
 
   async function onPause() {
+    if (isControlsDisabled) return;
     await control({
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
@@ -117,6 +128,7 @@ export default function useReactPlayerWithControls2(): {
   const debouncedOnSeek = useCallback(debounce(onSeek, 300), []);
 
   async function onSeek(time: number) {
+    if (isControlsDisabled) return;
     await control({
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
@@ -202,6 +214,7 @@ export default function useReactPlayerWithControls2(): {
       isBuffering,
       hasEnded,
       hasInitiallyPlayed,
+      isControlsDisabled,
     },
     player: {
       controls: false,

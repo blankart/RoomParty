@@ -216,11 +216,12 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
     {
       enabled: shouldBeAllowedToQuery,
       onNext(data) {
-        if (useRoomsStore.getState().owner === user?.user.id) return;
+        const isCurrentUserOwner =
+          useRoomsStore.getState().owner === user?.user.id;
 
         if (data.type === "CHANGED_PASSWORD") {
-          refetchRoomInitialMetadata();
-          refetchRequestForRoomTransient();
+          !isCurrentUserOwner && refetchRoomInitialMetadata();
+          !isCurrentUserOwner && refetchRequestForRoomTransient();
           add(
             "The owner has changed the password. Please re-enter the password."
           );
@@ -228,15 +229,25 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
         }
 
         if (data.type === "CHANGED_ROOM_PRIVACY") {
-          context.invalidateQueries(["rooms.findByRoomIdentificationId"]);
+          !isCurrentUserOwner &&
+            context.invalidateQueries(["rooms.findByRoomIdentificationId"]);
           if (data.value) {
-            refetchRoomInitialMetadata();
-            refetchRequestForRoomTransient();
+            !isCurrentUserOwner && refetchRoomInitialMetadata();
+            !isCurrentUserOwner && refetchRequestForRoomTransient();
             add("The owner has set the room to private.");
-            return;
           } else {
             add("The owner has set the room to public.");
           }
+        }
+
+        if (data.type === "CHANGED_CONTROL_RIGHTS") {
+          !isCurrentUserOwner &&
+            context.invalidateQueries(["rooms.findByRoomIdentificationId"]);
+
+          if (data.value === "OwnerOnly")
+            add("The owner has set the control rights to owner-only.");
+          if (data.value === "Everyone")
+            add("The owner has set the control rights to everyone.");
         }
       },
     }

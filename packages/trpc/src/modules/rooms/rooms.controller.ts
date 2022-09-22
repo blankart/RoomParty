@@ -24,7 +24,7 @@ enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",
 }
 
-export type RoomMetadata = { type: 'CHANGED_ROOM_PRIVACY', value: boolean } | { type: 'CHANGED_PASSWORD' }
+export type RoomMetadata = { type: 'CHANGED_ROOM_PRIVACY', value: boolean } | { type: 'CHANGED_PASSWORD' } | { type: 'CHANGED_CONTROL_RIGHTS', value: 'Everyone' | 'OwnerOnly' }
 
 @injectable()
 class RoomsController {
@@ -59,6 +59,7 @@ class RoomsController {
           videoPlatform: true,
           roomIdentificationId: true,
           private: true,
+          videoControlRights: true,
           chats: {
             take: 20,
             orderBy: {
@@ -388,13 +389,23 @@ class RoomsController {
         message: "You are not authorized to edit this room.",
       });
 
+    const videoControlRights = data.allowAccessToEveryone ? 'Everyone' : 'OwnerOnly'
+
     await this.modelsService.client.room.update({
       where: { id: data.id },
       data: {
         private: data.private,
         password: data.password,
+        videoControlRights,
       },
     });
+
+    if (maybeExistingRoom.videoControlRights !== videoControlRights) {
+      this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').emit(maybeExistingRoom.roomIdentificationId, {
+        type: 'CHANGED_CONTROL_RIGHTS',
+        value: videoControlRights
+      })
+    }
 
     if (maybeExistingRoom.private !== data.private) {
       this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').emit(maybeExistingRoom.roomIdentificationId, {
@@ -424,6 +435,7 @@ class RoomsController {
         id: true,
         password: true,
         private: true,
+        videoControlRights: true,
       },
     });
 
@@ -433,7 +445,7 @@ class RoomsController {
         message: "You are not allowed to access this room's settings",
       });
 
-    return maybeExistingRoom;
+    return { ...maybeExistingRoom, allowAccessToEveryone: maybeExistingRoom.videoControlRights === 'Everyone' };
   }
 
   async getRoomInitialMetadata(data: GetRoomInitialMetadataSchema, user: CurrentUser) {

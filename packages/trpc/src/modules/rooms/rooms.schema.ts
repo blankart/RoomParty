@@ -36,6 +36,7 @@ export const saveSettingsSchema = zod
   .object({
     id: zod.string(),
     private: zod.boolean(),
+    allowAccessToEveryone: zod.boolean(),
     password: zod
       .string()
       .min(8, "Password must have a minimum of 5 characters")

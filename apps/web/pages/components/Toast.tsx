@@ -12,6 +12,8 @@ interface ToastStore {
   add: (toast: string, type?: ToastType) => void;
 }
 
+const TOAST_MAX_DISPLAY_TIME_IN_MS = 10_000;
+
 export const useToastStore = create<ToastStore>((set, get) => ({
   toasts: [],
 
@@ -27,7 +29,7 @@ export const useToastStore = create<ToastStore>((set, get) => ({
         ...state,
         toasts: state.toasts.filter((s) => s.id !== id),
       }));
-    }, 5_000);
+    }, TOAST_MAX_DISPLAY_TIME_IN_MS);
   },
 }));
 

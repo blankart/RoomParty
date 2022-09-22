@@ -20,6 +20,7 @@ export interface ReactPlayerControlBarProps {
   isMuted: boolean;
   setMuted: (muted: boolean) => any;
   hasInitiallyPlayed: boolean;
+  isControlsDisabled: boolean;
 }
 
 export default function ReactPlayerControlBar(
@@ -60,7 +61,8 @@ export default function ReactPlayerControlBar(
       className={classNames(
         "flex duration-100 items-center w-full h-8 gap-2 bg-base-100",
         {
-          "h-0 overflow-hidden": !props.hasInitiallyPlayed,
+          "h-0 overflow-hidden":
+            !props.hasInitiallyPlayed || props.isControlsDisabled,
         }
       )}
     >

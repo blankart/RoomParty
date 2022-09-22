@@ -30,7 +30,9 @@ export default function ReactPlayerWithControls2() {
     <Suspense>
       <div className="flex flex-col flex-1 w-full max-h-screen bg-base-100">
         <div className="relative flex flex-col flex-1 w-full bg-base-100">
-          <ReactPlayerWithControlsSetup {...setup} />
+          {!control.isControlsDisabled && (
+            <ReactPlayerWithControlsSetup {...setup} />
+          )}
           <div className="relative w-full h-full">
             {!!url && hasInitiallyPlayed && (
               <button

@@ -114,12 +114,13 @@ export default function RoomSettings(props: RoomSettingsProps) {
 
       <div className="flex items-center gap-4">
         <p className="text-sm md:text-md !m-0">Enabled?</p>
-        <Input
+        <input
           type="checkbox"
-          className="w-auto toggle toggle-primary toggle-sm"
+          className="toggle toggle-primary toggle-sm"
           {...register("private")}
         />
       </div>
+
       <div className="form-control">
         <div className="flex items-center input-group">
           <Input
@@ -144,6 +145,18 @@ export default function RoomSettings(props: RoomSettingsProps) {
           </div>
         </div>
       </div>
+
+      <div className="flex items-center gap-4">
+        <p className="text-sm md:text-md !m-0 whitespace-nowrap">
+          Allow everyone to control the player
+        </p>
+        <input
+          type="checkbox"
+          className="toggle toggle-primary toggle-sm"
+          {...register("allowAccessToEveryone")}
+        />
+      </div>
+
       <Button
         type="submit"
         role="submit"
