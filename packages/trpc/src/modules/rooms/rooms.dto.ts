@@ -25,10 +25,12 @@ export type RequestForTransientSchema = zod.TypeOf<
   typeof requestForRoomTransientSchema
 >;
 
-export type SaveSettingsSchema = zod.TypeOf<typeof saveSettingsSchema>
+export type SaveSettingsSchema = zod.TypeOf<typeof saveSettingsSchema>;
 
-export type GetSettingsSchema = zod.TypeOf<typeof getSettingsSchema>
+export type GetSettingsSchema = zod.TypeOf<typeof getSettingsSchema>;
 
-export type GetRoomPermissionsSchema = zod.TypeOf<typeof getRoomPermissionsSchema>
+export type GetRoomPermissionsSchema = zod.TypeOf<
+  typeof getRoomPermissionsSchema
+>;
 
-export type ValidatePasswordSchema = zod.TypeOf<typeof validatePasswordSchema>
+export type ValidatePasswordSchema = zod.TypeOf<typeof validatePasswordSchema>;

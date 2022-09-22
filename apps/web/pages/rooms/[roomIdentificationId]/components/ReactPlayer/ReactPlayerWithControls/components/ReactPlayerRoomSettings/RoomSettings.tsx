@@ -105,8 +105,15 @@ export default function RoomSettings(props: RoomSettingsProps) {
         </div>
       )}
 
+      <div>
+        <h4>Set a room password</h4>
+        <p className="!m-0 text-sm opacity-90">
+          Users will be asked to enter your password in order to join the room.
+        </p>
+      </div>
+
       <div className="flex items-center gap-4">
-        <p className="text-sm md:text-md !m-0">Set room password</p>
+        <p className="text-sm md:text-md !m-0">Enabled?</p>
         <Input
           type="checkbox"
           className="w-auto toggle toggle-primary toggle-sm"
@@ -116,6 +123,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
       <div className="form-control">
         <div className="input-group">
           <Input
+            label="Enter your password"
             disabled={!isPrivate}
             type={showPassword ? "text" : "password"}
             placeholder="Set room password"

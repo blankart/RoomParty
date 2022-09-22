@@ -39,7 +39,8 @@ export default function useChat(props: ChatProps) {
     shallow
   );
 
-  const { localStorageSessionId, roomTransientId, password, userName } = useRoomContext()
+  const { localStorageSessionId, roomTransientId, password, userName } =
+    useRoomContext();
 
   const { user, isLoading } = useMe();
   const shouldEnableQueries =
@@ -61,7 +62,6 @@ export default function useChat(props: ChatProps) {
     enabled: !!roomStore.id,
   });
 
-
   const chatsFetchedOnceRef = useRef<boolean>(false);
 
   useEffect(() => {
@@ -80,7 +80,7 @@ export default function useChat(props: ChatProps) {
         name: userName,
         localStorageSessionId: localStorageSessionId!,
         roomTransientId: roomTransientId!,
-        password: password ?? '',
+        password: password ?? "",
       },
     ],
     {
@@ -138,7 +138,8 @@ export default function useChat(props: ChatProps) {
       )?.[1];
       if (
         key.startsWith(CHAT_NAME_KEY) &&
-        !maybeMatchedId?.startsWith(roomStore.id) && !maybeMatchedId?.startsWith(router.query.roomIdentificationId as string)
+        !maybeMatchedId?.startsWith(roomStore.id) &&
+        !maybeMatchedId?.startsWith(router.query.roomIdentificationId as string)
       ) {
         localStorage.removeItem(key);
       }

@@ -19,7 +19,7 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) { }
+  ) {}
   async chats(id: string) {
     return await this.modelsService.client.room
       .findFirst({
@@ -60,13 +60,13 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-            color: data.color,
-            user: {
-              connect: {
-                id: data.userId,
+              color: data.color,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });
@@ -87,7 +87,7 @@ class ChatsController {
       name: string;
       localStorageSessionId: number;
       roomTransientId: string;
-      password?: string
+      password?: string;
     },
     user: CurrentUser
   ) {

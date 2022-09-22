@@ -39,19 +39,20 @@ model FavoritedRoom {
 }
 
 model Room {
-  id                   String          @id @default(cuid())
+  id                   String             @id @default(cuid())
   name                 String
-  createdAt            DateTime        @default(now())
+  createdAt            DateTime           @default(now())
   playerStatus         Json?
   accountId            String?
   thumbnailUrl         String?
   description          String?
   password             String?
-  private              Boolean         @default(false)
-  videoPlatform        VideoPlatform   @default(Youtube)
-  draft                Boolean         @default(true)
+  private              Boolean            @default(false)
+  videoPlatform        VideoPlatform      @default(Youtube)
+  draft                Boolean            @default(true)
+  videoControlRights   VideoControlRights @default(Everyone)
   roomIdentificationId String
-  owner                Account?        @relation(fields: [accountId], references: [id], onDelete: Cascade)
+  owner                Account?           @relation(fields: [accountId], references: [id], onDelete: Cascade)
   chats                Chat[]
   FavoritedRoom        FavoritedRoom[]
   User                 User[]
@@ -83,4 +84,9 @@ model Chat {
 
 enum VideoPlatform {
   Youtube
+}
+
+enum VideoControlRights {
+  OwnerOnly
+  Everyone
 }

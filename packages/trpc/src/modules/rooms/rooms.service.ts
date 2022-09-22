@@ -11,7 +11,7 @@ const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 class RoomsService {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
 
   roomIdentificationIdGenerator() {
     let generatedId = "";
@@ -40,16 +40,20 @@ class RoomsService {
     });
   }
 
-  async isAuthorizedToEnterRoom(roomIdentificationId: string, user: CurrentUser, password?: string) {
+  async isAuthorizedToEnterRoom(
+    roomIdentificationId: string,
+    user: CurrentUser,
+    password?: string
+  ) {
     const room = await this.modelsService.client.room.findFirst({
       where: { roomIdentificationId },
       include: {
         owner: {
           select: {
-            id: true
-          }
-        }
-      }
+            id: true,
+          },
+        },
+      },
     });
 
     if (!room)
@@ -58,25 +62,24 @@ class RoomsService {
         message: "Room does not exist.",
       });
 
-    let isAuthorizedToEnter = false
+    let isAuthorizedToEnter = false;
     if (user) {
       if (user.id === room.owner?.id) {
-        isAuthorizedToEnter = true
+        isAuthorizedToEnter = true;
       } else if (room.private) {
-        if (room.password === password) isAuthorizedToEnter = true
+        if (room.password === password) isAuthorizedToEnter = true;
       } else {
-        isAuthorizedToEnter = true
+        isAuthorizedToEnter = true;
       }
     } else {
       if (room.private) {
-        if (room.password === password) isAuthorizedToEnter = true
+        if (room.password === password) isAuthorizedToEnter = true;
       } else {
-        isAuthorizedToEnter = true
+        isAuthorizedToEnter = true;
       }
     }
 
-    return isAuthorizedToEnter
-
+    return isAuthorizedToEnter;
   }
 }
 

@@ -25,7 +25,10 @@ function InputWithoutForwardedRef(
   return (
     <div className={classNames(props.wrapperClassName)}>
       {props.label && (
-        <label htmlFor={"input-" + id} className="mb-1 text-sm">
+        <label
+          htmlFor={"input-" + id}
+          className={classNames("mb-1 text-sm", props.disabled && "opacity-60")}
+        >
           {props.label}
         </label>
       )}

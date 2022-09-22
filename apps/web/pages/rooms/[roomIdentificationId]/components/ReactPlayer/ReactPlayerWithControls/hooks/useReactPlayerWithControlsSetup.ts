@@ -15,7 +15,7 @@ export function useReactPlayerWithControlsSetup(
   const [q, debouncedQ, setQ] = useDebouncedState("", 300);
   const [showVideoSearch, setShowVideoSearch] = useState(false);
 
-  const { userName } = useRoomContext()
+  const { userName } = useRoomContext();
 
   const { id, tabSessionId, url } = useRoomsStore(
     (s) => ({

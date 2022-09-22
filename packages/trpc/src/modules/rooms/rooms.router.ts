@@ -22,18 +22,15 @@ class RoomsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Rooms) private roomsController: RoomsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
   router() {
     const self = this;
-    return this.trpcRouter
-      .createRouter()
-      .mutation('validatePassword', {
-        input: validatePasswordSchema,
-        async resolve({ input }) {
-          return self.roomsController.validatePassword(input)
-        }
-      })
-      ;
+    return this.trpcRouter.createRouter().mutation("validatePassword", {
+      input: validatePasswordSchema,
+      async resolve({ input }) {
+        return self.roomsController.validatePassword(input);
+      },
+    });
   }
 
   protectedRouter() {
@@ -51,18 +48,18 @@ class RoomsRouter {
           return self.roomsController.deleteMyRoom(input, ctx.user);
         },
       })
-      .mutation('saveSettings', {
+      .mutation("saveSettings", {
         input: saveSettingsSchema,
         async resolve({ input, ctx }) {
-          return await self.roomsController.saveSettings(input, ctx.user)
-        }
+          return await self.roomsController.saveSettings(input, ctx.user);
+        },
       })
-      .query('getSettings', {
+      .query("getSettings", {
         input: getSettingsSchema,
         output: saveSettingsSchema,
         async resolve({ ctx, input }) {
-          return await self.roomsController.getSettings(input, ctx.user)
-        }
+          return await self.roomsController.getSettings(input, ctx.user);
+        },
       });
   }
 
@@ -89,7 +86,10 @@ class RoomsRouter {
       .query("findByRoomIdentificationId", {
         input: findByRoomIdentificationIdSchema,
         async resolve({ input, ctx }) {
-          return await self.roomsController.findByRoomIdentificationId(input, ctx.user);
+          return await self.roomsController.findByRoomIdentificationId(
+            input,
+            ctx.user
+          );
         },
       })
       .query("getOnlineInfo", {
@@ -98,16 +98,12 @@ class RoomsRouter {
           return await self.roomsController.getOnlineInfo(input, ctx.user);
         },
       })
-      .query('getRoomPermissions', {
+      .query("getRoomPermissions", {
         input: getRoomPermissionsSchema,
         async resolve({ ctx, input }) {
-          return await self.roomsController.getRoomPermissions(
-            input,
-            ctx.user
-          )
-        }
-      })
-      ;
+          return await self.roomsController.getRoomPermissions(input, ctx.user);
+        },
+      });
   }
 }
 
