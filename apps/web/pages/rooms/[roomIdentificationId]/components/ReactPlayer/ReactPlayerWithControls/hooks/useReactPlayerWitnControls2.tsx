@@ -3,7 +3,7 @@ import { trpc } from "@web/api";
 import { InferQueryOutput } from "@web/types/trpc";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 import type { ReactPlayerProps } from "react-player";
 import { useReactPlayerContext } from "../../context/ReactPlayerContext";
 import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWithControlsSetup";
@@ -72,9 +72,9 @@ export default function useReactPlayerWithControls2(): {
       | PlayerStatus
       | undefined;
     const newScrubTime = newPlayerStatus?.time ?? 0;
+    const shouldPlayTheVideo = newPlayerStatus?.type === "PLAYED";
     setUrl(newPlayerStatus?.url);
-    seekTo(newScrubTime);
-    if (newPlayerStatus?.type === "PLAYED") playVideo();
+    seekTo(newScrubTime, "seconds", !shouldPlayTheVideo);
     findMyRoomAlreadyFetchAfterMount.current = true;
   }, [isFetchedAfterMount, findByRoomIdentificationIdResponse]);
 
@@ -176,8 +176,8 @@ export default function useReactPlayerWithControls2(): {
   }, [isReady, isFetchedAfterMount, findByRoomIdentificationIdResponse]);
 
   function onReady() {
-    scrubTime && seekTo(scrubTime);
-    isPlayed && playVideo();
+    console.log({ scrubTime, isPlayed });
+    scrubTime && seekTo(scrubTime, "seconds", !isPlayed);
   }
 
   return {

@@ -17,7 +17,11 @@ interface ReactPlayerContextState {
   getInternalPlayer: () => Record<string, any> | undefined;
   playVideo: () => void;
   pauseVideo: () => void;
-  seekTo: (time: number, type?: "seconds") => void;
+  seekTo: (
+    time: number,
+    type?: "seconds",
+    shouldPauseAfterScrub?: boolean
+  ) => void;
   setDuration: (time: number) => void;
   setVolume: (time: number) => void;
   setMuted: (muted: boolean) => void;
@@ -99,13 +103,6 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
   }
 
   useEffect(() => {
-    if (isPlayed && scrubTime >= duration) pauseVideo();
-    if (hasEnded || !url) {
-      pauseVideo();
-    }
-  }, [hasEnded, url, isPlayed]);
-
-  useEffect(() => {
     if (hasEnded) seekTo(duration);
   }, [hasEnded]);
 
@@ -125,9 +122,11 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
     setIsPlayed(false);
   }
 
-  function seekTo(time: number, type?: "seconds") {
-    setHasEnded(false);
-    setScrubTime(time);
+  function seekTo(
+    time: number,
+    type?: "seconds",
+    shouldPauseAfterScrub = true
+  ) {
     (reactPlayerRef as any)?.current?.player?.player?.player?.seek?.(
       time,
       type
@@ -136,7 +135,10 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
       time,
       type
     );
-    pauseVideo();
+    setHasEnded(false);
+    setScrubTime(time);
+    shouldPauseAfterScrub && pauseVideo();
+    !shouldPauseAfterScrub && playVideo();
   }
 
   function setVolume(volume: number) {
@@ -190,6 +192,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
           },
           onEnded() {
             setHasEnded(true);
+            pauseVideo();
           },
           onReady() {
             setIsReady(true);

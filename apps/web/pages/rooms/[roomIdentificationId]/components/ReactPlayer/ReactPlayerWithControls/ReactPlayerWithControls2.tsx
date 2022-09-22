@@ -17,7 +17,14 @@ const ReactPlayer = dynamic(
 );
 
 export default function ReactPlayerWithControls2() {
-  const { reactPlayerProps, hasInitiallyPlayed, url } = useReactPlayerContext();
+  const {
+    reactPlayerProps,
+    hasInitiallyPlayed,
+    url,
+    hasEnded,
+    duration,
+    scrubTime,
+  } = useReactPlayerContext();
   const { control, player, setup, roomInfo } = useReactPlayerWithControls2();
   return (
     <Suspense>
@@ -28,7 +35,13 @@ export default function ReactPlayerWithControls2() {
             {!!url && hasInitiallyPlayed && (
               <button
                 className="absolute inset-0 z-[1]"
-                onClick={!control.isPlayed ? control.onPlay : control.onPause}
+                onClick={
+                  !hasEnded && scrubTime < duration
+                    ? !control.isPlayed
+                      ? control.onPlay
+                      : control.onPause
+                    : () => {}
+                }
               />
             )}
             <ReactPlayer {...reactPlayerProps} {...player} />
