@@ -64,4 +64,4 @@ export const validatePasswordSchema = zod.object({
 export const subscribeToRoomMetadataSchema = zod.object({
   roomIdentificationId,
   password: zod.string(),
-})
+});

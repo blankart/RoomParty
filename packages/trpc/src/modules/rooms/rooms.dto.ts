@@ -36,4 +36,6 @@ export type GetRoomInitialMetadataSchema = zod.TypeOf<
 
 export type ValidatePasswordSchema = zod.TypeOf<typeof validatePasswordSchema>;
 
-export type SubscribeToRoomMetadataSchema = zod.TypeOf<typeof subscribeToRoomMetadataSchema>
+export type SubscribeToRoomMetadataSchema = zod.TypeOf<
+  typeof subscribeToRoomMetadataSchema
+>;

@@ -4,19 +4,18 @@ import type EmitterService from "../emitter/emitter.service";
 import type { RoomMetadata } from "./rooms.controller";
 
 type EmitterTypes = {
-    UPDATE_SETTINGS: RoomMetadata
-}
+  UPDATE_SETTINGS: RoomMetadata;
+};
 
 @injectable()
 class RoomsEmitter {
-    constructor(
-        @inject(SERVICES_TYPES.Emitter) private emitterService: EmitterService
-    ) { }
+  constructor(
+    @inject(SERVICES_TYPES.Emitter) private emitterService: EmitterService
+  ) {}
 
-    get emitter() {
-        return this.emitterService.for<EmitterTypes>("ROOMS");
-    }
-
+  get emitter() {
+    return this.emitterService.for<EmitterTypes>("ROOMS");
+  }
 }
 
-export default RoomsEmitter
+export default RoomsEmitter;

@@ -24,7 +24,10 @@ enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",
 }
 
-export type RoomMetadata = { type: 'CHANGED_ROOM_PRIVACY', value: boolean } | { type: 'CHANGED_PASSWORD' } | { type: 'CHANGED_CONTROL_RIGHTS', value: 'Everyone' | 'OwnerOnly' }
+export type RoomMetadata =
+  | { type: "CHANGED_ROOM_PRIVACY"; value: boolean }
+  | { type: "CHANGED_PASSWORD" }
+  | { type: "CHANGED_CONTROL_RIGHTS"; value: "Everyone" | "OwnerOnly" };
 
 @injectable()
 class RoomsController {
@@ -34,7 +37,7 @@ class RoomsController {
     @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
     @inject(EMITTER_TYPES.Rooms) private roomsEmitter: RoomsEmitter
-  ) { }
+  ) {}
   async findByRoomIdentificationId(
     data: FindByRoomIdentificationIdSchema,
     user: CurrentUser
@@ -289,15 +292,15 @@ class RoomsController {
             },
             ...(user
               ? [
-                {
-                  user: {
-                    id: user.user.id,
+                  {
+                    user: {
+                      id: user.user.id,
+                    },
+                    room: {
+                      roomIdentificationId: data.roomIdentificationId,
+                    },
                   },
-                  room: {
-                    roomIdentificationId: data.roomIdentificationId,
-                  },
-                },
-              ]
+                ]
               : []),
           ],
         },
@@ -322,21 +325,21 @@ class RoomsController {
 
       const updateObject = user
         ? {
-          name: data.userName,
-          user: {
-            connect: {
-              id: user.user.id,
+            name: data.userName,
+            user: {
+              connect: {
+                id: user.user.id,
+              },
             },
-          },
-        }
+          }
         : !!maybeExistingTransientUser
-          ? {
+        ? {
             name: data.userName,
             user: {
               disconnect: true,
             },
           }
-          : {
+        : {
             name: data.userName,
           };
 
@@ -354,12 +357,12 @@ class RoomsController {
         name: data.userName ?? "User",
         ...(user
           ? {
-            user: {
-              connect: {
-                id: user?.user.id,
+              user: {
+                connect: {
+                  id: user?.user.id,
+                },
               },
-            },
-          }
+            }
           : {}),
         localStorageSessionid: data.localStorageSessionId,
         room: {
@@ -389,7 +392,9 @@ class RoomsController {
         message: "You are not authorized to edit this room.",
       });
 
-    const videoControlRights = data.allowAccessToEveryone ? 'Everyone' : 'OwnerOnly'
+    const videoControlRights = data.allowAccessToEveryone
+      ? "Everyone"
+      : "OwnerOnly";
 
     await this.modelsService.client.room.update({
       where: { id: data.id },
@@ -401,23 +406,29 @@ class RoomsController {
     });
 
     if (maybeExistingRoom.videoControlRights !== videoControlRights) {
-      this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').emit(maybeExistingRoom.roomIdentificationId, {
-        type: 'CHANGED_CONTROL_RIGHTS',
-        value: videoControlRights
-      })
+      this.roomsEmitter.emitter
+        .channel("UPDATE_SETTINGS")
+        .emit(maybeExistingRoom.roomIdentificationId, {
+          type: "CHANGED_CONTROL_RIGHTS",
+          value: videoControlRights,
+        });
     }
 
     if (maybeExistingRoom.private !== data.private) {
-      this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').emit(maybeExistingRoom.roomIdentificationId, {
-        type: 'CHANGED_ROOM_PRIVACY',
-        value: data.private
-      })
+      this.roomsEmitter.emitter
+        .channel("UPDATE_SETTINGS")
+        .emit(maybeExistingRoom.roomIdentificationId, {
+          type: "CHANGED_ROOM_PRIVACY",
+          value: data.private,
+        });
     }
 
     if (maybeExistingRoom.password !== data.password) {
-      this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').emit(maybeExistingRoom.roomIdentificationId, {
-        type: 'CHANGED_PASSWORD',
-      })
+      this.roomsEmitter.emitter
+        .channel("UPDATE_SETTINGS")
+        .emit(maybeExistingRoom.roomIdentificationId, {
+          type: "CHANGED_PASSWORD",
+        });
     }
 
     return "Successfully updated room settings.";
@@ -445,10 +456,17 @@ class RoomsController {
         message: "You are not allowed to access this room's settings",
       });
 
-    return { ...maybeExistingRoom, allowAccessToEveryone: maybeExistingRoom.videoControlRights === 'Everyone' };
+    return {
+      ...maybeExistingRoom,
+      allowAccessToEveryone:
+        maybeExistingRoom.videoControlRights === "Everyone",
+    };
   }
 
-  async getRoomInitialMetadata(data: GetRoomInitialMetadataSchema, user: CurrentUser) {
+  async getRoomInitialMetadata(
+    data: GetRoomInitialMetadataSchema,
+    user: CurrentUser
+  ) {
     const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(
       data.roomIdentificationId,
       user
@@ -486,22 +504,33 @@ class RoomsController {
     return true as const;
   }
 
-  async subscribeToRoomMetadata(data: SubscribeToRoomMetadataSchema, user: CurrentUser) {
-    const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(data.roomIdentificationId, user, data.password)
+  async subscribeToRoomMetadata(
+    data: SubscribeToRoomMetadataSchema,
+    user: CurrentUser
+  ) {
+    const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(
+      data.roomIdentificationId,
+      user,
+      data.password
+    );
 
-    if (!isAuthorizedToEnter) throw new TRPCError({ code: 'UNAUTHORIZED' })
+    if (!isAuthorizedToEnter) throw new TRPCError({ code: "UNAUTHORIZED" });
 
-    return new Subscription<RoomMetadata>(emit => {
+    return new Subscription<RoomMetadata>((emit) => {
       const onAdd = (data: RoomMetadata) => {
-        emit.data(data)
-      }
+        emit.data(data);
+      };
 
-      this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').on(data.roomIdentificationId, onAdd)
+      this.roomsEmitter.emitter
+        .channel("UPDATE_SETTINGS")
+        .on(data.roomIdentificationId, onAdd);
 
       return () => {
-        this.roomsEmitter.emitter.channel('UPDATE_SETTINGS').off(data.roomIdentificationId, onAdd)
-      }
-    })
+        this.roomsEmitter.emitter
+          .channel("UPDATE_SETTINGS")
+          .off(data.roomIdentificationId, onAdd);
+      };
+    });
   }
 }
 

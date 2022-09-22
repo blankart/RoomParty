@@ -23,7 +23,7 @@ class RoomsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Rooms) private roomsController: RoomsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
   router() {
     const self = this;
     return this.trpcRouter.createRouter().mutation("validatePassword", {
@@ -102,16 +102,21 @@ class RoomsRouter {
       .query("getRoomInitialMetadata", {
         input: getRoomInitialMetadataSchema,
         async resolve({ ctx, input }) {
-          return await self.roomsController.getRoomInitialMetadata(input, ctx.user);
+          return await self.roomsController.getRoomInitialMetadata(
+            input,
+            ctx.user
+          );
         },
       })
-      .subscription('subscribeToRoomMetadata', {
+      .subscription("subscribeToRoomMetadata", {
         input: subscribeToRoomMetadataSchema,
         async resolve({ ctx, input }) {
-          return await self.roomsController.subscribeToRoomMetadata(input, ctx.user)
-        }
-      })
-      ;
+          return await self.roomsController.subscribeToRoomMetadata(
+            input,
+            ctx.user
+          );
+        },
+      });
   }
 }
 
