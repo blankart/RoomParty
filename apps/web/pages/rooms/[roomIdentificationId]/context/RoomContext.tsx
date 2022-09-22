@@ -222,9 +222,7 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
         if (data.type === "CHANGED_PASSWORD") {
           !isCurrentUserOwner && refetchRoomInitialMetadata();
           !isCurrentUserOwner && refetchRequestForRoomTransient();
-          add(
-            "The owner has changed the password. Please re-enter the password."
-          );
+          add("The owner has changed the password", "warning");
           return;
         }
 
@@ -234,7 +232,7 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
           if (data.value) {
             !isCurrentUserOwner && refetchRoomInitialMetadata();
             !isCurrentUserOwner && refetchRequestForRoomTransient();
-            add("The owner has set the room to private.");
+            add("The owner has set the room to private.", "warning");
           } else {
             add("The owner has set the room to public.");
           }

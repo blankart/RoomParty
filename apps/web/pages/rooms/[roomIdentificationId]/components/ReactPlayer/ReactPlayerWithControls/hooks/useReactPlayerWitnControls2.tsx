@@ -42,6 +42,7 @@ export default function useReactPlayerWithControls2(): {
     isMuted,
     setMuted,
     hasInitiallyPlayed,
+    reactPlayerProps,
   } = useReactPlayerContext();
 
   const { thumbnail } = useRoomsStore(
@@ -224,6 +225,8 @@ export default function useReactPlayerWithControls2(): {
       pip: false,
       width: "100%",
       height: "100%",
+      style: isControlsDisabled ? { pointerEvents: "none" } : undefined,
+      onPlay: isControlsDisabled ? undefined : reactPlayerProps.onPlay,
     },
     setup: {},
     roomInfo: findByRoomIdentificationIdResponse,

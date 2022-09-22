@@ -82,6 +82,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
 
   return (
     <form
+      autoComplete="off"
       onSubmit={handleSubmit(onSubmit)}
       className={classNames("flex flex-col gap-2 form", {
         "opacity-80 pointer-events-none": isGetSettingsLoading,

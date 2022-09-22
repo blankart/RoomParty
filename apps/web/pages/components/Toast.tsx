@@ -1,7 +1,7 @@
 import classNames from "classnames";
 import create from "zustand";
 
-type ToastType = "success" | "error" | "info";
+type ToastType = "success" | "error" | "info" | "warning";
 
 function generateId() {
   return Math.floor((Math.random() * 1_000) % 1_000);
@@ -52,6 +52,7 @@ export default function Toast() {
               "alert-success": toast.type === "success",
               "alert-error": toast.type === "error",
               "alert-info": toast.type === "info",
+              "alert-warning": toast.type === "warning",
             }
           )}
         >
