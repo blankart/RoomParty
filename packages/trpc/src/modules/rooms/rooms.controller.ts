@@ -25,7 +25,7 @@ class RoomsController {
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService
-  ) { }
+  ) {}
   async findByRoomIdentificationId(data: FindByRoomIdentificationIdSchema) {
     const room = await this.modelsService.client.room
       .findFirst({
@@ -235,15 +235,15 @@ class RoomsController {
             },
             ...(user
               ? [
-                {
-                  user: {
-                    id: user.user.id,
+                  {
+                    user: {
+                      id: user.user.id,
+                    },
+                    room: {
+                      roomIdentificationId: data.roomIdentificationId,
+                    },
                   },
-                  room: {
-                    roomIdentificationId: data.roomIdentificationId,
-                  }
-                },
-              ]
+                ]
               : []),
           ],
         },
@@ -253,22 +253,23 @@ class RoomsController {
       });
 
     if (maybeExistingTransient) {
-      const maybeExistingTransientUser = maybeExistingTransient.user
+      const maybeExistingTransientUser = maybeExistingTransient.user;
 
       const updateObject = user
         ? {
-          user: {
-            connect: {
-              id: user.user.id,
+            user: {
+              connect: {
+                id: user.user.id,
+              },
             },
           }
-        }
-        : (!!maybeExistingTransientUser ? {
-          user: {
-            disconnect: true,
+        : !!maybeExistingTransientUser
+        ? {
+            user: {
+              disconnect: true,
+            },
           }
-        } : {})
-
+        : {};
 
       if (Object.keys(updateObject).length)
         await this.modelsService.client.roomTransient.update({
@@ -294,12 +295,12 @@ class RoomsController {
         name: data.userName,
         ...(user
           ? {
-            user: {
-              connect: {
-                id: user?.user.id,
+              user: {
+                connect: {
+                  id: user?.user.id,
+                },
               },
-            },
-          }
+            }
           : {}),
         localStorageSessionid: data.localStorageSessionId,
         room: {
