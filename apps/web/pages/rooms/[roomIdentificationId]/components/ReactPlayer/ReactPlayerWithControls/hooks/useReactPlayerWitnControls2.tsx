@@ -200,6 +200,7 @@ export default function useReactPlayerWithControls2(): {
     },
     player: {
       controls: false,
+      pip: false,
       width: "100%",
       height: "100%",
     },
