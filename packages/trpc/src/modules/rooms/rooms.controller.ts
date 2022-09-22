@@ -47,6 +47,7 @@ class RoomsController {
           playerStatus: true,
           videoPlatform: true,
           roomIdentificationId: true,
+          private: true,
           chats: {
             take: 20,
             orderBy: {

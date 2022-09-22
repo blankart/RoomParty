@@ -28,6 +28,8 @@ export default function RoomSettings(props: RoomSettingsProps) {
     }
   );
 
+  const context = trpc.useContext();
+
   const { mutateAsync: saveSettings, isLoading } = trpc.useMutation(
     ["rooms.saveSettings"],
     {
@@ -35,6 +37,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
         setErrorMessage(null);
         setSuccessMessage(data);
         reset(watch());
+        context.invalidateQueries(["rooms.findByRoomIdentificationId"]);
       },
       onError(error) {
         setSuccessMessage(null);

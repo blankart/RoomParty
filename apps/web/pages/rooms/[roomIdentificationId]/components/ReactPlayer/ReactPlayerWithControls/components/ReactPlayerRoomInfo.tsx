@@ -4,7 +4,7 @@ import { InferQueryOutput } from "@web/types/trpc";
 import { FiShare } from "react-icons/fi";
 import { useMe } from "@web/context/AuthContext";
 import { trpc } from "@web/api";
-import { FaCopy, FaStar } from "react-icons/fa";
+import { FaCopy, FaLock, FaStar } from "react-icons/fa";
 import classNames from "classnames";
 import Link from "next/link";
 import { ImExit } from "react-icons/im";
@@ -112,13 +112,16 @@ export default function ReactPlayerRoomInfo(props: ReactPlayerRoomInfoProps) {
       </Modal>
       <div className="flex items-center justify-between">
         <div>
-          <div>
-            <h2 className="text-[1.2rem] md:text-2xl !m-0 inline-block max-w-[150px] md:max-w-none align-middle overflow-hidden overflow-ellipsis whitespace-nowrap">
+          <div className="space-x-2">
+            <h2 className="text-[1.2rem] md:text-2xl !m-0 inline-block max-w-[120px] md:max-w-none align-middle overflow-hidden overflow-ellipsis whitespace-nowrap">
               {props.name}
             </h2>
             <span className="inline-block ml-2 align-middle rounded-full badge badge-success badge-sm">
               {props.videoPlatform}
             </span>
+            {props.private && (
+              <FaLock className="inline w-3 h-auto align-middle" />
+            )}
           </div>
           {!!props.owner?.user.name && (
             <p className="!m-0 text-xs md:text-lg">
