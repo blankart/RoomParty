@@ -31,6 +31,23 @@ interface ReactPlayerContextState {
   isLive: boolean;
   volume: number;
   isMuted: boolean;
+  hasInitiallyPlayed: boolean;
+}
+
+function isMobile() {
+  const toMatch = [
+    /Android/i,
+    /webOS/i,
+    /iPhone/i,
+    /iPad/i,
+    /iPod/i,
+    /BlackBerry/i,
+    /Windows Phone/i,
+  ];
+
+  return toMatch.some((toMatchItem) => {
+    return navigator.userAgent.match(toMatchItem);
+  });
 }
 
 const ReactPlayerContext = createContext<ReactPlayerContextState>({
@@ -54,6 +71,7 @@ const ReactPlayerContext = createContext<ReactPlayerContextState>({
   scrubTime: 0,
   volume: 100,
   isMuted: false,
+  hasInitiallyPlayed: false,
 });
 
 export function useReactPlayerContext() {
@@ -72,6 +90,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false);
   const [volume, _setVolume] = useState(100);
   const [isMuted, _setIsMuted] = useState(false);
+  const [hasInitiallyPlayed, setHasInitiallyPlayed] = useState(!isMobile());
 
   function setUrl(newUrl?: string) {
     setHasEnded(false);
@@ -95,41 +114,55 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
   }
 
   function playVideo() {
-    getInternalPlayer()?.playVideo?.() ?? getInternalPlayer()?.play?.();
+    (reactPlayerRef as any)?.current?.player?.player?.player?.playVideo?.();
+    (reactPlayerRef as any)?.current?.player?.player?.player?.play?.();
     setIsPlayed(true);
   }
 
   function pauseVideo() {
-    getInternalPlayer()?.pauseVideo?.() ?? getInternalPlayer()?.pause?.();
+    (reactPlayerRef as any)?.current?.player?.player?.player?.pauseVideo?.();
+    (reactPlayerRef as any)?.current?.player?.player?.player?.pause?.();
     setIsPlayed(false);
   }
 
   function seekTo(time: number, type?: "seconds") {
     setHasEnded(false);
     setScrubTime(time);
-    getInternalPlayer()?.seek?.(time, type) ??
-      getInternalPlayer()?.seekTo?.(time, type);
+    (reactPlayerRef as any)?.current?.player?.player?.player?.seek?.(
+      time,
+      type
+    );
+    (reactPlayerRef as any)?.current?.player?.player?.player?.seekTo?.(
+      time,
+      type
+    );
     pauseVideo();
   }
 
   function setVolume(volume: number) {
-    getInternalPlayer()?.setVolume?.(volume);
+    (reactPlayerRef as any)?.current?.player?.player?.player?.setVolume?.(
+      volume
+    );
     _setVolume(volume);
     setMuted(volume === 0);
   }
 
   function setMuted(muted: boolean) {
     if (muted) {
-      getInternalPlayer()?.mute?.();
+      (reactPlayerRef as any)?.current?.player?.player?.player?.mute?.();
     } else {
-      getInternalPlayer()?.unMute?.();
+      (reactPlayerRef as any)?.current?.player?.player?.player?.unMute?.();
     }
     _setIsMuted(muted);
   }
 
   useEffect(() => {
-    const volume = getInternalPlayer()?.getVolume?.();
-    const isMuted = getInternalPlayer()?.isMuted?.();
+    const volume = (
+      reactPlayerRef as any
+    )?.current?.player?.player?.player?.getVolume?.();
+    const isMuted = (
+      reactPlayerRef as any
+    )?.current?.player?.player?.player?.isMuted?.();
     _setVolume(volume);
     _setIsMuted(isMuted);
   }, [isReady]);
@@ -141,6 +174,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
           reactPlayerRef,
           url,
           onDuration(duration) {
+            // if (isMobile()) setHasInitiallyPlayed(false);
             setDuration(duration);
             setHasEnded(false);
             const isLive =
@@ -160,7 +194,13 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
           onReady() {
             setIsReady(true);
           },
+          onPlay() {
+            if (hasInitiallyPlayed || !isMobile()) return;
+            setHasInitiallyPlayed(true);
+            playVideo();
+          },
         },
+        hasInitiallyPlayed,
         isMuted,
         setMuted,
         setVolume,

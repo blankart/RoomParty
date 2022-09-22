@@ -253,22 +253,29 @@ class RoomsController {
       });
 
     if (maybeExistingTransient) {
-      await this.modelsService.client.roomTransient.update({
-        where: { id: maybeExistingTransient.id },
-        data: {
+      const maybeExistingTransientUser = maybeExistingTransient.user
+
+      const updateObject = user
+        ? {
           user: {
-            ...(user
-              ? {
-                connect: {
-                  id: user.user.id,
-                },
-              }
-              : {
-                disconnect: true,
-              }),
-          },
-        },
-      });
+            connect: {
+              id: user.user.id,
+            },
+          }
+        }
+        : (!!maybeExistingTransientUser ? {
+          user: {
+            disconnect: true,
+          }
+        } : {})
+
+
+      if (Object.keys(updateObject).length)
+        await this.modelsService.client.roomTransient.update({
+          where: { id: maybeExistingTransient.id },
+          data: updateObject,
+        });
+
       return maybeExistingTransient;
     }
 

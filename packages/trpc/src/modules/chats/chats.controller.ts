@@ -19,7 +19,7 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) {}
+  ) { }
   async chats(id: string) {
     return await this.modelsService.client.room
       .findFirst({
@@ -60,13 +60,13 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-              color: data.color,
-              user: {
-                connect: {
-                  id: data.userId,
-                },
+            color: data.color,
+            user: {
+              connect: {
+                id: data.userId,
               },
-            }
+            },
+          }
           : {}),
       },
     });
@@ -90,7 +90,7 @@ class ChatsController {
     },
     user: CurrentUser
   ) {
-    const tempRoomSessionMapKey = JSON.stringify(data);
+    const tempRoomSessionMapKey = data.roomTransientId
 
     const maybeRoomTransient =
       await this.modelsService.client.roomTransient.findFirst({
@@ -116,7 +116,7 @@ class ChatsController {
 
       Promise.all([
         (async () => {
-          if ((TempRoomSessionMap.get(JSON.stringify(data)) ?? 0) > 1) return;
+          if ((TempRoomSessionMap.get(tempRoomSessionMapKey) ?? 0) > 1) return;
           await this.modelsService.client.chat
             .create({
               data: {

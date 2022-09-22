@@ -3,7 +3,7 @@ import { trpc } from "@web/api";
 import { InferQueryOutput } from "@web/types/trpc";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactPlayerProps } from "react-player";
 import { useReactPlayerContext } from "../../context/ReactPlayerContext";
 import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWithControlsSetup";
@@ -39,7 +39,7 @@ export default function useReactPlayerWithControls2(): {
     setVolume,
     isMuted,
     setMuted,
-    getInternalPlayer,
+    hasInitiallyPlayed,
   } = useReactPlayerContext();
 
   const { userName, thumbnail } = useRoomsStore(
@@ -196,8 +196,13 @@ export default function useReactPlayerWithControls2(): {
       url: url ?? "",
       isBuffering,
       hasEnded,
+      hasInitiallyPlayed,
     },
-    player: {},
+    player: {
+      controls: false,
+      width: "100%",
+      height: "100%",
+    },
     setup: {},
     roomInfo: findByRoomIdentificationIdResponse,
   };

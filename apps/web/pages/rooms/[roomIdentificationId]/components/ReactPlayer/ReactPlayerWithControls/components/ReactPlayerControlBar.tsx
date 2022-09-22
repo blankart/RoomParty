@@ -19,6 +19,7 @@ export interface ReactPlayerControlBarProps {
   isLive: boolean;
   isMuted: boolean;
   setMuted: (muted: boolean) => any;
+  hasInitiallyPlayed: boolean;
 }
 
 export default function ReactPlayerControlBar(
@@ -55,7 +56,14 @@ export default function ReactPlayerControlBar(
     !props.url || props.hasEnded || props.duration <= props.scrubTime;
 
   return (
-    <div className="flex items-center w-full h-8 gap-2 bg-base-100">
+    <div
+      className={classNames(
+        "flex duration-100 items-center w-full h-8 gap-2 bg-base-100",
+        {
+          "h-0 overflow-hidden": !props.hasInitiallyPlayed,
+        }
+      )}
+    >
       <button
         className={classNames(
           "flex items-center justify-center h-full p-2 btn btn-xs btn-ghost",

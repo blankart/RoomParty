@@ -1,5 +1,5 @@
-import { RefObject } from "react";
-import _ReactPlayer, { ReactPlayerProps } from "react-player/lazy";
+import React, { RefObject } from "react";
+import _ReactPlayer, { ReactPlayerProps } from "react-player";
 
 const YOUTUBE_PLAYER_CONFIG = {
   playerVars: { origin: process.env.NEXT_PUBLIC_WEB_BASE_URL },
