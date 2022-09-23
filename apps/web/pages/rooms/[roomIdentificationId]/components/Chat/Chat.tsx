@@ -21,16 +21,18 @@ export default memo(function Chat(props: ChatProps) {
     <>
       <div
         className={classNames(
-          "relative h-[50%] lg:h-screen flex flex-col shadow-xl",
-          !ctx.collapsed ? "w-0" : "w-full lg:w-[400px]"
+          "relative lg:h-screen flex flex-col shadow-xl",
+          !ctx.collapsed
+            ? "w-full md:w-0 h-0 md:h-[50%]"
+            : "w-full lg:w-[400px] h-[50%]"
         )}
       >
         <button
-          className="absolute right-[100%] top-[50%] w-4 h-20 rounded-l-full bg-primary shadow-2xl"
+          className="absolute md:right-[100%] top-[100%] md:top-[50%] w-4 h-20 rounded-l-full bg-primary shadow-2xl z-10"
           onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}
         />
-        <section className="flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100">
+        <section className="flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100 overflow-hidden">
           <div
             ref={ctx.chatsRef}
             className={classNames("p-2 overflow-y-auto relative flex-1", {

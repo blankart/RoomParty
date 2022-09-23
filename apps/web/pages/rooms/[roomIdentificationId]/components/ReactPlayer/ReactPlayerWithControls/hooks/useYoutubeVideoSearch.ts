@@ -1,19 +1,18 @@
 import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
-import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWithControlsSetup";
+import { YoutubeVideoSearchProps } from "../components/YoutubeVideoSearch";
 import { trpc } from "@web/api";
 import useDebouncedState from "@web/hooks/useDebouncedState";
 import numeral from "numeral";
 import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
 
-export function useReactPlayerWithControlsSetup(
-  props: ReactPlayerWithControlsSetupProps
+export function useYoutubeVideoSearch(
+  props: YoutubeVideoSearchProps
 ) {
   const [focused, setFocused] = useState(false);
   const youtubeInputRef = useRef<HTMLInputElement>(null);
   const [q, debouncedQ, setQ] = useDebouncedState("", 300);
-  const [showVideoSearch, setShowVideoSearch] = useState(false);
 
   const { userName } = useRoomContext();
 
@@ -25,10 +24,6 @@ export function useReactPlayerWithControlsSetup(
     }),
     shallow
   );
-
-  useEffect(() => {
-    if (!url) setShowVideoSearch(true);
-  }, [url]);
 
   const {
     data: searchResult,
@@ -51,6 +46,7 @@ export function useReactPlayerWithControlsSetup(
       );
     },
     refetchOnWindowFocus: false,
+    refetchOnMount: false,
   });
 
   const { mutateAsync: control } = trpc.useMutation(["player.control"]);
@@ -67,7 +63,7 @@ export function useReactPlayerWithControlsSetup(
         thumbnail,
       },
     });
-    setShowVideoSearch(false);
+    props.onCloseModal();
   }
 
   return {
@@ -83,8 +79,6 @@ export function useReactPlayerWithControlsSetup(
     setQ,
     refetch,
     onSelectLink,
-    showVideoSearch,
-    setShowVideoSearch,
     isLoading,
     debouncedQ,
   };

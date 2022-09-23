@@ -6,7 +6,7 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactPlayerProps } from "react-player";
 import { useReactPlayerContext } from "../../context/ReactPlayerContext";
-import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWithControlsSetup";
+import { YoutubeVideoSearchProps } from "../components/YoutubeVideoSearch";
 import { ReactPlayerControlBarProps } from "../components/ReactPlayerControlBar";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import shallow from "zustand/shallow";
@@ -16,7 +16,7 @@ import { useMe } from "@web/context/AuthContext";
 export default function useReactPlayerWithControls2(): {
   control: ReactPlayerControlBarProps;
   player: ReactPlayerProps;
-  setup: ReactPlayerWithControlsSetupProps;
+  setup: YoutubeVideoSearchProps;
   roomInfo: InferQueryOutput<"rooms.findByRoomIdentificationId"> | undefined;
 } {
   const router = useRouter();
