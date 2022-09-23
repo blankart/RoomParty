@@ -11,6 +11,7 @@ export default memo(function TwitchVideoSearchButton(props: VideoSearchProps) {
           "btn duration-100 btn-sm md:btn-md bg-blue-600 hover:bg-blue-600 border-none opacity-0",
           {
             "group-hover:opacity-100": !props.showVideoSearch,
+            "opacity-100": props.forceShow,
           }
         )}
         onClick={props.onOpenModal}

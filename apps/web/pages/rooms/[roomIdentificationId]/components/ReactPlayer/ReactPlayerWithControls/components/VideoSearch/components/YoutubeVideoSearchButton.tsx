@@ -12,6 +12,7 @@ export default memo(function YoutubeVideoSearchButton(props: VideoSearchProps) {
             "btn duration-100 btn-sm md:btn-md bg-red-600 hover:bg-red-600 border-none opacity-0",
             {
               "group-hover:opacity-100": !props.showVideoSearch,
+              "opacity-100": props.forceShow,
             }
           )}
           onClick={props.onOpenModal}
