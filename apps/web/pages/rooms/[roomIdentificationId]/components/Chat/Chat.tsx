@@ -28,7 +28,7 @@ export default memo(function Chat(props: ChatProps) {
         )}
       >
         <button
-          className="absolute md:right-[100%] top-[100%] md:top-[50%] w-4 h-20 rounded-l-full bg-primary shadow-2xl z-10"
+          className="hidden md:block absolute right-[100%] top-[50%] w-4 h-20 rounded-l-full bg-primary shadow-2xl z-10"
           onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}
         />
