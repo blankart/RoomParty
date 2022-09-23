@@ -16,7 +16,6 @@ import { useMe } from "@web/context/AuthContext";
 export default function useReactPlayerWithControls2(): {
   control: ReactPlayerControlBarProps;
   player: ReactPlayerProps;
-  setup: YoutubeVideoSearchProps;
   roomInfo: InferQueryOutput<"rooms.findByRoomIdentificationId"> | undefined;
 } {
   const router = useRouter();
@@ -234,7 +233,6 @@ export default function useReactPlayerWithControls2(): {
       style: isControlsDisabled ? { pointerEvents: "none" } : undefined,
       onPlay: isControlsDisabled ? undefined : reactPlayerProps.onPlay,
     },
-    setup: {},
     roomInfo: findByRoomIdentificationIdResponse,
   };
 }

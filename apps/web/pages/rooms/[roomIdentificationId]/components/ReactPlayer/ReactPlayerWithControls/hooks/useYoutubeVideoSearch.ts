@@ -7,9 +7,7 @@ import useDebouncedState from "@web/hooks/useDebouncedState";
 import numeral from "numeral";
 import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
 
-export function useYoutubeVideoSearch(
-  props: YoutubeVideoSearchProps
-) {
+export function useYoutubeVideoSearch(props: YoutubeVideoSearchProps) {
   const [focused, setFocused] = useState(false);
   const youtubeInputRef = useRef<HTMLInputElement>(null);
   const [q, debouncedQ, setQ] = useDebouncedState("", 300);
