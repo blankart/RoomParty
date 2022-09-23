@@ -1,4 +1,3 @@
-import Input from "@web/components/Input/Input";
 import classNames from "classnames";
 import dynamic from "next/dynamic";
 import { useForm } from "react-hook-form";
@@ -37,7 +36,7 @@ export default function ChatTextarea(props: ChatTextareaProps) {
         onSubmit={handleSubmit(onSend)}
         className="flex flex-col w-full p-2 gap-y-2"
       >
-        <Input
+        <input
           {...register("message", {
             maxLength: {
               value: 50,
@@ -45,8 +44,10 @@ export default function ChatTextarea(props: ChatTextareaProps) {
             },
           })}
           disabled={props.disabled}
-          className="p-2 input bg-slate-700/50"
-          error={errors?.message?.message}
+          className={classNames(
+            "p-2 input bg-slate-700/50",
+            !!errors?.message?.message && "input-error text-error"
+          )}
         />
         <div className="flex justify-between">
           <div>

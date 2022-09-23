@@ -117,7 +117,11 @@ export default function RoomSettings(props: RoomSettingsProps) {
         <input
           type="checkbox"
           className="toggle toggle-primary toggle-sm"
-          {...register("private")}
+          {...register("private", {
+            onChange(event) {
+              if (!event.target.checked) setValue("password", undefined);
+            },
+          })}
         />
       </div>
 
