@@ -31,7 +31,7 @@ export default function ReactPlayerWithControls2() {
       <div className="flex flex-col flex-1 w-full max-h-screen bg-base-100">
         <div className="relative flex flex-col flex-1 w-full bg-base-100">
           <div className="relative w-full h-full group">
-            {!control.isControlsDisabled && <VideoSearch roomInfo={roomInfo} />}
+            {!control.isControlsDisabled && <VideoSearch />}
             {((!!url && hasInitiallyPlayed) || control.isControlsDisabled) && (
               <button
                 className="absolute inset-0 z-[1]"

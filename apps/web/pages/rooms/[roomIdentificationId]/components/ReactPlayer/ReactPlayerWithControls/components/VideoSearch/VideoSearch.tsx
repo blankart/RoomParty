@@ -1,8 +1,9 @@
+import { trpc } from "@web/api";
+import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
 import classNames from "classnames";
 import dynamic from "next/dynamic";
-import { useState } from "react";
-import { useReactPlayerContext } from "../../../context/ReactPlayerContext";
-import useReactPlayerWithControls2 from "../../hooks/useReactPlayerWithControls2";
+import { useRouter } from "next/router";
+import { memo, useState } from "react";
 import TwitchVideoSearch from "./components/TwitchVideoSearch";
 import TwitchVideoSearchButton from "./components/TwitchVideoSearchButton";
 
@@ -14,14 +15,30 @@ const YoutubeVideoSearch = dynamic(
   }
 );
 
-export default function VideoSearch(props: {
-  roomInfo: ReturnType<typeof useReactPlayerWithControls2>["roomInfo"];
-}) {
+export default memo(function VideoSearch() {
   const [videoSearchModalOpen, setVideoSearchModalOpen] = useState<
     null | "youtube" | "twitch"
   >(null);
 
-  const { url } = useReactPlayerContext();
+  const { password } = useRoomContext();
+
+  const router = useRouter();
+  const roomIdentificationId = router.query.roomIdentificationId as
+    | string
+    | undefined;
+
+  const { isFetchedAfterMount, data, isIdle, isLoading } = trpc.useQuery(
+    [
+      "rooms.findByRoomIdentificationId",
+      {
+        roomIdentificationId: roomIdentificationId!,
+        password: password ?? "",
+      },
+    ],
+    {
+      enabled: !!roomIdentificationId,
+    }
+  );
 
   return (
     <>
@@ -41,10 +58,15 @@ export default function VideoSearch(props: {
         />
       )}
 
-      {!url ? (
+      {isFetchedAfterMount &&
+      !(data?.playerStatus as any)?.url &&
+      !isIdle &&
+      !isLoading ? (
         <div className="flex flex-col items-center justify-center w-full h-full text-sm md:text-md">
-          <h3>Welcome to {props.roomInfo?.name}&apos;s room!</h3>
-          <p>Select a video platform</p>
+          <h3>Welcome to {data?.name}&apos;s room!</h3>
+          <p className="text-xs md:text-sm">
+            Select a video to watch with your friends!
+          </p>
           <div className="flex gap-4">
             <YoutubeVideoSearchButton
               showVideoSearch={!!videoSearchModalOpen}
@@ -85,4 +107,4 @@ export default function VideoSearch(props: {
       )}
     </>
   );
-}
+});
