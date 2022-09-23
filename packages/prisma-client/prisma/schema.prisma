@@ -84,6 +84,7 @@ model Chat {
 
 enum VideoPlatform {
   Youtube
+  Twitch
 }
 
 enum VideoControlRights {

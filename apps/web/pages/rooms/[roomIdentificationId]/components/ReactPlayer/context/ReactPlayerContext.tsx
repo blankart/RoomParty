@@ -28,6 +28,7 @@ interface ReactPlayerContextState {
   duration: number;
   url?: string;
   hasEnded: boolean;
+  hasError: boolean;
   isBuffering: boolean;
   isPlayed: boolean;
   scrubTime: number;
@@ -70,6 +71,7 @@ const ReactPlayerContext = createContext<ReactPlayerContextState>({
   hasEnded: false,
   isBuffering: false,
   isPlayed: false,
+  hasError: false,
   isReady: false,
   isLive: false,
   scrubTime: 0,
@@ -95,6 +97,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
   const [volume, _setVolume] = useState(100);
   const [isMuted, _setIsMuted] = useState(false);
   const [hasInitiallyPlayed, setHasInitiallyPlayed] = useState(!isMobile());
+  const [hasError, setHasError] = useState(false);
 
   function setUrl(newUrl?: string) {
     setHasEnded(false);
@@ -177,6 +180,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
           url,
           onDuration(duration) {
             // if (isMobile()) setHasInitiallyPlayed(false);
+            setHasError(false);
             setDuration(duration);
             setHasEnded(false);
             const isLive =
@@ -202,10 +206,14 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
             setHasInitiallyPlayed(true);
             playVideo();
           },
+          onError() {
+            setHasError(true);
+          },
         },
         hasInitiallyPlayed,
         isMuted,
         setMuted,
+        hasError,
         setVolume,
         isPlayed,
         scrubTime,

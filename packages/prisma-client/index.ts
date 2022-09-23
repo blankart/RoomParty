@@ -1,5 +1,5 @@
 import { PrismaClient } from "@prisma/client";
-export type { Chat, Account, User } from "@prisma/client";
+export type { Chat, Account, User, Prisma, VideoControlRights, VideoPlatform, Room } from "@prisma/client";
 
 export const createPrismaClient = () => new PrismaClient();
 

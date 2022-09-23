@@ -41,6 +41,7 @@ export default function useReactPlayerWithControls2(): {
     setMuted,
     hasInitiallyPlayed,
     reactPlayerProps,
+    hasError,
   } = useReactPlayerContext();
 
   const { thumbnail } = useRoomsStore(
@@ -95,7 +96,7 @@ export default function useReactPlayerWithControls2(): {
     : false;
 
   async function onPlay() {
-    if (isControlsDisabled) return;
+    if (isControlsDisabled || hasError) return;
     await control({
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
@@ -110,7 +111,7 @@ export default function useReactPlayerWithControls2(): {
   }
 
   async function onPause() {
-    if (isControlsDisabled) return;
+    if (isControlsDisabled || hasError) return;
     await control({
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
@@ -127,10 +128,13 @@ export default function useReactPlayerWithControls2(): {
   const debouncedOnSeek = useCallback(debounce(onSeek, 300), [
     isControlsDisabled,
     findByRoomIdentificationIdResponse?.id,
+    hasError,
+    url,
+    thumbnail,
   ]);
 
   async function onSeek(time: number) {
-    if (isControlsDisabled) return;
+    if (isControlsDisabled || hasError) return;
     await control({
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {

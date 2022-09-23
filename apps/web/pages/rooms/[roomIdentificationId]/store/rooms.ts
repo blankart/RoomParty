@@ -13,7 +13,6 @@ export interface RoomsStore {
 
   isPlayed: boolean;
   scrubTime: number;
-  url?: string;
   type?: string;
   thumbnail?: string;
 

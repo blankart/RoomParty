@@ -22,11 +22,10 @@ export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
 
   const { mutateAsync: control } = trpc.useMutation(["player.control"]);
 
-  const { id, tabSessionId, url } = useRoomsStore(
+  const { id, tabSessionId } = useRoomsStore(
     (s) => ({
       id: s.id,
       tabSessionId: s.tabSessionId,
-      url: s.url,
     }),
     shallow
   );
@@ -61,6 +60,7 @@ export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
         thumbnail: "",
       },
     });
+    props.onCloseModal();
   }
   return (
     <>

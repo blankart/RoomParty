@@ -54,7 +54,7 @@ export default function ChatTextarea(props: ChatTextareaProps) {
             <ChatOnlineUsers />
           </div>
           <button
-            className={classNames("btn btn-secondary btn-sm", {
+            className={classNames("btn btn-secondary btn-xs md:btn-sm", {
               "btn-disabled": props.disabled,
             })}
           >

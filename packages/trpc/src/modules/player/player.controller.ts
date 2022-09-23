@@ -41,11 +41,19 @@ class PlayerController {
       ...data.statusObject,
       id: data.id,
     });
-    await this.modelsService.client.room.update({
+
+    let videoPlatform = data.statusObject?.videoPlatform
+    if (!videoPlatform && data.statusObject.type === 'CHANGE_URL') {
+      if (data.statusObject.url?.match(/youtube\.com/)) videoPlatform = 'Youtube' as const
+      if (data.statusObject.url?.match(/twitch\.tv/)) videoPlatform = 'Twitch' as const
+    }
+
+    const room = await this.modelsService.client.room.update({
       where: {
         id: data.id,
       },
       data: {
+        ...(videoPlatform ? { videoPlatform } : {}),
         ...(data.statusObject?.thumbnail
           ? { thumbnailUrl: data.statusObject?.thumbnail }
           : {}),
@@ -56,7 +64,7 @@ class PlayerController {
     const startAfter = new Date();
     startAfter.setTime(startAfter.getTime() + 1_000);
 
-    this.playerService.createChatAfterControl({ data });
+    // this.playerService.createChatAfterControl(room, { data });
   }
 }
 

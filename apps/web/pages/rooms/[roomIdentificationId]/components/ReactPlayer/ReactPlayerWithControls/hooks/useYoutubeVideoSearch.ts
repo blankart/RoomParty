@@ -14,11 +14,10 @@ export function useYoutubeVideoSearch(props: VideoSearchProps) {
 
   const { userName } = useRoomContext();
 
-  const { id, tabSessionId, url } = useRoomsStore(
+  const { id, tabSessionId } = useRoomsStore(
     (s) => ({
       id: s.id,
       tabSessionId: s.tabSessionId,
-      url: s.url,
     }),
     shallow
   );
