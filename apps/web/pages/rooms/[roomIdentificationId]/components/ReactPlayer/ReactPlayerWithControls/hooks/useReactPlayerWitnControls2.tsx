@@ -3,7 +3,7 @@ import { trpc } from "@web/api";
 import { InferQueryOutput } from "@web/types/trpc";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactPlayerProps } from "react-player";
 import { useReactPlayerContext } from "../../context/ReactPlayerContext";
 import { ReactPlayerWithControlsSetupProps } from "../components/ReactPlayerWithControlsSetup";
@@ -161,6 +161,7 @@ export default function useReactPlayerWithControls2(): {
   );
 
   function onNext(newPlayerStatus: PlayerStatus) {
+    setLastPlayerStatus(newPlayerStatus);
     if (newPlayerStatus.type === "PLAYED") {
       playVideo();
       return;
@@ -201,6 +202,10 @@ export default function useReactPlayerWithControls2(): {
     scrubTime && seekTo(scrubTime, "seconds", !isPlayed);
   }
 
+  const [lastPlayerStatus, setLastPlayerStatus] = useState<null | PlayerStatus>(
+    null
+  );
+
   return {
     control: {
       isMuted,
@@ -219,6 +224,7 @@ export default function useReactPlayerWithControls2(): {
       hasEnded,
       hasInitiallyPlayed,
       isControlsDisabled,
+      lastPlayerStatus,
     },
     player: {
       controls: false,

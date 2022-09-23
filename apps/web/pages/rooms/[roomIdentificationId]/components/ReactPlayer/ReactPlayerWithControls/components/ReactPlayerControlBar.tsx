@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { FaPause, FaPlay, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import _debounce from "lodash.debounce";
 import { convertTimeToFormattedTime } from "@rooms2watch/shared-lib";
+import { PlayerStatus } from "@rooms2watch/trpc";
 
 export interface ReactPlayerControlBarProps {
   isPlayed: boolean;
@@ -21,19 +22,34 @@ export interface ReactPlayerControlBarProps {
   setMuted: (muted: boolean) => any;
   hasInitiallyPlayed: boolean;
   isControlsDisabled: boolean;
+  lastPlayerStatus: PlayerStatus | null;
 }
 
 export default function ReactPlayerControlBar(
   props: ReactPlayerControlBarProps
 ) {
   const [movingScrubTime, setMovingScrubTime] = useState(props.scrubTime);
+  const [showPlayerStatus, setShowPlayerStatus] = useState(false);
+
+  useEffect(() => {
+    setShowPlayerStatus(true);
+    const timeout = setTimeout(() => {
+      if (!props.lastPlayerStatus) return;
+
+      setShowPlayerStatus(false);
+    }, 1_000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [props.lastPlayerStatus]);
 
   useEffect(() => {
     if (!props.isPlayed || props.isBuffering || props.hasEnded) return;
 
     const timeout = setTimeout(() => {
       setMovingScrubTime((t) => t + 1);
-    }, 1_000);
+    }, 3_000);
 
     return () => {
       clearTimeout(timeout);
@@ -68,18 +84,49 @@ export default function ReactPlayerControlBar(
     >
       <button
         className={classNames(
-          "flex items-center justify-center h-full p-2 btn btn-xs btn-ghost",
+          "flex items-center justify-center h-full p-2 btn btn-xs btn-ghost relative",
           shouldDisablePlayButton && "btn-disabled"
         )}
         onClick={props.isPlayed ? props.onPause : props.onPlay}
       >
+        <div
+          className={classNames(
+            "absolute bottom-[100%] badge badge-primary badge-sm rounded-full !aspect-square w-6 h-auto z-10 duration-100 opacity-0",
+            {
+              "opacity-100":
+                showPlayerStatus &&
+                (props.lastPlayerStatus?.type === "PAUSED" ||
+                  props.lastPlayerStatus?.type === "PLAYED"),
+            }
+          )}
+        >
+          {props.lastPlayerStatus?.name?.substring(0, 1)?.toUpperCase() ?? "U"}
+        </div>
         {props.isPlayed ? (
           <FaPause className="w-4 h-auto" />
         ) : (
           <FaPlay className="w-4 h-auto" />
         )}
       </button>
-      <div className="flex items-center flex-1 p-2">
+      <div className="relative flex items-center flex-1 py-2">
+        <div
+          className={classNames(
+            "absolute bottom-[100%] badge badge-primary badge-sm rounded-full !aspect-square w-6 h-auto z-10 duration-100 opacity-0",
+            {
+              "opacity-100":
+                showPlayerStatus && props.lastPlayerStatus?.type === "SEEK_TO",
+            }
+          )}
+          style={{
+            left: `calc((${movingScrubTime}/${
+              props.duration === Infinity ? 100 : props.duration
+            })*100% - (${movingScrubTime}/${
+              props.duration === Infinity ? 100 : props.duration
+            }*1rem) - .2rem)`,
+          }}
+        >
+          {props.lastPlayerStatus?.name?.substring(0, 1)?.toUpperCase() ?? "U"}
+        </div>
         <input
           type="range"
           className={classNames("range range-secondary range-xs", {
