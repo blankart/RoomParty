@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "turbo": "turbo",
+    "dev:turbo": "env-cmd --file .env.local turbo",
     "prepare": "husky install",
     "build": "turbo run build",
     "build:server": "turbo run build --filter=@rooms2watch/server --",
