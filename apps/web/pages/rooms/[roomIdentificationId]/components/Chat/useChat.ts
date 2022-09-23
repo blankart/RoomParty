@@ -18,6 +18,7 @@ import randomColor from "randomcolor";
 import { ChatNamePromptForm } from "./ChatNamePrompt";
 import { ChatTextareaForm } from "./ChatTextarea";
 import { useRoomContext } from "../../context/RoomContext";
+import { useToast } from "@web/pages/components/Toast";
 
 const getLocalStorageKeyName = (id: string) => `${CHAT_NAME_KEY}.${id}`;
 const getLocalStorageColorName = (id: string) =>
@@ -92,7 +93,13 @@ export default function useChat(props: ChatProps) {
     }
   );
 
-  const { mutateAsync: send } = trpc.useMutation(["chats.send"]);
+  const toast = useToast()
+
+  const { mutateAsync: send } = trpc.useMutation(["chats.send"], {
+    onError(error, variables, context) {
+      toast.add(error.message, 'error')
+    },
+  });
 
   function scrollChatsToBottom() {
     chatsRef.current?.scrollTo({
