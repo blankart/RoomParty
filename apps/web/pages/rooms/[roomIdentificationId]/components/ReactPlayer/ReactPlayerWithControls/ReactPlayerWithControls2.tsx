@@ -4,7 +4,7 @@ import { useReactPlayerContext } from "../context/ReactPlayerContext";
 import _debounce from "lodash.debounce";
 import YoutubeVideoSearch from "./components/VideoSearch/components/YoutubeVideoSearch";
 import ReactPlayerControlBar from "./components/ReactPlayerControlBar";
-import useReactPlayerWithControls2 from "./hooks/useReactPlayerWitnControls2";
+import useReactPlayerWithControls2 from "./hooks/useReactPlayerWithControls2";
 import ReactPlayerRoomInfo from "./components/ReactPlayerRoomInfo";
 import VideoSearch from "./components/VideoSearch/VideoSearch";
 const ReactPlayer = dynamic(

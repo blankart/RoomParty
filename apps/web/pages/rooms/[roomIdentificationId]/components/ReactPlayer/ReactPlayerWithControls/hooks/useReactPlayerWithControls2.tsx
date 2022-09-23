@@ -6,7 +6,6 @@ import { useRouter } from "next/router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import type { ReactPlayerProps } from "react-player";
 import { useReactPlayerContext } from "../../context/ReactPlayerContext";
-import { YoutubeVideoSearchProps } from "../components/VideoSearch/components/YoutubeVideoSearch";
 import { ReactPlayerControlBarProps } from "../components/ReactPlayerControlBar";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import shallow from "zustand/shallow";
