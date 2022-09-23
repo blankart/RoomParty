@@ -1,13 +1,13 @@
 import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
-import { YoutubeVideoSearchProps } from "../components/YoutubeVideoSearch";
 import { trpc } from "@web/api";
 import useDebouncedState from "@web/hooks/useDebouncedState";
 import numeral from "numeral";
 import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
+import { VideoSearchProps } from "../components/VideoSearch/types";
 
-export function useYoutubeVideoSearch(props: YoutubeVideoSearchProps) {
+export function useYoutubeVideoSearch(props: VideoSearchProps) {
   const [focused, setFocused] = useState(false);
   const youtubeInputRef = useRef<HTMLInputElement>(null);
   const [q, debouncedQ, setQ] = useDebouncedState("", 300);

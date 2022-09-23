@@ -147,9 +147,7 @@ export default function ReactPlayerControlBar(
           <VolumeIcon
             role="button"
             className="w-4 h-auto cursor-pointer"
-            onClick={() => {
-              props.setMuted(!props.isMuted);
-            }}
+            onClick={() => props.setMuted(!props.isMuted)}
           />
           <div className="absolute w-[100px] left-[50%] translate-x-[-50%] z-10 bottom-[200%] -rotate-90 bg-base-100 p-1 opacity-0 group-hover:opacity-100">
             <input

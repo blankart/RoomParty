@@ -13,7 +13,7 @@ interface InputProps
     HTMLInputElement
   > {
   error?: string;
-  label?: string;
+  label?: string | React.ReactNode;
   wrapperClassName?: string;
 }
 

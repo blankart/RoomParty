@@ -1,26 +1,37 @@
 import { AiFillYoutube, AiFillCloseCircle } from "react-icons/ai";
 import classNames from "classnames";
-import { FaSpinner } from "react-icons/fa";
+import { FaSpinner, FaYoutube } from "react-icons/fa";
 
 import ClickableCard from "@web/components/Card/ClickableCard";
 
-import { useYoutubeVideoSearch } from "../hooks/useYoutubeVideoSearch";
-import { memo } from "react";
+import { useYoutubeVideoSearch } from "../../../hooks/useYoutubeVideoSearch";
+import { memo, useEffect, useRef } from "react";
+import { VideoSearchProps } from "../types";
+import Input from "@web/components/Input/Input";
 
-export interface YoutubeVideoSearchProps {
-  showVideoSearch: boolean;
-  onOpenModal: () => any;
-  onCloseModal: () => any;
-}
-
-export default memo(function YoutubeVideoSearch(
-  props: YoutubeVideoSearchProps
-) {
+export default memo(function YoutubeVideoSearch(props: VideoSearchProps) {
   const ctx = useYoutubeVideoSearch(props);
+
+  const modalRef = useRef<HTMLDivElement>(null);
+  const modalRef2 = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    function handler(e: MouseEvent) {
+      if (e.target === modalRef.current || e.target === modalRef2.current)
+        props.onCloseModal();
+    }
+
+    window.addEventListener("mousedown", handler);
+
+    return () => {
+      window.removeEventListener("mousedown", handler);
+    };
+  }, []);
 
   return (
     <>
       <div
+        ref={modalRef2}
         className={classNames(
           "!w-20 h-auto absolute z-[11] top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] flex flex-col items-center gap-4",
           {
@@ -46,6 +57,7 @@ export default memo(function YoutubeVideoSearch(
       </div>
 
       <div
+        ref={modalRef}
         className={classNames(
           "absolute inset-0 w-full z-[10] p-10 overflow-y-auto bg-base-100/90 duration-100",
           {
@@ -54,15 +66,18 @@ export default memo(function YoutubeVideoSearch(
         )}
       >
         <div className="h-full w-[min(1200px,100%)] mx-auto">
-          <div className="flex items-center w-full mb-10 md:block">
-            <AiFillYoutube className="inline-block w-10 h-auto my-2 mr-2" />
-            <input
-              value={ctx.q}
-              onChange={(e) => ctx.setQ(e.target.value)}
-              className="input input-primary input-sm w-[min(600px,100%)] p-2 text-sm md:text-lg mx-auto"
-              placeholder="Type a keyword or Youtube URL"
-            />
-          </div>
+          <Input
+            value={ctx.q}
+            onChange={(e) => ctx.setQ(e.target.value)}
+            className="input-sm md:input-md"
+            label={
+              <>
+                Type a keyword or <FaYoutube className="inline-block" /> Youtube
+                URL
+              </>
+            }
+            placeholder="https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+          />
 
           <button
             className="fixed md:absolute btn btn-ghost btn-sm top-2 right-2 btn-circle"

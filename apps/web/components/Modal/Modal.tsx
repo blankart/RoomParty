@@ -11,6 +11,7 @@ interface ModalProps {
   containerClassName?: string;
   closeOnClickOutside?: boolean;
   showCloseButton?: boolean;
+  className?: string;
 }
 
 export default function Modal(props: ModalProps) {
@@ -36,7 +37,11 @@ export default function Modal(props: ModalProps) {
       {props.open && (
         <div
           ref={modalRef}
-          className={classNames("modal", props.open && "modal-open")}
+          className={classNames(
+            "modal",
+            props.open && "modal-open",
+            props.className
+          )}
         >
           <div className={classNames("modal-box", props.containerClassName)}>
             {props.showCloseButton && (

@@ -1,11 +1,9 @@
 import classNames from "classnames";
 import { FaYoutube } from "react-icons/fa";
 import { memo } from "react";
-import type { YoutubeVideoSearchProps } from "./YoutubeVideoSearch";
+import { VideoSearchProps } from "../types";
 
-export default memo(function YoutubeVideoSearchButton(
-  props: YoutubeVideoSearchProps
-) {
+export default memo(function YoutubeVideoSearchButton(props: VideoSearchProps) {
   return (
     <>
       <div className="tooltip tooltip-left" data-tip="Search on Youtube">

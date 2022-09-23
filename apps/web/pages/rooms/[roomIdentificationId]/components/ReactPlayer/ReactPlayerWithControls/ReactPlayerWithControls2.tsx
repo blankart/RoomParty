@@ -2,11 +2,11 @@ import dynamic from "next/dynamic";
 import { Suspense, useEffect, useMemo, useRef } from "react";
 import { useReactPlayerContext } from "../context/ReactPlayerContext";
 import _debounce from "lodash.debounce";
-import YoutubeVideoSearch from "./components/YoutubeVideoSearch";
+import YoutubeVideoSearch from "./components/VideoSearch/components/YoutubeVideoSearch";
 import ReactPlayerControlBar from "./components/ReactPlayerControlBar";
 import useReactPlayerWithControls2 from "./hooks/useReactPlayerWitnControls2";
 import ReactPlayerRoomInfo from "./components/ReactPlayerRoomInfo";
-import VideoSearch from "./components/VideoSearch";
+import VideoSearch from "./components/VideoSearch/VideoSearch";
 const ReactPlayer = dynamic(
   () =>
     import(
