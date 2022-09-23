@@ -48,8 +48,8 @@ export function useYoutubeVideoSearch(props: VideoSearchProps) {
 
   const { mutateAsync: control } = trpc.useMutation(["player.control"]);
 
-  function onSelectLink(url: string, thumbnail: string) {
-    control({
+  async function onSelectLink(url: string, thumbnail: string) {
+    await control({
       id: id!,
       statusObject: {
         tabSessionId: tabSessionId,

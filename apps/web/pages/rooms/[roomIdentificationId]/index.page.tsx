@@ -52,7 +52,6 @@ function RoomIdentificationId() {
       id: room.id,
       name: room.name,
       scrubTime: playerStatus?.time,
-      url: playerStatus?.url,
       type: playerStatus?.type,
       thumbnail: playerStatus?.thumbnail,
       owner: room.owner?.userId,

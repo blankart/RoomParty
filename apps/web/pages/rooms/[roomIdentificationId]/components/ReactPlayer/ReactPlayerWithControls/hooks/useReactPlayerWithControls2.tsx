@@ -162,6 +162,8 @@ export default function useReactPlayerWithControls2(): {
     }
   );
 
+  const context = trpc.useContext();
+
   function onNext(newPlayerStatus: PlayerStatus) {
     setLastPlayerStatus(newPlayerStatus);
     if (newPlayerStatus.type === "PLAYED") {
@@ -180,6 +182,7 @@ export default function useReactPlayerWithControls2(): {
     }
 
     if (newPlayerStatus.type === "CHANGE_URL") {
+      context.invalidateQueries(["rooms.findByRoomIdentificationId"]);
       seekTo(0);
       setUrl(newPlayerStatus.url);
       return;

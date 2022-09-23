@@ -48,8 +48,8 @@ export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
 
   const { userName } = useRoomContext();
 
-  function onSubmit(data: { link: string }) {
-    control({
+  async function onSubmit(data: { link: string }) {
+    await control({
       id: id!,
       statusObject: {
         tabSessionId: tabSessionId,
@@ -60,6 +60,7 @@ export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
         thumbnail: "",
       },
     });
+
     props.onCloseModal();
   }
   return (

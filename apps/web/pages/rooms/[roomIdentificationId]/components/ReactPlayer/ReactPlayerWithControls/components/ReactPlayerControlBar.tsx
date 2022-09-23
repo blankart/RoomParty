@@ -147,16 +147,17 @@ export default function ReactPlayerControlBar(
           </div>
           <div className="w-[70px] p-2 text-xs">
             {props.isLive ? (
-              <div>
-                <button
-                  onClick={async () => {
-                    if (props.duration === Infinity) {
-                      await props.onSeek(100);
-                      return;
-                    }
+              <button
+                onClick={async () => {
+                  if (props.duration === Infinity) {
+                    await props.onSeek(100);
+                    return;
+                  }
 
-                    await props.onSeek(props.duration);
-                  }}
+                  await props.onSeek(props.duration);
+                }}
+              >
+                <span
                   className={classNames(
                     "inline-block mr-2 align-middle rounded-full badge badge-xs",
                     {
@@ -168,7 +169,7 @@ export default function ReactPlayerControlBar(
                   )}
                 />
                 LIVE
-              </div>
+              </button>
             ) : (
               <>-{timestamp}</>
             )}
