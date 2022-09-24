@@ -5,6 +5,7 @@ import type TRPCRouter from "../../trpc/router";
 import type ChatsController from "./chats.controller";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { TRPCError } from "@trpc/server";
+import { sendSchema } from "./chats.schema";
 
 export const CHATS_ROUTER_NAME = "chats";
 
@@ -21,7 +22,7 @@ class ChatsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Chats) private chatsController: ChatsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) {}
+  ) { }
 
   router() {
     const self = this;
@@ -37,9 +38,11 @@ class ChatsRouter {
       .merge(
         this.trpcRouter
           .createRouter()
-          .middleware(async ({ ctx, next }) => {
+          .middleware(async ({ ctx, next, rawInput }) => {
+            const result = sendSchema.safeParse(rawInput);
+            if (!result.success) throw new TRPCError({ code: 'BAD_REQUEST' })
             try {
-              await chatRateLimiter.consume(ctx.req.ip);
+              await chatRateLimiter.consume(result.data.id + '-' + (result.data.userId ?? ''));
             } catch {
               throw new TRPCError({
                 code: "BAD_REQUEST",
@@ -49,13 +52,7 @@ class ChatsRouter {
             return next({ ctx });
           })
           .mutation("send", {
-            input: zod.object({
-              name: zod.string(),
-              message: zod.string(),
-              id: zod.string(),
-              userId: zod.string().optional(),
-              color: zod.string(),
-            }),
+            input: sendSchema,
             async resolve({ input }) {
               return await self.chatsController.send(input);
             },

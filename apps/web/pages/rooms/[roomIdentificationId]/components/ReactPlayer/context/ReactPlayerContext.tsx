@@ -219,10 +219,6 @@ export function ReactPlayerProvider(props: {
   }
 
   function setMuted(muted: boolean) {
-    console.log(
-      (reactPlayerRef as any)?.current?.player?.player?.player?.mute,
-      muted
-    );
     Promise.all([
       (() => {
         if (muted) {
