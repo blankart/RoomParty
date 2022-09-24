@@ -2,16 +2,33 @@
   "$schema": "https://turborepo.org/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": ["^build", "generate"],
-      "outputs": ["dist/**", ".next/**"]
+      "dependsOn": [
+        "^build",
+        "generate"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ]
     },
     "dev:build": {
-      "dependsOn": ["^dev:build", "build", "typecheck"],
-      "outputs": ["dist/**", ".next/**"]
+      "dependsOn": [
+        "^dev:build",
+        "build",
+        "typecheck"
+      ],
+      "outputs": [
+        "dist/**",
+        ".next/**"
+      ]
     },
     "generate": {
-      "outputs": ["node_modules/.prisma/client/**"],
-      "inputs": ["prisma/schema.prisma"]
+      "outputs": [
+        "node_modules/.prisma/client/**"
+      ],
+      "inputs": [
+        "prisma/schema.prisma"
+      ]
     },
     "test:unit": {
       "cache": false
@@ -45,27 +62,29 @@
     }
   },
   "globalDependencies": [
-    ".env.local",
-    "$PORT",
-    "$SERVER_ENV",
-    "$SERVER_PORT",
-    "$NEXT_PUBLIC_SERVER_URL",
-    "$SERVER_URL",
-    "$DATABASE_URL",
-    "$NEXT_PUBLIC_WEBSOCKET_URL",
-    "$WEB_BASE_URL",
-    "$NEXT_PUBLIC_WEB_BASE_URL",
-    "$GOOGLE_OAUTH_CLIENT_ID",
-    "$NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID",
-    "$GOOGLE_OAUTH_CLIENT_SECRET",
-    "$NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_SECRET",
-    "$GOOGLE_WEB_OAUTH_CLIENT_ID",
-    "$NEXT_PUBLIC_GOOGLE_WEB_OAUTH_CLIENT_ID",
-    "$GOOGLE_WEB_OAUTH_CLIENT_SECRET",
-    "$NEXT_PUBLIC_GOOGLE_WEB_OAUTH_CLIENT_SECRET",
-    "$SERVER_SESSION_SECRET",
-    "$SERVER_JWT_SECRET",
-    "$NODE_TLS_REJECT_UNAUTHORIZED",
-    "$NODE_ENV"
+    ".env.local"
+  ],
+  "globalEnv": [
+    "PORT",
+    "SERVER_ENV",
+    "SERVER_PORT",
+    "NEXT_PUBLIC_SERVER_URL",
+    "SERVER_URL",
+    "DATABASE_URL",
+    "NEXT_PUBLIC_WEBSOCKET_URL",
+    "WEB_BASE_URL",
+    "NEXT_PUBLIC_WEB_BASE_URL",
+    "GOOGLE_OAUTH_CLIENT_ID",
+    "NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_ID",
+    "GOOGLE_OAUTH_CLIENT_SECRET",
+    "NEXT_PUBLIC_GOOGLE_OAUTH_CLIENT_SECRET",
+    "GOOGLE_WEB_OAUTH_CLIENT_ID",
+    "NEXT_PUBLIC_GOOGLE_WEB_OAUTH_CLIENT_ID",
+    "GOOGLE_WEB_OAUTH_CLIENT_SECRET",
+    "NEXT_PUBLIC_GOOGLE_WEB_OAUTH_CLIENT_SECRET",
+    "SERVER_SESSION_SECRET",
+    "SERVER_JWT_SECRET",
+    "NODE_TLS_REJECT_UNAUTHORIZED",
+    "NODE_ENV"
   ]
 }
