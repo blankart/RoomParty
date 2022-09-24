@@ -97,7 +97,7 @@ export default function useChat(props: ChatProps) {
 
   const { mutateAsync: send } = trpc.useMutation(["chats.send"], {
     onError(error, variables, context) {
-      toast.add(error.message, "error");
+      toast.add(error.message, "error", "chat-exceed-limit");
     },
   });
 

@@ -50,7 +50,6 @@ export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
 
   async function onSubmit(data: { link: string }) {
     const isVideoLive = !data.link?.match(/\/videos\//);
-    console.log({ isVideoLive });
     await control({
       id: id!,
       statusObject: {

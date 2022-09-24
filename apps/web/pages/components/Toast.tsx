@@ -4,12 +4,12 @@ import create from "zustand";
 type ToastType = "success" | "error" | "info" | "warning";
 
 function generateId() {
-  return Math.floor((Math.random() * 1_000) % 1_000);
+  return Math.floor((Math.random() * 1_000_000_000) % 1_000_000_000);
 }
 
 interface ToastStore {
-  toasts: { type?: ToastType; message: string; id: number }[];
-  add: (toast: string, type?: ToastType) => void;
+  toasts: { type?: ToastType; message: string; id: number | string }[];
+  add: (toast: string, type?: ToastType, key?: number | string) => void;
 }
 
 const TOAST_MAX_DISPLAY_TIME_IN_MS = 10_000;
@@ -17,11 +17,13 @@ const TOAST_MAX_DISPLAY_TIME_IN_MS = 10_000;
 export const useToastStore = create<ToastStore>((set, get) => ({
   toasts: [],
 
-  add(toast, type) {
-    const id = generateId();
+  add(toast, type, key?: number | string) {
+    const id = key ? key : generateId();
     set((state) => ({
       ...state,
-      toasts: [...state.toasts, { type, message: toast, id }],
+      toasts: state.toasts.some((t) => t.id === id)
+        ? state.toasts
+        : [...state.toasts, { type, message: toast, id }],
     }));
 
     setTimeout(() => {
