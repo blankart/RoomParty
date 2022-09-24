@@ -31,7 +31,6 @@ async function main() {
     jwtOptions: { expiresIn: "1d" },
   });
 
-
   app.use(
     cors(function (req, res) {
       const corsOptions = { origin: false };
@@ -68,7 +67,6 @@ async function main() {
     router,
     createContext: createContext(verifier) as any,
   });
-
 
   wss.on("connection", (ws) => {
     console.log(`➕➕ Connection (${wss.clients.size})`);

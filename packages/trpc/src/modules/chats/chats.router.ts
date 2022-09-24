@@ -22,7 +22,7 @@ class ChatsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Chats) private chatsController: ChatsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
 
   router() {
     const self = this;
@@ -40,9 +40,11 @@ class ChatsRouter {
           .createRouter()
           .middleware(async ({ ctx, next, rawInput }) => {
             const result = sendSchema.safeParse(rawInput);
-            if (!result.success) throw new TRPCError({ code: 'BAD_REQUEST' })
+            if (!result.success) throw new TRPCError({ code: "BAD_REQUEST" });
             try {
-              await chatRateLimiter.consume(result.data.id + '-' + (result.data.userId ?? ''));
+              await chatRateLimiter.consume(
+                result.data.id + "-" + (result.data.userId ?? "")
+              );
             } catch {
               throw new TRPCError({
                 code: "BAD_REQUEST",
@@ -75,9 +77,7 @@ class ChatsRouter {
         async resolve({ input, ctx }) {
           return await self.chatsController.chatSubscription(input, ctx.user);
         },
-      })
-
-      ;
+      });
   }
 }
 
