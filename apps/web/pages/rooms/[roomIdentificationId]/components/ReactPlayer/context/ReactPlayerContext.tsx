@@ -282,7 +282,7 @@ export function ReactPlayerProvider(props: {
             setIsReady(true);
           },
           onPlay() {
-            if (hasInitiallyPlayed) return;
+            if (hasInitiallyPlayed || !isMobile()) return;
             setHasInitiallyPlayed(true);
             playVideo();
           },
