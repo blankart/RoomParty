@@ -3,26 +3,25 @@ import { injectable, inject } from "inversify";
 import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
 import type TRPCRouter from "../../trpc/router";
 import type ChatsController from "./chats.controller";
-import { RateLimiterMemory } from 'rate-limiter-flexible'
+import { RateLimiterMemory } from "rate-limiter-flexible";
 import { TRPCError } from "@trpc/server";
 
 export const CHATS_ROUTER_NAME = "chats";
 
-
-const ALLOWED_CHAT_MESSAGES_IN_N_SECONDS = 10
-const CHAT_MESSAGES_LIMIT_DURATION_IN_SECONDS = 10
+const ALLOWED_CHAT_MESSAGES_IN_N_SECONDS = 10;
+const CHAT_MESSAGES_LIMIT_DURATION_IN_SECONDS = 10;
 
 const chatRateLimiter = new RateLimiterMemory({
   points: ALLOWED_CHAT_MESSAGES_IN_N_SECONDS,
-  duration: CHAT_MESSAGES_LIMIT_DURATION_IN_SECONDS
-})
+  duration: CHAT_MESSAGES_LIMIT_DURATION_IN_SECONDS,
+});
 
 @injectable()
 class ChatsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Chats) private chatsController: ChatsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
 
   router() {
     const self = this;
@@ -36,14 +35,18 @@ class ChatsRouter {
       })
 
       .merge(
-        this.trpcRouter.createRouter()
+        this.trpcRouter
+          .createRouter()
           .middleware(async ({ ctx, next }) => {
             try {
-              await chatRateLimiter.consume(ctx.req.ip)
+              await chatRateLimiter.consume(ctx.req.ip);
             } catch {
-              throw new TRPCError({ code: 'BAD_REQUEST', message: `Chat is temporarily disabled. Try again after ${CHAT_MESSAGES_LIMIT_DURATION_IN_SECONDS} seconds` })
+              throw new TRPCError({
+                code: "BAD_REQUEST",
+                message: `Chat is temporarily disabled. Try again after ${CHAT_MESSAGES_LIMIT_DURATION_IN_SECONDS} seconds`,
+              });
             }
-            return next({ ctx })
+            return next({ ctx });
           })
           .mutation("send", {
             input: zod.object({
@@ -57,8 +60,7 @@ class ChatsRouter {
               return await self.chatsController.send(input);
             },
           })
-      )
-
+      );
   }
 
   routerWithUser() {

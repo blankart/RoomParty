@@ -17,6 +17,8 @@ import ReactPlayerWithControls2 from "./components/ReactPlayer/ReactPlayerWithCo
 import { RoomProvider, useRoomContext } from "./context/RoomContext";
 import { GetServerSidePropsContext, InferGetServerSidePropsType } from "next";
 import thumbnail from "@web/public/images/thumbnail.png";
+import { useRef } from "react";
+import type ReactPlayer from "react-player";
 
 function RoomIdentificationId() {
   const { set, id } = useRoomsStore(
@@ -29,6 +31,7 @@ function RoomIdentificationId() {
   const { password } = useRoomContext();
   const router = useRouter();
   const roomIdentificationId = router.query.roomIdentificationId as string;
+  const reactPlayerRef = useRef<ReactPlayer>(null);
   const { user, isLoading: isUserLoading, hasUserInitialized } = useMe();
   const {
     data: room,
@@ -78,7 +81,7 @@ function RoomIdentificationId() {
       {!!id ? (
         <>
           <Suspense>
-            <ReactPlayerProvider>
+            <ReactPlayerProvider reactPlayerRef={reactPlayerRef}>
               <ReactPlayerWithControls2 />
             </ReactPlayerProvider>
             <Chat />

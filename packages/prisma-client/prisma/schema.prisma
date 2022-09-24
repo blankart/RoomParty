@@ -87,6 +87,7 @@ enum VideoPlatform {
   Twitch
   Facebook
   Vimeo
+  Mixcloud
 }
 
 enum VideoControlRights {

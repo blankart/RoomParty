@@ -42,6 +42,7 @@ export default function useReactPlayerWithControls2(): {
     hasInitiallyPlayed,
     reactPlayerProps,
     hasError,
+    setVideoPlatform,
   } = useReactPlayerContext();
 
   const { thumbnail } = useRoomsStore(
@@ -83,6 +84,10 @@ export default function useReactPlayerWithControls2(): {
     const newScrubTime = newPlayerStatus?.time ?? 0;
     const shouldPlayTheVideo = newPlayerStatus?.type === "PLAYED";
     setUrl(newPlayerStatus?.url);
+    setVideoPlatform(
+      findByRoomIdentificationIdResponse?.videoPlatform ??
+        newPlayerStatus?.videoPlatform
+    );
     seekTo(newScrubTime, "seconds", !shouldPlayTheVideo);
     findMyRoomAlreadyFetchAfterMount.current = true;
   }, [isFetchedAfterMount, findByRoomIdentificationIdResponse]);
@@ -183,7 +188,8 @@ export default function useReactPlayerWithControls2(): {
 
     if (newPlayerStatus.type === "CHANGE_URL") {
       context.invalidateQueries(["rooms.findByRoomIdentificationId"]);
-      seekTo(0);
+      seekTo(newPlayerStatus.time);
+      setVideoPlatform(newPlayerStatus.videoPlatform);
       setUrl(newPlayerStatus.url);
       return;
     }

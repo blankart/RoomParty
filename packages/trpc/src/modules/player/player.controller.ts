@@ -37,13 +37,21 @@ class PlayerController {
   }
 
   async control(data: { id: string; statusObject: PlayerStatus }) {
-    let videoPlatform = data.statusObject?.videoPlatform
-    if (!videoPlatform && data.statusObject.type === 'CHANGE_URL') {
-      if (data.statusObject.url?.match(/youtube\.com/)) videoPlatform = 'Youtube' as const
-      if (data.statusObject.url?.match(/twitch\.tv/)) videoPlatform = 'Twitch' as const
-      if (data.statusObject.url?.match(/facebook\.com/)) videoPlatform = 'Facebook' as const
-      if (data.statusObject.url?.match(/vimeo\.com/)) videoPlatform = 'Vimeo' as const
+    let videoPlatform = data.statusObject?.videoPlatform;
+    if (!videoPlatform && data.statusObject.type === "CHANGE_URL") {
+      if (data.statusObject.url?.match(/youtube\.com/))
+        videoPlatform = "Youtube" as const;
+      if (data.statusObject.url?.match(/twitch\.tv/))
+        videoPlatform = "Twitch" as const;
+      if (data.statusObject.url?.match(/facebook\.com/))
+        videoPlatform = "Facebook" as const;
+      if (data.statusObject.url?.match(/vimeo\.com/))
+        videoPlatform = "Vimeo" as const;
+      if (data.statusObject.url?.match(/mixcloud\.com/))
+        videoPlatform = "Mixcloud" as const;
     }
+
+    data.statusObject.videoPlatform = videoPlatform;
 
     await this.modelsService.client.room.update({
       where: {
@@ -62,7 +70,6 @@ class PlayerController {
       ...data.statusObject,
       id: data.id,
     });
-
 
     const startAfter = new Date();
     startAfter.setTime(startAfter.getTime() + 1_000);

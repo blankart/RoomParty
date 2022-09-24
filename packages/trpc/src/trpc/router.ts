@@ -16,7 +16,7 @@ type Context = inferAsyncReturnType<ReturnType<TRPCRouter["createContext"]>>;
 class TRPCRouter {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
   createContext(jwt: JwtVerifier) {
     return ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
       return {
@@ -28,54 +28,57 @@ class TRPCRouter {
   }
 
   createRouter() {
-    return trpc.router<Context>()
-      ;
+    return trpc.router<Context>();
   }
 
   createRouterWithUser() {
-    return this.createRouter().middleware(async ({ ctx: { jwt, ...ctx }, next }) => {
-      let decoded: undefined | JwtPayloadDecoded;
-      let user = null;
-      try {
-        decoded = await jwt(getAccessToken(ctx));
-      } catch { }
+    return this.createRouter().middleware(
+      async ({ ctx: { jwt, ...ctx }, next }) => {
+        let decoded: undefined | JwtPayloadDecoded;
+        let user = null;
+        try {
+          decoded = await jwt(getAccessToken(ctx));
+        } catch {}
 
-      if (decoded) {
-        user = await this.modelsService.client.account.findFirst({
-          where: {
-            providerId: decoded.providerId,
-            provider: decoded.provider,
-          },
-          include: { user: true },
+        if (decoded) {
+          user = await this.modelsService.client.account.findFirst({
+            where: {
+              providerId: decoded.providerId,
+              provider: decoded.provider,
+            },
+            include: { user: true },
+          });
+        }
+
+        return next({
+          ctx: { ...ctx, user },
         });
       }
-
-      return next({
-        ctx: { ...ctx, user },
-      });
-    });
+    );
   }
 
   createProtectedRouter() {
-    return this.createRouter().middleware(async ({ ctx: { jwt, ...ctx }, next }) => {
-      let decoded: undefined | JwtPayloadDecoded;
-      try {
-        decoded = await jwt(getAccessToken(ctx));
-      } catch { }
+    return this.createRouter().middleware(
+      async ({ ctx: { jwt, ...ctx }, next }) => {
+        let decoded: undefined | JwtPayloadDecoded;
+        try {
+          decoded = await jwt(getAccessToken(ctx));
+        } catch {}
 
-      if (!decoded) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
+        if (!decoded) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
 
-      const user = await this.modelsService.client.account.findFirst({
-        where: { providerId: decoded.providerId, provider: decoded.provider },
-        include: { user: true },
-      });
+        const user = await this.modelsService.client.account.findFirst({
+          where: { providerId: decoded.providerId, provider: decoded.provider },
+          include: { user: true },
+        });
 
-      if (!user) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
+        if (!user) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
 
-      return next({
-        ctx: { ...ctx, user },
-      });
-    });
+        return next({
+          ctx: { ...ctx, user },
+        });
+      }
+    );
   }
 }
 

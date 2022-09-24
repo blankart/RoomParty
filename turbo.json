@@ -13,6 +13,9 @@
       "outputs": ["node_modules/.prisma/client/**"],
       "inputs": ["prisma/schema.prisma"]
     },
+    "test:unit": {
+      "cache": false
+    },
     "typecheck": {
       "cache": false
     },

@@ -3,12 +3,21 @@
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"],
   "exclude": ["node_modules"],
   "compilerOptions": {
-    "typeRoots": ["./types"],
+    "allowJs": true,
+    "isolatedModules": true,
+    "typeRoots": ["./types", "./@types"],
     "baseUrl": ".",
     "paths": {
       "@web/*": ["./*"]
     },
-    "types": ["google-one-tap", "google.accounts", "gapi"],
+    "types": [
+      "google-one-tap",
+      "google.accounts",
+      "gapi",
+      "node",
+      "jest",
+      "mocha"
+    ],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },

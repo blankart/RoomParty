@@ -69,7 +69,9 @@ export default function ReactPlayerControlBar(
   const shouldDisableTimeControl = !props.url;
 
   const shouldDisablePlayButton =
-    !props.url || props.hasEnded || props.duration <= props.scrubTime;
+    !props.url ||
+    props.hasEnded ||
+    (!props.isLive && props.duration <= props.scrubTime);
 
   return (
     <>

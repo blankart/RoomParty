@@ -1,18 +1,23 @@
+import { VideoPlatform } from "@rooms2watch/prisma-client";
+import { APP_NAME } from "@rooms2watch/shared-lib";
+import useLocalStorage from "@web/hooks/useLocalStorage";
 import React, {
   createContext,
   RefObject,
   useContext,
   useEffect,
+  useMemo,
   useRef,
   useState,
 } from "react";
 import type ReactPlayer from "react-player";
 import { ReactPlayerProps } from "react-player";
-interface ReactPlayerContextState {
+export interface ReactPlayerContextState {
   reactPlayerProps: ReactPlayerProps & {
     reactPlayerRef: RefObject<ReactPlayer>;
   };
   setUrl: (newUrl?: string) => any;
+  setVideoPlatform: (newVideoPlatform: VideoPlatform | undefined) => any;
   getInternalPlayer: () => Record<string, any> | undefined;
   playVideo: () => void;
   pauseVideo: () => void;
@@ -26,6 +31,7 @@ interface ReactPlayerContextState {
   setMuted: (muted: boolean) => void;
   duration: number;
   url?: string;
+  videoPlatform?: VideoPlatform;
   hasEnded: boolean;
   hasError: boolean;
   isBuffering: boolean;
@@ -50,6 +56,7 @@ const ReactPlayerContext = createContext<ReactPlayerContextState>({
   setVolume() {},
   setDuration() {},
   setMuted() {},
+  setVideoPlatform() {},
   duration: 0,
   hasEnded: false,
   isBuffering: false,
@@ -67,9 +74,44 @@ export function useReactPlayerContext() {
   return useContext(ReactPlayerContext);
 }
 
-export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
-  const reactPlayerRef = useRef<ReactPlayer>(null);
+function volumeFromControlComponentToReactPlayerVolume(
+  videoPlatform: VideoPlatform | undefined,
+  volume: number
+) {
+  switch (videoPlatform) {
+    case "Youtube":
+      return volume;
+    case "Twitch":
+    case "Facebook":
+    case "Vimeo":
+    case "Mixcloud":
+      return volume / 100;
+    default:
+      return volume;
+  }
+}
+
+function getShouldClickTheVideoFirstOnReadyOrChangeUrl(
+  videoPlatform?: VideoPlatform
+) {
+  switch (videoPlatform) {
+    case "Vimeo":
+    case "Mixcloud":
+      return false;
+    default:
+      return true;
+  }
+}
+
+export function ReactPlayerProvider(props: {
+  children?: React.ReactNode;
+  reactPlayerRef: RefObject<ReactPlayer>;
+}) {
+  const { reactPlayerRef } = props;
   const [url, _setUrl] = useState<string | undefined>();
+  const [videoPlatform, setVideoPlatform] = useState<
+    VideoPlatform | undefined
+  >();
   const [duration, setDuration] = useState<number>(0);
   const [hasEnded, setHasEnded] = useState<boolean>(false);
   const [isBuffering, setIsBuffering] = useState<boolean>(false);
@@ -82,7 +124,13 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
   const [hasInitiallyPlayed, setHasInitiallyPlayed] = useState(false);
   const [hasError, setHasError] = useState(false);
 
+  const [localStorageSoundState, setLocalStorageSoundState] = useLocalStorage(
+    APP_NAME + "-volume-state",
+    { isMuted: false, volume: 100 }
+  );
+
   function setUrl(newUrl?: string) {
+    setIsReady(false);
     setHasEnded(false);
     setScrubTime(0);
     _setUrl(newUrl);
@@ -96,6 +144,15 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
     return reactPlayerRef?.current?.getInternalPlayer();
   }
 
+  const shouldClickTheVideoFirstOnReadyOrChangeUrl = useMemo(
+    () => getShouldClickTheVideoFirstOnReadyOrChangeUrl(videoPlatform),
+    [videoPlatform]
+  );
+
+  useEffect(() => {
+    setHasInitiallyPlayed(!shouldClickTheVideoFirstOnReadyOrChangeUrl);
+  }, [shouldClickTheVideoFirstOnReadyOrChangeUrl]);
+
   function playVideo() {
     Promise.all([
       (reactPlayerRef as any)?.current?.player?.player?.player?.playVideo?.(),
@@ -104,7 +161,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
       .then(() => {
         setIsPlayed(true);
       })
-      .catch(() => {});
+      .catch(console.warn);
   }
 
   function pauseVideo() {
@@ -115,7 +172,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
       .then(() => {
         setIsPlayed(false);
       })
-      .catch(() => {});
+      .catch(console.warn);
   }
 
   function seekTo(
@@ -142,40 +199,54 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
         shouldPauseAfterScrub && pauseVideo();
         !shouldPauseAfterScrub && playVideo();
       })
-      .catch(() => {});
+      .catch(console.warn);
   }
 
-  function setVolume(volume: number) {
-    Promise.all([])
+  function setVolume(volume: number, setMuteState = true) {
+    Promise.all([
+      (reactPlayerRef as any)?.current?.player?.player?.player?.setVolume?.(
+        volumeFromControlComponentToReactPlayerVolume(videoPlatform, volume)
+      ),
+    ])
       .then(() => {
-        (reactPlayerRef as any)?.current?.player?.player?.player?.setVolume?.(
-          volume
-        );
+        setLocalStorageSoundState({ ...localStorageSoundState, volume });
         _setVolume(volume);
-        setMuted(volume === 0);
+        setMuteState && setMuted(volume === 0);
       })
-      .catch(() => {});
+      .catch(console.warn);
   }
 
   function setMuted(muted: boolean) {
-    if (muted) {
-      (reactPlayerRef as any)?.current?.player?.player?.player?.mute?.();
-    } else {
-      (reactPlayerRef as any)?.current?.player?.player?.player?.unMute?.();
-    }
-    _setIsMuted(muted);
+    Promise.all([
+      (() => {
+        if (muted) {
+          (reactPlayerRef as any)?.current?.player?.player?.player?.setMuted?.(
+            true
+          );
+          (reactPlayerRef as any)?.current?.player?.player?.player?.mute?.();
+        } else {
+          (reactPlayerRef as any)?.current?.player?.player?.player?.setMuted?.(
+            false
+          );
+          (reactPlayerRef as any)?.current?.player?.player?.player?.unMute?.();
+          (reactPlayerRef as any)?.current?.player?.player?.player?.unmute?.();
+        }
+      })(),
+    ])
+      .then(() => {
+        setLocalStorageSoundState({
+          ...localStorageSoundState,
+          isMuted: muted,
+        });
+        _setIsMuted(muted);
+      })
+      .catch(console.warn);
   }
 
   useEffect(() => {
-    const volume = (
-      reactPlayerRef as any
-    )?.current?.player?.player?.player?.getVolume?.();
-    const isMuted = (
-      reactPlayerRef as any
-    )?.current?.player?.player?.player?.isMuted?.();
-    _setVolume(volume);
-    _setIsMuted(isMuted);
-  }, [isReady]);
+    setVolume(localStorageSoundState.volume, false);
+    setMuted(localStorageSoundState.isMuted);
+  }, [isReady, videoPlatform]);
 
   return (
     <ReactPlayerContext.Provider
@@ -184,13 +255,14 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
           reactPlayerRef,
           url,
           onDuration(duration) {
-            setHasInitiallyPlayed(false);
+            setHasInitiallyPlayed(!shouldClickTheVideoFirstOnReadyOrChangeUrl);
             setHasError(false);
             setDuration(duration);
             setHasEnded(false);
             const isLive =
               duration === Infinity ||
               getInternalPlayer()?.getVideoData?.()?.isLive;
+
             setIsLive(isLive);
           },
           onBuffer() {
@@ -215,6 +287,8 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
             setHasError(true);
           },
         },
+        videoPlatform,
+        setVideoPlatform,
         hasInitiallyPlayed,
         isMuted,
         setMuted,

@@ -24,6 +24,7 @@ export default function ReactPlayerWithControls2() {
     hasEnded,
     duration,
     scrubTime,
+    isLive,
   } = useReactPlayerContext();
   const { control, player, roomInfo } = useReactPlayerWithControls2();
 
@@ -40,7 +41,7 @@ export default function ReactPlayerWithControls2() {
               <button
                 className="absolute inset-0 z-[1]"
                 onClick={
-                  !hasEnded && scrubTime < duration
+                  !hasEnded && (scrubTime < duration || isLive)
                     ? !control.isPlayed
                       ? control.onPlay
                       : control.onPause

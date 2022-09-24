@@ -7,11 +7,11 @@ import classNames from "classnames";
 import { memo, useEffect, useRef } from "react";
 import { useForm } from "react-hook-form";
 import { AiFillCloseCircle } from "react-icons/ai";
-import { FaTwitch } from "react-icons/fa";
+import { FaMixcloud } from "react-icons/fa";
 import shallow from "zustand/shallow";
 import { VideoSearchProps } from "../types";
 
-export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
+export default memo(function MixcloudAudioSearch(props: VideoSearchProps) {
   const {
     register,
     handleSubmit,
@@ -49,15 +49,13 @@ export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
   const { userName } = useRoomContext();
 
   async function onSubmit(data: { link: string }) {
-    const isVideoLive = !data.link?.match(/\/videos\//);
-    console.log({ isVideoLive });
     await control({
       id: id!,
       statusObject: {
         tabSessionId: tabSessionId,
         name: userName!,
         type: "CHANGE_URL",
-        time: isVideoLive ? 100 : 0,
+        time: 0,
         url: data.link,
         thumbnail: "",
       },
@@ -90,17 +88,16 @@ export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
             <Input
               label={
                 <>
-                  Paste a <FaTwitch className="inline-block text-blue-600" />{" "}
-                  <span className="text-blue-600">twitch</span> stream link or
-                  video
+                  Paste a <FaMixcloud className="inline-block text-blue-800" />{" "}
+                  <span className="text-blue-800">mixcloud</span> audio link
                 </>
               }
-              placeholder="https://www.twitch.tv/riotgames"
+              placeholder="https://www.mixcloud.com/SultanShepard/dialekt-radio-144/"
               {...register("link", {
-                required: "Twitch link is required",
+                required: "Mixcloud link is required",
                 validate: (value) => {
-                  if (!value?.match(/^https:\/\/(www\.)?twitch\.tv\//))
-                    return "Please enter a valid twitch link";
+                  if (!value?.match(/^https:\/\/(www\.)?mixcloud\.com\//))
+                    return "Please enter a valid mixcloud link";
                 },
               })}
               error={errors?.link?.message}

@@ -9,7 +9,7 @@ const YOUTUBE_PLAYER_CONFIG = {
 };
 
 const FACEBOOK_PLAYER_CONFIG = {
-  appId: "893427181627527",
+  // appId: "893427181627527",
   attributes: {
     "data-allowfullscreen": false,
   },
@@ -22,6 +22,12 @@ const VIMEO_PLAYER_CONFIG = {
   },
 };
 
+const MIXCLOUD_PLAYER_CONFIG = {
+  options: {
+    light: false,
+  },
+};
+
 export default function ReactPlayer({
   reactPlayerRef,
   ...props
@@ -30,6 +36,7 @@ export default function ReactPlayer({
     youtube: YOUTUBE_PLAYER_CONFIG,
     facebook: FACEBOOK_PLAYER_CONFIG,
     vimeo: VIMEO_PLAYER_CONFIG,
+    mixcloud: MIXCLOUD_PLAYER_CONFIG,
   });
 
   const [isReady, setIsReady] = useState(false);

@@ -6,6 +6,8 @@ import { useRouter } from "next/router";
 import { memo, useState } from "react";
 import FacebookVideoSearch from "./components/FacebookVideoSearch";
 import FacebookVideoSearchButton from "./components/FacebookVideoSearchButton";
+import MixcloudAudioSearch from "./components/MixcloudAudioSearch";
+import MixcloudAudioSearchButton from "./components/MixcloudAudioSearchButton";
 import TwitchVideoSearch from "./components/TwitchVideoSearch";
 import TwitchVideoSearchButton from "./components/TwitchVideoSearchButton";
 import VimeoVideoSearch from "./components/VimeoVideoSearch";
@@ -21,7 +23,7 @@ const YoutubeVideoSearch = dynamic(
 
 export default memo(function VideoSearch() {
   const [videoSearchModalOpen, setVideoSearchModalOpen] = useState<
-    null | "youtube" | "twitch" | "facebook" | "vimeo"
+    null | "youtube" | "twitch" | "facebook" | "vimeo" | "mixcloud"
   >(null);
 
   const { password } = useRoomContext();
@@ -78,6 +80,14 @@ export default memo(function VideoSearch() {
         />
       )}
 
+      {videoSearchModalOpen === "mixcloud" && (
+        <MixcloudAudioSearch
+          showVideoSearch={videoSearchModalOpen === "mixcloud"}
+          onOpenModal={() => setVideoSearchModalOpen("mixcloud")}
+          onCloseModal={() => setVideoSearchModalOpen(null)}
+        />
+      )}
+
       {isFetchedAfterMount &&
       !(data?.playerStatus as any)?.url &&
       !isIdle &&
@@ -115,6 +125,13 @@ export default memo(function VideoSearch() {
               onOpenModal={() => setVideoSearchModalOpen("vimeo")}
               onCloseModal={() => setVideoSearchModalOpen(null)}
             />
+
+            <MixcloudAudioSearchButton
+              showVideoSearch={!!videoSearchModalOpen}
+              forceShow
+              onOpenModal={() => setVideoSearchModalOpen("mixcloud")}
+              onCloseModal={() => setVideoSearchModalOpen(null)}
+            />
           </div>
         </div>
       ) : (
@@ -147,6 +164,12 @@ export default memo(function VideoSearch() {
           <VimeoVideoSearchButton
             showVideoSearch={!!videoSearchModalOpen}
             onOpenModal={() => setVideoSearchModalOpen("vimeo")}
+            onCloseModal={() => setVideoSearchModalOpen(null)}
+          />
+
+          <MixcloudAudioSearchButton
+            showVideoSearch={!!videoSearchModalOpen}
+            onOpenModal={() => setVideoSearchModalOpen("mixcloud")}
             onCloseModal={() => setVideoSearchModalOpen(null)}
           />
         </div>
