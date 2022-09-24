@@ -8,7 +8,6 @@ import React, {
 } from "react";
 import type ReactPlayer from "react-player";
 import { ReactPlayerProps } from "react-player";
-
 interface ReactPlayerContextState {
   reactPlayerProps: ReactPlayerProps & {
     reactPlayerRef: RefObject<ReactPlayer>;
@@ -37,22 +36,6 @@ interface ReactPlayerContextState {
   volume: number;
   isMuted: boolean;
   hasInitiallyPlayed: boolean;
-}
-
-function isMobile() {
-  const toMatch = [
-    /Android/i,
-    /webOS/i,
-    /iPhone/i,
-    /iPad/i,
-    /iPod/i,
-    /BlackBerry/i,
-    /Windows Phone/i,
-  ];
-
-  return toMatch.some((toMatchItem) => {
-    return navigator.userAgent.match(toMatchItem);
-  });
 }
 
 const ReactPlayerContext = createContext<ReactPlayerContextState>({
@@ -86,7 +69,7 @@ export function useReactPlayerContext() {
 
 export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
   const reactPlayerRef = useRef<ReactPlayer>(null);
-  const [url, _setUrl] = useState<string | undefined>(undefined);
+  const [url, _setUrl] = useState<string | undefined>();
   const [duration, setDuration] = useState<number>(0);
   const [hasEnded, setHasEnded] = useState<boolean>(false);
   const [isBuffering, setIsBuffering] = useState<boolean>(false);
@@ -96,7 +79,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
   const [isReady, setIsReady] = useState(false);
   const [volume, _setVolume] = useState(100);
   const [isMuted, _setIsMuted] = useState(false);
-  const [hasInitiallyPlayed, setHasInitiallyPlayed] = useState(!isMobile());
+  const [hasInitiallyPlayed, setHasInitiallyPlayed] = useState(false);
   const [hasError, setHasError] = useState(false);
 
   function setUrl(newUrl?: string) {
@@ -114,15 +97,25 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
   }
 
   function playVideo() {
-    (reactPlayerRef as any)?.current?.player?.player?.player?.playVideo?.();
-    (reactPlayerRef as any)?.current?.player?.player?.player?.play?.();
-    setIsPlayed(true);
+    Promise.all([
+      (reactPlayerRef as any)?.current?.player?.player?.player?.playVideo?.(),
+      (reactPlayerRef as any)?.current?.player?.player?.player?.play?.(),
+    ])
+      .then(() => {
+        setIsPlayed(true);
+      })
+      .catch(() => {});
   }
 
   function pauseVideo() {
-    (reactPlayerRef as any)?.current?.player?.player?.player?.pauseVideo?.();
-    (reactPlayerRef as any)?.current?.player?.player?.player?.pause?.();
-    setIsPlayed(false);
+    Promise.all([
+      (reactPlayerRef as any)?.current?.player?.player?.player?.pauseVideo?.(),
+      (reactPlayerRef as any)?.current?.player?.player?.player?.pause?.(),
+    ])
+      .then(() => {
+        setIsPlayed(false);
+      })
+      .catch(() => {});
   }
 
   function seekTo(
@@ -130,26 +123,38 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
     type?: "seconds",
     shouldPauseAfterScrub = true
   ) {
-    (reactPlayerRef as any)?.current?.player?.player?.player?.seek?.(
-      time,
-      type
-    );
-    (reactPlayerRef as any)?.current?.player?.player?.player?.seekTo?.(
-      time,
-      type
-    );
-    setHasEnded(false);
-    setScrubTime(time);
-    shouldPauseAfterScrub && pauseVideo();
-    !shouldPauseAfterScrub && playVideo();
+    Promise.all([
+      (reactPlayerRef as any)?.current?.player?.player?.player?.seek?.(
+        time,
+        type
+      ),
+      (reactPlayerRef as any)?.current?.player?.player?.player?.seekTo?.(
+        time,
+        type
+      ),
+      (
+        reactPlayerRef as any
+      )?.current?.player?.player?.player?.setCurrentTime?.(time),
+    ])
+      .then(() => {
+        setHasEnded(false);
+        setScrubTime(time);
+        shouldPauseAfterScrub && pauseVideo();
+        !shouldPauseAfterScrub && playVideo();
+      })
+      .catch(() => {});
   }
 
   function setVolume(volume: number) {
-    (reactPlayerRef as any)?.current?.player?.player?.player?.setVolume?.(
-      volume
-    );
-    _setVolume(volume);
-    setMuted(volume === 0);
+    Promise.all([])
+      .then(() => {
+        (reactPlayerRef as any)?.current?.player?.player?.player?.setVolume?.(
+          volume
+        );
+        _setVolume(volume);
+        setMuted(volume === 0);
+      })
+      .catch(() => {});
   }
 
   function setMuted(muted: boolean) {
@@ -179,7 +184,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
           reactPlayerRef,
           url,
           onDuration(duration) {
-            // if (isMobile()) setHasInitiallyPlayed(false);
+            setHasInitiallyPlayed(false);
             setHasError(false);
             setDuration(duration);
             setHasEnded(false);
@@ -202,7 +207,7 @@ export function ReactPlayerProvider(props: { children?: React.ReactNode }) {
             setIsReady(true);
           },
           onPlay() {
-            if (hasInitiallyPlayed || !isMobile()) return;
+            if (hasInitiallyPlayed) return;
             setHasInitiallyPlayed(true);
             playVideo();
           },

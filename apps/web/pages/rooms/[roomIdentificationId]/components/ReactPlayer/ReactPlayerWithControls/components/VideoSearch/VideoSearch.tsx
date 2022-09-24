@@ -4,8 +4,12 @@ import classNames from "classnames";
 import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { memo, useState } from "react";
+import FacebookVideoSearch from "./components/FacebookVideoSearch";
+import FacebookVideoSearchButton from "./components/FacebookVideoSearchButton";
 import TwitchVideoSearch from "./components/TwitchVideoSearch";
 import TwitchVideoSearchButton from "./components/TwitchVideoSearchButton";
+import VimeoVideoSearch from "./components/VimeoVideoSearch";
+import VimeoVideoSearchButton from "./components/VimeoVideoSearchButton";
 
 import YoutubeVideoSearchButton from "./components/YoutubeVideoSearchButton";
 const YoutubeVideoSearch = dynamic(
@@ -17,7 +21,7 @@ const YoutubeVideoSearch = dynamic(
 
 export default memo(function VideoSearch() {
   const [videoSearchModalOpen, setVideoSearchModalOpen] = useState<
-    null | "youtube" | "twitch"
+    null | "youtube" | "twitch" | "facebook" | "vimeo"
   >(null);
 
   const { password } = useRoomContext();
@@ -53,7 +57,23 @@ export default memo(function VideoSearch() {
       {videoSearchModalOpen === "twitch" && (
         <TwitchVideoSearch
           showVideoSearch={videoSearchModalOpen === "twitch"}
-          onOpenModal={() => setVideoSearchModalOpen("youtube")}
+          onOpenModal={() => setVideoSearchModalOpen("twitch")}
+          onCloseModal={() => setVideoSearchModalOpen(null)}
+        />
+      )}
+
+      {videoSearchModalOpen === "facebook" && (
+        <FacebookVideoSearch
+          showVideoSearch={videoSearchModalOpen === "facebook"}
+          onOpenModal={() => setVideoSearchModalOpen("facebook")}
+          onCloseModal={() => setVideoSearchModalOpen(null)}
+        />
+      )}
+
+      {videoSearchModalOpen === "vimeo" && (
+        <VimeoVideoSearch
+          showVideoSearch={videoSearchModalOpen === "vimeo"}
+          onOpenModal={() => setVideoSearchModalOpen("vimeo")}
           onCloseModal={() => setVideoSearchModalOpen(null)}
         />
       )}
@@ -81,6 +101,20 @@ export default memo(function VideoSearch() {
               onOpenModal={() => setVideoSearchModalOpen("twitch")}
               onCloseModal={() => setVideoSearchModalOpen(null)}
             />
+
+            <FacebookVideoSearchButton
+              showVideoSearch={!!videoSearchModalOpen}
+              forceShow
+              onOpenModal={() => setVideoSearchModalOpen("facebook")}
+              onCloseModal={() => setVideoSearchModalOpen(null)}
+            />
+
+            <VimeoVideoSearchButton
+              showVideoSearch={!!videoSearchModalOpen}
+              forceShow
+              onOpenModal={() => setVideoSearchModalOpen("vimeo")}
+              onCloseModal={() => setVideoSearchModalOpen(null)}
+            />
           </div>
         </div>
       ) : (
@@ -101,6 +135,18 @@ export default memo(function VideoSearch() {
           <TwitchVideoSearchButton
             showVideoSearch={!!videoSearchModalOpen}
             onOpenModal={() => setVideoSearchModalOpen("twitch")}
+            onCloseModal={() => setVideoSearchModalOpen(null)}
+          />
+
+          <FacebookVideoSearchButton
+            showVideoSearch={!!videoSearchModalOpen}
+            onOpenModal={() => setVideoSearchModalOpen("facebook")}
+            onCloseModal={() => setVideoSearchModalOpen(null)}
+          />
+
+          <VimeoVideoSearchButton
+            showVideoSearch={!!videoSearchModalOpen}
+            onOpenModal={() => setVideoSearchModalOpen("vimeo")}
             onCloseModal={() => setVideoSearchModalOpen(null)}
           />
         </div>

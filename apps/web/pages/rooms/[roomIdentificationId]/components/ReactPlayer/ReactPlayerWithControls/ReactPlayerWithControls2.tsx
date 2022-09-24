@@ -26,13 +26,17 @@ export default function ReactPlayerWithControls2() {
     scrubTime,
   } = useReactPlayerContext();
   const { control, player, roomInfo } = useReactPlayerWithControls2();
+
+  const showPlayPauseOverlay =
+    (!!url && hasInitiallyPlayed) || control.isControlsDisabled;
+
   return (
     <Suspense>
       <div className="flex flex-col flex-1 w-full max-h-screen bg-base-100">
         <div className="relative flex flex-col flex-1 w-full bg-base-100">
-          <div className="relative w-full h-full group">
+          <div className="relative w-full h-full group video-container">
             {!control.isControlsDisabled && <VideoSearch />}
-            {((!!url && hasInitiallyPlayed) || control.isControlsDisabled) && (
+            {showPlayPauseOverlay && (
               <button
                 className="absolute inset-0 z-[1]"
                 onClick={

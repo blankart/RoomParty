@@ -36,7 +36,7 @@ export default function ReactPlayerControlBar(
     setShowPlayerStatus(true);
     const timeout = setTimeout(() => {
       setShowPlayerStatus(false);
-    }, 1_000);
+    }, 3_000);
 
     return () => {
       clearTimeout(timeout);
@@ -48,7 +48,7 @@ export default function ReactPlayerControlBar(
 
     const timeout = setTimeout(() => {
       setMovingScrubTime((t) => t + 1);
-    }, 3_000);
+    }, 1_000);
 
     return () => {
       clearTimeout(timeout);

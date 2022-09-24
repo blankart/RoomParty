@@ -41,6 +41,8 @@ class PlayerController {
     if (!videoPlatform && data.statusObject.type === 'CHANGE_URL') {
       if (data.statusObject.url?.match(/youtube\.com/)) videoPlatform = 'Youtube' as const
       if (data.statusObject.url?.match(/twitch\.tv/)) videoPlatform = 'Twitch' as const
+      if (data.statusObject.url?.match(/facebook\.com/)) videoPlatform = 'Facebook' as const
+      if (data.statusObject.url?.match(/vimeo\.com/)) videoPlatform = 'Vimeo' as const
     }
 
     await this.modelsService.client.room.update({
