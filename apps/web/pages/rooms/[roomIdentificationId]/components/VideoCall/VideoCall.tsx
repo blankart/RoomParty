@@ -36,9 +36,11 @@ function Video(props: {
         </span>
       )}
       <video
-        className="rounded-lg !m-0 h-full w-full object-cover relative"
+        className="rounded-lg !m-0 h-full w-full object-cover relative aspect-square ring-2 ring-primary"
         ref={localVideo}
         autoPlay
+        loop
+        playsInline
       ></video>
     </div>
   );
@@ -51,6 +53,7 @@ export default function VideoCall() {
   const { roomTransientId, localStorageSessionId, password, userName } =
     useRoomContext();
   const router = useRouter();
+  const connectedLocalStorageSessionIdsRef = useRef<number[]>([]);
   const roomIdentificationId = router.query.roomIdentificationId as
     | string
     | undefined;
@@ -102,6 +105,13 @@ export default function VideoCall() {
         console.log(`cb() is called.`);
         const mediaStream = myStreamRef.current!;
 
+        const userForDisplayMetadata = {
+          streamId: mediaStream.id,
+          localStorageSessionId,
+          name: user?.user?.name ?? userName ?? "User",
+          picture: user?.user?.picture ?? undefined,
+        };
+
         setMediaStreams((current) =>
           uniqBy(
             [
@@ -121,14 +131,38 @@ export default function VideoCall() {
         peer!.on("connection", (cn) => {
           console.log("received a connection");
           console.log(`${cn.metadata.name} has entered the room`);
+          if (
+            !connectedLocalStorageSessionIdsRef.current.includes(
+              cn.metadata.localStorageSessionId
+            )
+          ) {
+            console.log(
+              `no established connection yet. connecting to ${APP_NAME}-room-${roomIdentificationId}-${cn.metadata.localStorageSessionId}`
+            );
+            peer?.connect(
+              `${APP_NAME}-room-${roomIdentificationId}-${cn.metadata.localStorageSessionId}`,
+              {
+                metadata: userForDisplayMetadata,
+              }
+            );
+          }
           cn.on("close", () => {
             console.log("someone left.");
+
+            connectedLocalStorageSessionIdsRef.current =
+              connectedLocalStorageSessionIdsRef.current.filter(
+                (lssid) => lssid !== cn.metadata.localStorageSessionId
+              );
             setMediaStreams((current) =>
               current.filter(
                 (s) =>
                   s.localStorageSessionId !== cn.metadata.localStorageSessionId
               )
             );
+          });
+
+          cn.on("error", (error) => {
+            console.log("error occurred: ", error);
           });
         });
 
@@ -157,17 +191,11 @@ export default function VideoCall() {
           if (userForDisplay.localStorageSessionId === localStorageSessionId)
             return;
 
-          const userForDisplayMetadata = {
-            streamId: mediaStream.id,
-            localStorageSessionId,
-            name: user?.user?.name ?? userName ?? "User",
-            picture: user?.user?.picture ?? undefined,
-          };
-
           console.log(
             `connecting via \`peer\` to ${APP_NAME}-room-${roomIdentificationId}-${userForDisplay.localStorageSessionId}`,
             userForDisplayMetadata
           );
+
           const cn = peer?.connect(
             `${APP_NAME}-room-${roomIdentificationId}-${userForDisplay.localStorageSessionId}`,
             {
@@ -176,6 +204,9 @@ export default function VideoCall() {
           );
 
           cn?.on("open", () => {
+            connectedLocalStorageSessionIdsRef.current.push(
+              userForDisplay.localStorageSessionId
+            );
             console.log(`connected via \`peer\` to ${userForDisplay.name}`);
             const conn = peerRef.current?.call(
               `${APP_NAME}-room-${roomIdentificationId}-${userForDisplay.localStorageSessionId}`,
