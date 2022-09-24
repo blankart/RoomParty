@@ -3,7 +3,7 @@ RUN apt-get update
 RUN apt-get install -y openssl
 # Set working directory
 WORKDIR /app
-RUN yarn global add turbo
+RUN yarn global add turbo@latest
 COPY . .
 RUN turbo prune --scope=@rooms2watch/server --docker
 
