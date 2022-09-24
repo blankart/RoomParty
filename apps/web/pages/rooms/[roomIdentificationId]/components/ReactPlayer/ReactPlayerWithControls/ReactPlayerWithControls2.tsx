@@ -1,5 +1,5 @@
 import dynamic from "next/dynamic";
-import { Suspense } from "react";
+import { memo, Suspense } from "react";
 import { useReactPlayerContext } from "../context/ReactPlayerContext";
 import _debounce from "lodash.debounce";
 import ReactPlayerControlBar from "./components/ReactPlayerControlBar";
@@ -16,7 +16,7 @@ const ReactPlayer = dynamic(
   }
 );
 
-export default function ReactPlayerWithControls2() {
+export default memo(function ReactPlayerWithControls2() {
   const {
     reactPlayerProps,
     hasInitiallyPlayed,
@@ -59,4 +59,4 @@ export default function ReactPlayerWithControls2() {
       </div>
     </Suspense>
   );
-}
+});
