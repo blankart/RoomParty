@@ -75,7 +75,9 @@ class ChatsRouter {
         async resolve({ input, ctx }) {
           return await self.chatsController.chatSubscription(input, ctx.user);
         },
-      });
+      })
+
+      ;
   }
 }
 

@@ -31,6 +31,7 @@ async function main() {
     jwtOptions: { expiresIn: "1d" },
   });
 
+
   app.use(
     cors(function (req, res) {
       const corsOptions = { origin: false };
@@ -61,11 +62,27 @@ async function main() {
   const wss = new ws.Server({
     server,
   });
+
   const handler = applyWSSHandler({
     wss,
     router,
     createContext: createContext(verifier) as any,
   });
+
+
+  wss.on("connection", (ws) => {
+    console.log(`➕➕ Connection (${wss.clients.size})`);
+    ws.once("close", () => {
+      console.log(`➖➖ Connection (${wss.clients.size})`);
+    });
+  });
+
+  process.on("SIGTERM", () => {
+    console.log("SIGTERM");
+    handler.broadcastReconnectNotification();
+    wss.close();
+  });
+
   app.use(
     expressSession({
       secret: process.env.SERVER_SESSION_SECRET!,
@@ -120,19 +137,6 @@ async function main() {
       missingCredentials.join(",")
     );
   }
-
-  wss.on("connection", (ws) => {
-    console.log(`➕➕ Connection (${wss.clients.size})`);
-    ws.once("close", () => {
-      console.log(`➖➖ Connection (${wss.clients.size})`);
-    });
-  });
-
-  process.on("SIGTERM", () => {
-    console.log("SIGTERM");
-    handler.broadcastReconnectNotification();
-    wss.close();
-  });
 }
 
 main();
