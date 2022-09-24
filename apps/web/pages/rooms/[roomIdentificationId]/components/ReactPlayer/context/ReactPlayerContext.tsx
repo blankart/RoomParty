@@ -7,11 +7,11 @@ import React, {
   useContext,
   useEffect,
   useMemo,
-  useRef,
   useState,
 } from "react";
 import type ReactPlayer from "react-player";
 import { ReactPlayerProps } from "react-player";
+import isMobile from "./isMobile";
 export interface ReactPlayerContextState {
   reactPlayerProps: ReactPlayerProps & {
     reactPlayerRef: RefObject<ReactPlayer>;
@@ -97,6 +97,8 @@ function getShouldClickTheVideoFirstOnReadyOrChangeUrl(
   switch (videoPlatform) {
     case "Vimeo":
     case "Mixcloud":
+    case "Youtube":
+    case "Facebook":
       return false;
     default:
       return true;
@@ -217,6 +219,10 @@ export function ReactPlayerProvider(props: {
   }
 
   function setMuted(muted: boolean) {
+    console.log(
+      (reactPlayerRef as any)?.current?.player?.player?.player?.mute,
+      muted
+    );
     Promise.all([
       (() => {
         if (muted) {

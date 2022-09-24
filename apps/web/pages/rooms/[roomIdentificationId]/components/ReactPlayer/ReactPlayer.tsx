@@ -4,12 +4,11 @@ import _ReactPlayer, { ReactPlayerProps } from "react-player";
 const YOUTUBE_PLAYER_CONFIG = {
   playerVars: {
     origin: process.env.NEXT_PUBLIC_WEB_BASE_URL,
-    playsinline: 1,
   },
 };
 
 const FACEBOOK_PLAYER_CONFIG = {
-  // appId: "893427181627527",
+  appId: "893427181627527",
   attributes: {
     "data-allowfullscreen": false,
   },
@@ -17,7 +16,7 @@ const FACEBOOK_PLAYER_CONFIG = {
 
 const VIMEO_PLAYER_CONFIG = {
   playerOptions: {
-    playsinline: true,
+    playsinline: false,
     controls: false,
   },
 };
@@ -69,7 +68,5 @@ export default function ReactPlayer({
 
   if (!isReady) return null;
 
-  return (
-    <_ReactPlayer playsinline ref={reactPlayerRef} config={config} {...props} />
-  );
+  return <_ReactPlayer ref={reactPlayerRef} config={config} {...props} />;
 }
