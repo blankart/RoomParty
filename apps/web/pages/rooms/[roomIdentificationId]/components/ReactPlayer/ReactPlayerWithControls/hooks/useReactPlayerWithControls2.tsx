@@ -188,9 +188,9 @@ export default function useReactPlayerWithControls2(): {
 
     if (newPlayerStatus.type === "CHANGE_URL") {
       context.invalidateQueries(["rooms.findByRoomIdentificationId"]);
-      seekTo(newPlayerStatus.time);
-      setVideoPlatform(newPlayerStatus.videoPlatform);
       setUrl(newPlayerStatus.url);
+      setVideoPlatform(newPlayerStatus.videoPlatform);
+      seekTo(newPlayerStatus.time);
       return;
     }
   }

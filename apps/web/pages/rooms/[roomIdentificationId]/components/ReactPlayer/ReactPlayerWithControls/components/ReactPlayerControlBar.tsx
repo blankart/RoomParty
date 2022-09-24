@@ -56,9 +56,8 @@ export default function ReactPlayerControlBar(
   }, [props.isPlayed, movingScrubTime, props.isBuffering, props.hasEnded]);
 
   useEffect(() => {
-    if (props.scrubTime !== movingScrubTime)
-      setMovingScrubTime(props.scrubTime);
-  }, [props.scrubTime]);
+    setMovingScrubTime(props.scrubTime);
+  }, [props.scrubTime, props.url]);
 
   const timestamp = convertTimeToFormattedTime(
     props.url ? props.duration - movingScrubTime : 0
