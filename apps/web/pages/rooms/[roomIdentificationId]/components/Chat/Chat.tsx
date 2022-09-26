@@ -3,6 +3,7 @@ import { FaSpinner } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import useChat from "./useChat";
 import { memo, useState } from "react";
+import Button from "@web/components/Button/Button";
 const ChatItem = dynamic(() => import("./ChatItem"), {
   ssr: false,
 });
@@ -17,7 +18,6 @@ export interface ChatProps {}
 
 export default memo(function Chat(props: ChatProps) {
   const ctx = useChat(props);
-  const [selectedTab, setSelectedTab] = useState<"chats" | "video">("chats");
 
   return (
     <>
@@ -35,39 +35,11 @@ export default memo(function Chat(props: ChatProps) {
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}
         />
         <section className="p-0 md:p-4 bg-base-200 tabs">
-          <button
-            className={classNames(
-              "no-underline tab tab-bordered",
-              selectedTab === "chats" && "tab-active"
-            )}
-            onClick={() => setSelectedTab("chats")}
-          >
-            Chats
-          </button>
-          <button
-            className={classNames(
-              "no-underline tab tab-bordered",
-              selectedTab === "video" && "tab-active"
-            )}
-            onClick={() => setSelectedTab("video")}
-          >
-            Video
-          </button>
+          <VideoCall />
         </section>
 
-        <section
-          className={classNames(
-            "flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100 overflow-hidden relative"
-          )}
-        >
-          <section
-            className={classNames(
-              "absolute inset-0 h-full flex flex-col justify-end flex-1 bg-base-100 overflow-hidden right-0",
-              {
-                "!right-[100%]": selectedTab !== "chats",
-              }
-            )}
-          >
+        <section className="flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100 overflow-hidden relative">
+          <section className="absolute inset-0 flex flex-col justify-end flex-1 h-full overflow-hidden bg-base-100">
             <div
               ref={ctx.chatsRef}
               className={classNames("p-2 overflow-y-auto relative flex-1", {
@@ -92,27 +64,13 @@ export default memo(function Chat(props: ChatProps) {
               onSend={ctx.onSend}
             />
           </section>
-
-          <section
-            className={classNames(
-              "absolute inset-0 h-full flex flex-col justify-end flex-1 bg-base-100 overflow-hidden left-0",
-              {
-                "!left-[100%]": selectedTab !== "video",
-              }
-            )}
-          >
-            <div
-              className={classNames(
-                "p-4 overflow-y-auto relative flex-1 h-full",
-                {
-                  "blur-sm": !ctx.shouldEnableQueries,
-                }
-              )}
-            >
-              <VideoCall />
-            </div>
-          </section>
         </section>
+
+        {/* <section className="flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100 overflow-hidden relative">
+          <section className="absolute inset-0 flex flex-col justify-end flex-1 h-full overflow-hidden bg-base-100">
+            <VideoCall />
+          </section>
+        </section> */}
       </div>
     </>
   );

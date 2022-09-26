@@ -49,7 +49,7 @@ export default function ChatTextarea(props: ChatTextareaProps) {
             !!errors?.message?.message && "input-error text-error"
           )}
         />
-        <div className="flex justify-between">
+        <div className="flex items-center justify-between">
           <div>
             <ChatOnlineUsers />
           </div>

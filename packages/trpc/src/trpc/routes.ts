@@ -14,6 +14,9 @@ import YoutubeRouter, {
 import { ROUTER_TYPES, TRPC_ROUTER } from "../types/container";
 import superjson from "superjson";
 import TRPCRouter from "./router";
+import VideoChatRouter, {
+  VIDEO_CHAT_ROUTER_NAME,
+} from "../modules/video-chat/video-chat.router";
 
 @injectable()
 class TRPCRoutes {
@@ -24,6 +27,7 @@ class TRPCRoutes {
     @inject(ROUTER_TYPES.Player) private playerRouter: PlayerRouter,
     @inject(ROUTER_TYPES.Users) private usersRouter: UsersRouter,
     @inject(ROUTER_TYPES.Youtube) private youtubeRouter: YoutubeRouter,
+    @inject(ROUTER_TYPES.VideoChat) private videoChatRouter: VideoChatRouter,
     @inject(ROUTER_TYPES.FavoritedRooms)
     private favoritedRoomsController: FavoritedRoomsRouter
   ) {}
@@ -79,6 +83,11 @@ class TRPCRoutes {
       .merge(
         this.routeNameForMerge(YOUTUBE_ROUTER_NAME),
         this.youtubeRouter.router()
+      )
+
+      .merge(
+        this.routeNameForMerge(VIDEO_CHAT_ROUTER_NAME),
+        this.videoChatRouter.routerWithUser()
       );
   }
 }
