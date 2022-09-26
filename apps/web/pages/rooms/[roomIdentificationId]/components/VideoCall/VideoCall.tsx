@@ -40,7 +40,7 @@ function VideoChatItem(props: {
 
   return (
     <>
-      <div className="relative inline-block w-[70px] h-auto p-1 md:w-full">
+      <div className="relative inline-block w-[60px] h-auto p-1 lg:w-full">
         <div className="absolute top-0 left-0 z-10 w-5 h-auto p-1 overflow-hidden text-xs rounded-full bg-primary aspect-square">
           {props.picture ? (
             <img
@@ -295,25 +295,21 @@ export default function VideoCall() {
     >
   ) {
     if (!myStreamRef.current) {
-      if (!isMuted || !isVideoDisabled) {
-        myStreamRef.current = await navigator.mediaDevices.getUserMedia({
-          // audio: !isMuted,
-          // video: !isVideoDisabled,
-          audio: true,
-          video: true,
-        });
+      myStreamRef.current = await navigator.mediaDevices.getUserMedia({
+        // audio: !isMuted,
+        // video: !isVideoDisabled,
+        audio: true,
+        video: true,
+      });
 
-        if (isMuted)
-          myStreamRef.current
-            .getAudioTracks()
-            .forEach((t) => (t.enabled = false));
-        if (isVideoDisabled)
-          myStreamRef.current
-            .getVideoTracks()
-            .forEach((t) => (t.enabled = false));
-      } else {
-        myStreamRef.current = new MediaStream();
-      }
+      if (isMuted)
+        myStreamRef.current
+          .getAudioTracks()
+          .forEach((t) => (t.enabled = false));
+      if (isVideoDisabled)
+        myStreamRef.current
+          .getVideoTracks()
+          .forEach((t) => (t.enabled = false));
 
       setMediaStreams((current) => {
         const newMediaStream = {
@@ -582,6 +578,8 @@ export default function VideoCall() {
     myStreamRef.current?.getTracks().forEach((t) => t.stop());
     myStreamRef.current = null;
     setMediaStreams([]);
+    initialIsMutedValueRef.current = isMuted;
+    initialIsVideoDisabledRef.current = isVideoDisabled;
   }
 
   useEffect(() => {
@@ -619,14 +617,14 @@ export default function VideoCall() {
         {joinedVideoChat ? (
           <>
             <div className="relative flex flex-wrap items-center justify-between gap-2">
+              <h2 className="hidden lg:block lg:text-xl !m-0">Video Chat</h2>
               {isJoiningChat && (
                 <div className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
-                  <FaSpinner className="w-5 h-auto md:w-10 animate-spin" />
+                  <FaSpinner className="w-5 h-auto lg:w-10 animate-spin" />
                 </div>
               )}
-
-              <div className="w-full h-auto md:h-[30vh]  overflow-y-auto">
-                <div className="block w-full space-x-2 overflow-x-auto whitespace-nowrap md:grid md:grid-cols-3 md:space-x-0 md:gap-4">
+              <div className="w-full h-auto lg:h-[30vh]  overflow-y-auto">
+                <div className="block w-full space-x-2 overflow-x-auto whitespace-nowrap lg:grid lg:grid-cols-2 lg:space-x-0 lg:gap-4">
                   {!isJoiningChat &&
                     mediaStreams.map(({ roomTransientId, ...ms }) => (
                       <VideoChatItem key={roomTransientId} {...ms} />
@@ -635,10 +633,10 @@ export default function VideoCall() {
               </div>
             </div>
 
-            <div className="flex items-center justify-end w-full gap-2 mt-4">
+            <div className="flex items-center justify-end w-full gap-2 mt-0 lg:mt-4">
               <Button
                 className={classNames(
-                  "btn-circle btn-sm",
+                  "btn-xs sm:btn-sm md:btn-md rounded-full",
                   isMuted && "btn-error"
                 )}
                 onClick={toggleAudio}
@@ -648,7 +646,7 @@ export default function VideoCall() {
 
               <Button
                 className={classNames(
-                  "btn-circle btn-sm",
+                  "btn-xs sm:btn-sm md:btn-md rounded-full",
                   isVideoDisabled && "btn-error"
                 )}
                 onClick={toggleVideo}
@@ -657,7 +655,7 @@ export default function VideoCall() {
               </Button>
 
               <Button
-                className="btn-circle btn-sm btn-error"
+                className="rounded-full btn-xs sm:btn-sm md:btn-md btn-error"
                 onClick={() => setJoinedVideoChat(false)}
               >
                 <FaPhone />
@@ -666,7 +664,7 @@ export default function VideoCall() {
           </>
         ) : (
           <>
-            <div className="flex-col items-center justify-center hidden gap-4 md:flex">
+            <div className="flex-col items-center justify-center hidden gap-4 lg:flex">
               <p className="text-sm text-center max-w-[min(300px,80%)]">
                 Video chat with your friends while watching your favorite
                 videos!
@@ -675,12 +673,12 @@ export default function VideoCall() {
                 className="space-x-4 btn-ghost"
                 onClick={() => setJoinedVideoChat(true)}
               >
-                <FaVideo className="w-6 h-6 md:w-10 md:h-10" />
-                <p className="text-xs md:text-md">Join Video Chat</p>
+                <FaVideo className="w-6 h-6 lg:w-10 lg:h-10" />
+                <p className="text-xs lg:text-md">Join Video Chat</p>
               </Button>
             </div>
 
-            <div className="flex items-center md:hidden">
+            <div className="flex items-center lg:hidden">
               <p className="!m-0 text-sm text-center">
                 Enter the video chat with your friends!
               </p>
