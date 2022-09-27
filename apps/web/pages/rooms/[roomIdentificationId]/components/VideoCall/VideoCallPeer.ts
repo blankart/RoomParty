@@ -31,6 +31,9 @@ class VideoCallPeer {
     remoteStreams: { stream: MediaStream, metadata: ConnectionMetadata }[] = []
     rerender: (args: VideoCallPeer) => any
 
+    private readonly LOCAL_STORAGE_VIDEO_CALL_MUTED_KEY = `${APP_NAME}-video-call-is-muted`
+    private readonly LOCAL_STORAGE_VIDEO_CALL_VIDEO_DISABLED_KEY = `${APP_NAME}-video-call-is-video-disabled`
+
     constructor(
         data: {
             roomTransientId: string,
@@ -50,8 +53,8 @@ class VideoCallPeer {
         })
 
 
-        this.isMuted = JSON.parse(window.localStorage.getItem(`${APP_NAME}-video-call-is-muted`) || 'true')
-        this.isVideoDisabled = JSON.parse(window.localStorage.getItem(`${APP_NAME}-video-call-is-video-disabled`) || 'true')
+        this.isMuted = JSON.parse(window.localStorage.getItem(this.LOCAL_STORAGE_VIDEO_CALL_MUTED_KEY) || 'true')
+        this.isVideoDisabled = JSON.parse(window.localStorage.getItem(this.LOCAL_STORAGE_VIDEO_CALL_VIDEO_DISABLED_KEY) || 'true')
 
         const getUserMediaOptions = {
             audio: !this.isMuted,
@@ -78,15 +81,13 @@ class VideoCallPeer {
     }
 
     get myMetadata() {
-        const myMetadata: ConnectionMetadata = {
+        return {
             isMuted: this.isMuted,
             isVideoDisabled: this.isVideoDisabled,
             name: this.user?.user?.name ?? this.userName,
             picture: this.user?.user?.picture ?? undefined,
             roomTransientId: this.roomTransientId
-        }
-
-        return myMetadata
+        } as ConnectionMetadata
     }
 
     private generatePeerConnectionId(roomTransientId: string) {
@@ -243,7 +244,7 @@ class VideoCallPeer {
         }
 
         this.isVideoDisabled = newVideoDisabledState
-        window.localStorage.setItem(`${APP_NAME}-video-call-is-video-disabled`, JSON.stringify(newVideoDisabledState))
+        window.localStorage.setItem(this.LOCAL_STORAGE_VIDEO_CALL_VIDEO_DISABLED_KEY, JSON.stringify(newVideoDisabledState))
 
         this.rerender(this)
 
@@ -290,7 +291,7 @@ class VideoCallPeer {
         }
 
         this.isMuted = newIsMutedState
-        window.localStorage.setItem(`${APP_NAME}-video-call-is-muted`, JSON.stringify(newIsMutedState))
+        window.localStorage.setItem(this.LOCAL_STORAGE_VIDEO_CALL_MUTED_KEY, JSON.stringify(newIsMutedState))
 
         this.rerender(this)
     }

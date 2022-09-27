@@ -13,11 +13,12 @@ import _intersectionBy from "lodash.intersectionby";
 
 import dynamic from "next/dynamic";
 import useVideoCall from "./hooks/useVideoCall";
+import { memo } from "react";
 const VideoChatItem = dynamic(() => import("./components/VideoCallItem"), {
   ssr: false,
 });
 
-export default function VideoCall() {
+export default memo(function VideoCall() {
   const ctx = useVideoCall();
   return (
     <>
@@ -116,4 +117,4 @@ export default function VideoCall() {
       </div>
     </>
   );
-}
+});
