@@ -68,7 +68,7 @@ class VideoCallPeer {
             navigator.mediaDevices.getUserMedia(getUserMediaOptions).then(s => {
                 this.myMediaStream = s
                 this.rerender(this)
-            })
+            }).catch(() => { })
         }
 
         this.peer.on('open', () => {
@@ -218,10 +218,16 @@ class VideoCallPeer {
             })
         } else {
             if (!this.isMuted) this.myMediaStream?.getAudioTracks().forEach(t => t.stop())
-            this.myMediaStream = await navigator.mediaDevices.getUserMedia({
-                video: true,
-                audio: !this.isMuted
-            })
+            if (this.myMediaStream.active) this.myMediaStream.getTracks().forEach(t => t.stop())
+
+            try {
+                this.myMediaStream = await navigator.mediaDevices.getUserMedia({
+                    video: true,
+                    audio: !this.isMuted
+                })
+            } catch {
+                return
+            }
 
             const [audioTrack] = this.myMediaStream.getAudioTracks()
             const [videoTrack] = this.myMediaStream.getVideoTracks()
@@ -244,7 +250,6 @@ class VideoCallPeer {
     }
 
     async toggleAudio() {
-
         const newIsMutedState = !this.isMuted
         if (newIsMutedState) {
             this.myMediaStream?.getAudioTracks().forEach(t => {
@@ -255,13 +260,24 @@ class VideoCallPeer {
             })
         } else {
             if (!this.isVideoDisabled) this.myMediaStream?.getVideoTracks().forEach(t => t.stop())
-            this.myMediaStream = await navigator.mediaDevices.getUserMedia({
-                audio: true,
-                video: !this.isVideoDisabled
-            })
+            if (this.myMediaStream.active) this.myMediaStream.getTracks().forEach(t => t.stop())
+
+            try {
+                this.myMediaStream = await navigator.mediaDevices.getUserMedia({
+                    audio: true,
+                    video: !this.isVideoDisabled
+                })
+            } catch {
+                return
+            }
+
 
             const [audioTrack] = this.myMediaStream.getAudioTracks()
             const [videoTrack] = this.myMediaStream.getVideoTracks()
+
+            if (!audioTrack) {
+                return
+            }
 
             this.peersMediaConnections.forEach(pmc => {
                 const audioSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === audioTrack?.kind)
