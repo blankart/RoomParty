@@ -208,7 +208,6 @@ class VideoCallPeer {
     }
 
     async toggleVideo() {
-        console.log('BEFORE TOGGLING VALUES: ', { isMuted: this.isMuted, isVideoDisabled: this.isVideoDisabled })
         const newVideoDisabledState = !this.isVideoDisabled
         if (newVideoDisabledState) {
             this.myMediaStream?.getVideoTracks().forEach(t => {
@@ -218,16 +217,21 @@ class VideoCallPeer {
                 }, 100)
             })
         } else {
+            if (!this.isMuted) this.myMediaStream?.getAudioTracks().forEach(t => t.stop())
             this.myMediaStream = await navigator.mediaDevices.getUserMedia({
                 video: true,
                 audio: !this.isMuted
             })
 
+            const [audioTrack] = this.myMediaStream.getAudioTracks()
             const [videoTrack] = this.myMediaStream.getVideoTracks()
-            this.peersMediaConnections.forEach(pmc => {
-                const sender = pmc.peerConnection.getSenders().find(s => s.track?.kind === videoTrack.kind)
 
-                sender?.replaceTrack(videoTrack)
+            this.peersMediaConnections.forEach(pmc => {
+                const audioSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === audioTrack.kind)
+                const videoSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === videoTrack.kind)
+
+                audioSender?.replaceTrack(audioTrack)
+                videoSender?.replaceTrack(videoTrack)
             })
 
         }
@@ -237,11 +241,9 @@ class VideoCallPeer {
 
         this.rerender(this)
 
-        console.log('BEFORE TOGGLING VALUES: ', { isMuted: this.isMuted, isVideoDisabled: this.isVideoDisabled })
     }
 
     async toggleAudio() {
-        console.log('BEFORE TOGGLING VALUES: ', { isMuted: this.isMuted, isVideoDisabled: this.isVideoDisabled })
 
         const newIsMutedState = !this.isMuted
         if (newIsMutedState) {
@@ -252,16 +254,21 @@ class VideoCallPeer {
                 }, 100)
             })
         } else {
+            if (!this.isVideoDisabled) this.myMediaStream?.getVideoTracks().forEach(t => t.stop())
             this.myMediaStream = await navigator.mediaDevices.getUserMedia({
                 audio: true,
                 video: !this.isVideoDisabled
             })
 
             const [audioTrack] = this.myMediaStream.getAudioTracks()
-            this.peersMediaConnections.forEach(pmc => {
-                const sender = pmc.peerConnection.getSenders().find(s => s.track?.kind === audioTrack.kind)
+            const [videoTrack] = this.myMediaStream.getVideoTracks()
 
-                sender?.replaceTrack(audioTrack)
+            this.peersMediaConnections.forEach(pmc => {
+                const audioSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === audioTrack.kind)
+                const videoSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === videoTrack.kind)
+
+                audioSender?.replaceTrack(audioTrack)
+                videoSender?.replaceTrack(videoTrack)
             })
 
         }
@@ -270,8 +277,6 @@ class VideoCallPeer {
         window.localStorage.setItem(`${APP_NAME}-video-call-is-muted`, JSON.stringify(newIsMutedState))
 
         this.rerender(this)
-
-        console.log('BEFORE TOGGLING VALUES: ', { isMuted: this.isMuted, isVideoDisabled: this.isVideoDisabled })
     }
 
     private handleSomeoneCalled(mediaConnection: PeerMediaConnection) {
