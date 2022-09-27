@@ -1,11 +1,10 @@
-import zod from "zod";
 import { injectable, inject } from "inversify";
 import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
 import type TRPCRouter from "../../trpc/router";
 import type ChatsController from "./chats.controller";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { TRPCError } from "@trpc/server";
-import { sendSchema } from "./chats.schema";
+import { chatsSchema, chatsSubscriptionSchema, sendSchema } from "./chats.schema";
 
 export const CHATS_ROUTER_NAME = "chats";
 
@@ -22,14 +21,14 @@ class ChatsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Chats) private chatsController: ChatsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) {}
+  ) { }
 
   router() {
     const self = this;
     return this.trpcRouter
       .createRouter()
       .query("chats", {
-        input: zod.string(),
+        input: chatsSchema,
         async resolve({ input }) {
           return self.chatsController.chats(input);
         },
@@ -67,13 +66,7 @@ class ChatsRouter {
     return this.trpcRouter
       .createRouterWithUser()
       .subscription("chatSubscription", {
-        input: zod.object({
-          id: zod.string(),
-          name: zod.string(),
-          localStorageSessionId: zod.number(),
-          roomTransientId: zod.string(),
-          password: zod.string().optional(),
-        }),
+        input: chatsSubscriptionSchema,
         async resolve({ input, ctx }) {
           return await self.chatsController.chatSubscription(input, ctx.user);
         },

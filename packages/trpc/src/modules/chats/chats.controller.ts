@@ -9,6 +9,7 @@ import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type RoomsService from "../rooms/rooms.service";
 import type ChatsService from "./chats.service";
 import type ChatsEmitter from "./chats.emitter";
+import { ChatsSchema, ChatSubscriptionSchema, SendSchema } from "./chats.dto";
 
 const TempRoomSessionMap = new Map<string, number>();
 
@@ -19,12 +20,12 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) {}
-  async chats(id: string) {
+  ) { }
+  async chats(data: ChatsSchema) {
     return await this.modelsService.client.room
       .findFirst({
         where: {
-          id,
+          id: data.id,
         },
         select: {
           chats: {
@@ -42,13 +43,7 @@ class ChatsController {
       );
   }
 
-  async send(data: {
-    name: string;
-    message: string;
-    id: string;
-    userId?: string;
-    color: string;
-  }) {
+  async send(data: SendSchema) {
     const newChat = await this.modelsService.client.chat.create({
       data: {
         name: data.name,
@@ -60,13 +55,13 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-              color: data.color,
-              user: {
-                connect: {
-                  id: data.userId,
-                },
+            color: data.color,
+            user: {
+              connect: {
+                id: data.userId,
               },
-            }
+            },
+          }
           : {}),
       },
     });
@@ -82,27 +77,28 @@ class ChatsController {
   }
 
   async chatSubscription(
-    data: {
-      id: string;
-      name: string;
-      localStorageSessionId: number;
-      roomTransientId: string;
-      password?: string;
-    },
+    data: ChatSubscriptionSchema,
     user: CurrentUser
   ) {
     const tempRoomSessionMapKey = data.roomTransientId;
 
-    const maybeRoomTransient =
-      await this.modelsService.client.roomTransient.findFirst({
-        where: { id: data.roomTransientId },
-      });
+    const maybeRoom = await this.modelsService.client.room.findFirst({
+      where: { id: data.id },
+      select: { roomIdentificationId: true }
+    })
 
-    if (!maybeRoomTransient)
-      throw new TRPCError({
-        code: "UNAUTHORIZED",
-        message: "You are not allowed to enter this room.",
-      });
+    if (!maybeRoom) throw new TRPCError({ code: 'NOT_FOUND' })
+
+    const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(
+      maybeRoom.roomIdentificationId,
+      user,
+      data.password
+    )
+
+    if (!isAuthorizedToEnter) throw new TRPCError({
+      code: "UNAUTHORIZED",
+      message: "You are not allowed to enter this room.",
+    })
 
     return new Subscription<Chat & { color: string | null }>((emit) => {
       const onAdd = (data: Chat & { color: string | null }) => {

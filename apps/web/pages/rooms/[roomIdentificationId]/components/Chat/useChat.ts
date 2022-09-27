@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 import { useEffect, useRef } from "react";
 import shallow from "zustand/shallow";
 import uniqBy from "lodash.uniqby";
+import randomColor from "randomcolor";
 
 import {
-  CHAT_LOCAL_STORAGE_SESSION_KEY,
   CHAT_NAME_KEY,
 } from "@rooms2watch/shared-lib";
 
@@ -14,8 +14,6 @@ import { useMe } from "@web/context/AuthContext";
 import useLocalStorage from "@web/hooks/useLocalStorage";
 
 import { ChatProps } from "./Chat";
-import randomColor from "randomcolor";
-import { ChatNamePromptForm } from "./ChatNamePrompt";
 import { ChatTextareaForm } from "./ChatTextarea";
 import { useRoomContext } from "../../context/RoomContext";
 import { useToast } from "@web/pages/components/Toast";
@@ -59,7 +57,7 @@ export default function useChat(props: ChatProps) {
       setUserNameChatColorFromLocalStorage(randomColor());
   }, []);
 
-  const { isFetching, data } = trpc.useQuery(["chats.chats", roomStore.id!], {
+  const { isFetching, data } = trpc.useQuery(["chats.chats", { id: roomStore.id! }], {
     enabled: !!roomStore.id,
   });
 
