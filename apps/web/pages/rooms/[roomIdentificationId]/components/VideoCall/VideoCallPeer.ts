@@ -227,8 +227,8 @@ class VideoCallPeer {
             const [videoTrack] = this.myMediaStream.getVideoTracks()
 
             this.peersMediaConnections.forEach(pmc => {
-                const audioSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === audioTrack.kind)
-                const videoSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === videoTrack.kind)
+                const audioSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === audioTrack?.kind)
+                const videoSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === videoTrack?.kind)
 
                 audioSender?.replaceTrack(audioTrack)
                 videoSender?.replaceTrack(videoTrack)
@@ -264,8 +264,8 @@ class VideoCallPeer {
             const [videoTrack] = this.myMediaStream.getVideoTracks()
 
             this.peersMediaConnections.forEach(pmc => {
-                const audioSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === audioTrack.kind)
-                const videoSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === videoTrack.kind)
+                const audioSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === audioTrack?.kind)
+                const videoSender = pmc.peerConnection.getSenders().find(s => s.track?.kind === videoTrack?.kind)
 
                 audioSender?.replaceTrack(audioTrack)
                 videoSender?.replaceTrack(videoTrack)
