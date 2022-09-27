@@ -5,6 +5,10 @@ import { CurrentUser } from "../../types/user";
 import { VideoChatParticipant } from "../../types/video-chat";
 import ModelsService from "../models/models.service";
 import RoomsService from "../rooms/rooms.service";
+import {
+  BroadcastStateChangeSchema,
+  VideoChatSubscriptionSchema,
+} from "./video-chat.dto";
 import VideoChatEmitter from "./video-chat.emitter";
 
 const VideoChatParticipantsMap = new Map<string, VideoChatParticipant[]>();
@@ -15,16 +19,10 @@ class VideoChatController {
     @inject(EMITTER_TYPES.VideoChat) private videoChatEmitter: VideoChatEmitter,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
 
   async videoChatSubscription(
-    data: {
-      roomIdentificationId: string;
-      localStorageSessionId: number;
-      password?: string;
-      isMuted: boolean;
-      isVideoDisabled: boolean;
-    },
+    data: VideoChatSubscriptionSchema,
     user: CurrentUser
   ) {
     const isAuthorizedToEnter = this.roomsService.isAuthorizedToEnterRoom(
@@ -82,10 +80,12 @@ class VideoChatController {
         .channel("VIDEO_CHAT_PARTICIPANTS")
         .on(data.roomIdentificationId, onAdd);
 
-      this.videoChatEmitter.emitter.channel('VIDEO_CHAT_PARTICIPANTS').emit(
-        data.roomIdentificationId,
-        VideoChatParticipantsMap.get(data.roomIdentificationId) ?? []
-      )
+      this.videoChatEmitter.emitter
+        .channel("VIDEO_CHAT_PARTICIPANTS")
+        .emit(
+          data.roomIdentificationId,
+          VideoChatParticipantsMap.get(data.roomIdentificationId) ?? []
+        );
 
       return () => {
         this.videoChatEmitter.emitter
@@ -94,25 +94,21 @@ class VideoChatController {
 
         const newVideoChatParticipantsMapValue = (
           VideoChatParticipantsMap.get(data.roomIdentificationId) ?? []
-        ).filter((vcp) => vcp.roomTransientId !== roomTransient.id)
+        ).filter((vcp) => vcp.roomTransientId !== roomTransient.id);
         VideoChatParticipantsMap.set(
           data.roomIdentificationId,
           newVideoChatParticipantsMapValue
         );
 
-        this.videoChatEmitter.emitter.channel('VIDEO_CHAT_PARTICIPANTS').emit(data.roomIdentificationId, newVideoChatParticipantsMapValue)
+        this.videoChatEmitter.emitter
+          .channel("VIDEO_CHAT_PARTICIPANTS")
+          .emit(data.roomIdentificationId, newVideoChatParticipantsMapValue);
       };
     });
   }
 
   async broadcastStateChange(
-    data: {
-      roomIdentificationId: string;
-      localStorageSessionId: number;
-      password?: string;
-      isMuted: boolean;
-      isVideoDisabled: boolean;
-    },
+    data: BroadcastStateChangeSchema,
     user: CurrentUser
   ) {
     const isAuthorizedToEnter = this.roomsService.isAuthorizedToEnterRoom(
@@ -132,27 +128,34 @@ class VideoChatController {
           localStorageSessionid: data.localStorageSessionId,
         },
         select: {
-          id: true
+          id: true,
         },
       });
 
     if (!roomTransient) throw new TRPCError({ code: "NOT_FOUND" });
 
-    const newVideoChatParticipantsMapValue = (VideoChatParticipantsMap.get(data.roomIdentificationId) ?? []).map(videoChatParticipant => {
+    const newVideoChatParticipantsMapValue = (
+      VideoChatParticipantsMap.get(data.roomIdentificationId) ?? []
+    ).map((videoChatParticipant) => {
       if (videoChatParticipant.roomTransientId === roomTransient.id) {
         return {
           ...videoChatParticipant,
           isMuted: data.isMuted,
-          isVideoDisabled: data.isVideoDisabled
-        }
+          isVideoDisabled: data.isVideoDisabled,
+        };
       }
 
-      return videoChatParticipant
-    })
+      return videoChatParticipant;
+    });
 
-    VideoChatParticipantsMap.set(data.roomIdentificationId, newVideoChatParticipantsMapValue)
+    VideoChatParticipantsMap.set(
+      data.roomIdentificationId,
+      newVideoChatParticipantsMapValue
+    );
 
-    this.videoChatEmitter.emitter.channel('VIDEO_CHAT_PARTICIPANTS').emit(data.roomIdentificationId, newVideoChatParticipantsMapValue)
+    this.videoChatEmitter.emitter
+      .channel("VIDEO_CHAT_PARTICIPANTS")
+      .emit(data.roomIdentificationId, newVideoChatParticipantsMapValue);
   }
 }
 

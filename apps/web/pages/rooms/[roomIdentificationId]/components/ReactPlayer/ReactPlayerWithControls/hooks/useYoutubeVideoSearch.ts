@@ -52,6 +52,7 @@ export function useYoutubeVideoSearch(props: VideoSearchProps) {
     await control({
       id: id!,
       statusObject: {
+        videoPlatform: "Youtube",
         tabSessionId: tabSessionId,
         name: userName!,
         type: "CHANGE_URL",

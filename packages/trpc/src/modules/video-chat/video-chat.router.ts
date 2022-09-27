@@ -2,7 +2,10 @@ import { inject, injectable } from "inversify";
 import TRPCRouter from "../../trpc/router";
 import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
 import VideoChatController from "./video-chat.controller";
-import zod from "zod";
+import {
+  broadcastStateChangeSchema,
+  videoChatSubscriptionSchema,
+} from "./video-chat.schema";
 
 export const VIDEO_CHAT_ROUTER_NAME = "video-chat";
 
@@ -12,33 +15,21 @@ class VideoChatRouter {
     @inject(CONTROLLER_TYPES.VideoChat)
     private videoChatController: VideoChatController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
 
   routerWithUser() {
     const self = this;
 
     return this.trpcRouter
       .createRouterWithUser()
-      .mutation('broadcastStateChange', {
-        input: zod.object({
-          roomIdentificationId: zod.string(),
-          localStorageSessionId: zod.number(),
-          password: zod.string().optional(),
-          isMuted: zod.boolean(),
-          isVideoDisabled: zod.boolean(),
-        }),
+      .mutation("broadcastStateChange", {
+        input: broadcastStateChangeSchema,
         async resolve({ input, ctx }) {
-          return self.videoChatController.broadcastStateChange(input, ctx.user)
-        }
+          return self.videoChatController.broadcastStateChange(input, ctx.user);
+        },
       })
       .subscription("videoChatSubscription", {
-        input: zod.object({
-          roomIdentificationId: zod.string(),
-          localStorageSessionId: zod.number(),
-          password: zod.string().optional(),
-          isMuted: zod.boolean(),
-          isVideoDisabled: zod.boolean(),
-        }),
+        input: videoChatSubscriptionSchema,
         async resolve({ input, ctx }) {
           return await self.videoChatController.videoChatSubscription(
             input,

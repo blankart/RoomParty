@@ -1,17 +1,8 @@
 import { VideoPlatform } from "@rooms2watch/prisma-client";
+import { ControlSchema } from "../modules/player/player.dto";
 
-export type PlayerStatus = (
-  | {
-      type: "PAUSED";
-    }
-  | { type: "PLAYED" }
-  | {
-      type: "SEEK_TO";
-    }
-  | {
-      type: "CHANGE_URL";
-    }
-) & {
+export type PlayerStatus = {
+  type: ControlSchema["statusObject"]["type"];
   name: string;
   time: number;
   tabSessionId: number;

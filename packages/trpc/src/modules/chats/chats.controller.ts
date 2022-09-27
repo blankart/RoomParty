@@ -20,7 +20,7 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) { }
+  ) {}
   async chats(data: ChatsSchema) {
     return await this.modelsService.client.room
       .findFirst({
@@ -55,13 +55,13 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-            color: data.color,
-            user: {
-              connect: {
-                id: data.userId,
+              color: data.color,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });
@@ -76,29 +76,27 @@ class ChatsController {
     return newChat;
   }
 
-  async chatSubscription(
-    data: ChatSubscriptionSchema,
-    user: CurrentUser
-  ) {
+  async chatSubscription(data: ChatSubscriptionSchema, user: CurrentUser) {
     const tempRoomSessionMapKey = data.roomTransientId;
 
     const maybeRoom = await this.modelsService.client.room.findFirst({
       where: { id: data.id },
-      select: { roomIdentificationId: true }
-    })
+      select: { roomIdentificationId: true },
+    });
 
-    if (!maybeRoom) throw new TRPCError({ code: 'NOT_FOUND' })
+    if (!maybeRoom) throw new TRPCError({ code: "NOT_FOUND" });
 
     const isAuthorizedToEnter = await this.roomsService.isAuthorizedToEnterRoom(
       maybeRoom.roomIdentificationId,
       user,
       data.password
-    )
+    );
 
-    if (!isAuthorizedToEnter) throw new TRPCError({
-      code: "UNAUTHORIZED",
-      message: "You are not allowed to enter this room.",
-    })
+    if (!isAuthorizedToEnter)
+      throw new TRPCError({
+        code: "UNAUTHORIZED",
+        message: "You are not allowed to enter this room.",
+      });
 
     return new Subscription<Chat & { color: string | null }>((emit) => {
       const onAdd = (data: Chat & { color: string | null }) => {

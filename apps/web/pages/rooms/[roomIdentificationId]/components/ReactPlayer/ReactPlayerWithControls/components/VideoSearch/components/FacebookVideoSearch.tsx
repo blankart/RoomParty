@@ -52,6 +52,7 @@ export default memo(function FacebookVideoSearch(props: VideoSearchProps) {
     await control({
       id: id!,
       statusObject: {
+        videoPlatform: "Facebook",
         tabSessionId: tabSessionId,
         name: userName!,
         type: "CHANGE_URL",

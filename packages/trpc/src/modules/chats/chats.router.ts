@@ -4,7 +4,11 @@ import type TRPCRouter from "../../trpc/router";
 import type ChatsController from "./chats.controller";
 import { RateLimiterMemory } from "rate-limiter-flexible";
 import { TRPCError } from "@trpc/server";
-import { chatsSchema, chatsSubscriptionSchema, sendSchema } from "./chats.schema";
+import {
+  chatsSchema,
+  chatsSubscriptionSchema,
+  sendSchema,
+} from "./chats.schema";
 
 export const CHATS_ROUTER_NAME = "chats";
 
@@ -21,7 +25,7 @@ class ChatsRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Chats) private chatsController: ChatsController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
 
   router() {
     const self = this;

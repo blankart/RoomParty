@@ -53,6 +53,7 @@ export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
     await control({
       id: id!,
       statusObject: {
+        videoPlatform: "Twitch",
         tabSessionId: tabSessionId,
         name: userName!,
         type: "CHANGE_URL",

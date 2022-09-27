@@ -4,9 +4,7 @@ import shallow from "zustand/shallow";
 import uniqBy from "lodash.uniqby";
 import randomColor from "randomcolor";
 
-import {
-  CHAT_NAME_KEY,
-} from "@rooms2watch/shared-lib";
+import { CHAT_NAME_KEY } from "@rooms2watch/shared-lib";
 
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import { trpc } from "@web/api";
@@ -57,9 +55,12 @@ export default function useChat(props: ChatProps) {
       setUserNameChatColorFromLocalStorage(randomColor());
   }, []);
 
-  const { isFetching, data } = trpc.useQuery(["chats.chats", { id: roomStore.id! }], {
-    enabled: !!roomStore.id,
-  });
+  const { isFetching, data } = trpc.useQuery(
+    ["chats.chats", { id: roomStore.id! }],
+    {
+      enabled: !!roomStore.id,
+    }
+  );
 
   const chatsFetchedOnceRef = useRef<boolean>(false);
 

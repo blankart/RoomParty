@@ -5,6 +5,8 @@ import { inject, injectable } from "inversify";
 import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type PlayerService from "./player.service";
 import PlayerEmitter from "./player.emitter";
+import { ControlSchema, StatusSubscriptionSchema } from "./player.dto";
+import { VideoPlatform } from "@rooms2watch/prisma-client";
 
 export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
 @injectable()
@@ -22,7 +24,7 @@ class PlayerController {
       );
   }
 
-  async statusSubscription(data: { id: string; name: string }) {
+  async statusSubscription(data: StatusSubscriptionSchema) {
     return new Subscription<PlayerStatus>((emit) => {
       const onAdd = (data: PlayerStatus) => {
         emit.data(data);
@@ -36,8 +38,8 @@ class PlayerController {
     });
   }
 
-  async control(data: { id: string; statusObject: PlayerStatus }) {
-    let videoPlatform = data.statusObject?.videoPlatform;
+  async control(data: ControlSchema) {
+    let videoPlatform: VideoPlatform = data.statusObject?.videoPlatform;
     if (!videoPlatform && data.statusObject.type === "CHANGE_URL") {
       if (data.statusObject.url?.match(/youtube\.com/))
         videoPlatform = "Youtube" as const;
@@ -65,6 +67,8 @@ class PlayerController {
         playerStatus: data.statusObject,
       },
     });
+
+    data.statusObject.videoPlatform;
 
     this.playerEmitter.emitter.channel("CONTROL").emit(data.id, {
       ...data.statusObject,

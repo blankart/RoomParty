@@ -43,6 +43,7 @@ export default function useReactPlayerWithControls2(): {
     reactPlayerProps,
     hasError,
     setVideoPlatform,
+    videoPlatform,
   } = useReactPlayerContext();
 
   const { thumbnail } = useRoomsStore(
@@ -105,6 +106,7 @@ export default function useReactPlayerWithControls2(): {
     await control({
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
+        videoPlatform: videoPlatform!,
         name: userName,
         type: "PLAYED",
         time: scrubTime,
@@ -120,6 +122,7 @@ export default function useReactPlayerWithControls2(): {
     await control({
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
+        videoPlatform: videoPlatform!,
         name: userName,
         type: "PAUSED",
         time: scrubTime,
@@ -143,6 +146,7 @@ export default function useReactPlayerWithControls2(): {
     await control({
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
+        videoPlatform: videoPlatform!,
         name: userName,
         type: "SEEK_TO",
         time,

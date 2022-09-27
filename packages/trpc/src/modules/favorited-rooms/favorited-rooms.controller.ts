@@ -3,13 +3,14 @@ import { CurrentUser } from "../../types/user";
 import { TRPCError } from "@trpc/server";
 import { injectable, inject } from "inversify";
 import { SERVICES_TYPES } from "../../types/container";
+import { IsRoomFavoritedSchema, ToggleSchema } from "./favorited-rooms.dto";
 
 @injectable()
 class FavoritedRoomsController {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
   ) {}
-  async toggle(data: { roomId: string }, user: CurrentUser) {
+  async toggle(data: ToggleSchema, user: CurrentUser) {
     const room = await this.modelsService.client.room.findFirst({
       where: { id: data.roomId },
     });
@@ -56,7 +57,7 @@ class FavoritedRoomsController {
     });
   }
 
-  async isRoomFavorited(data: { roomId: string }, user: CurrentUser) {
+  async isRoomFavorited(data: IsRoomFavoritedSchema, user: CurrentUser) {
     const favoritedRoom =
       await this.modelsService.client.favoritedRoom.findFirst({
         where: {

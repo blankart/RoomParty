@@ -133,8 +133,12 @@ const trpcContainerModule = new ContainerModule((bind) => {
 
   bind<UsersRouter>(ROUTER_TYPES.Users).to(UsersRouter).inSingletonScope();
 
-  bind<YoutubeRouter>(ROUTER_TYPES.Youtube).to(YoutubeRouter).inSingletonScope();
-  bind<VideoChatRouter>(ROUTER_TYPES.VideoChat).to(VideoChatRouter).inSingletonScope();
+  bind<YoutubeRouter>(ROUTER_TYPES.Youtube)
+    .to(YoutubeRouter)
+    .inSingletonScope();
+  bind<VideoChatRouter>(ROUTER_TYPES.VideoChat)
+    .to(VideoChatRouter)
+    .inSingletonScope();
 
   /**
    * Injected TRPCRoutes

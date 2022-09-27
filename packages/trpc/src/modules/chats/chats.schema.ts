@@ -9,8 +9,8 @@ export const sendSchema = zod.object({
 });
 
 export const chatsSchema = zod.object({
-  id: zod.string()
-})
+  id: zod.string(),
+});
 
 export const chatsSubscriptionSchema = zod.object({
   id: zod.string(),
@@ -18,4 +18,4 @@ export const chatsSubscriptionSchema = zod.object({
   localStorageSessionId: zod.number(),
   roomTransientId: zod.string(),
   password: zod.string().optional(),
-})
+});

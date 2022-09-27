@@ -52,6 +52,7 @@ export default memo(function MixcloudAudioSearch(props: VideoSearchProps) {
     await control({
       id: id!,
       statusObject: {
+        videoPlatform: "Mixcloud",
         tabSessionId: tabSessionId,
         name: userName!,
         type: "CHANGE_URL",
