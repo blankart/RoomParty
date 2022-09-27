@@ -39,7 +39,7 @@ export default function ChatTextarea(props: ChatTextareaProps) {
         <input
           {...register("message", {
             maxLength: {
-              value: 50,
+              value: 200,
               message: "Chat should not exceed 50 characters.",
             },
           })}

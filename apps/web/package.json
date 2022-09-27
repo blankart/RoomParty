@@ -37,6 +37,7 @@
     "react-icons": "^4.4.0",
     "react-player": "^2.11.0",
     "react-query": "^3.39.2",
+    "react-string-replace": "^1.1.0",
     "superjson": "^1.9.1",
     "zustand": "^4.1.1"
   },
