@@ -1,6 +1,6 @@
 import { APP_NAME } from "@rooms2watch/shared-lib";
 import { InferSubscriptionOutput } from "@web/types/trpc";
-import Peer, { DataConnection, MediaConnection } from "peerjs";
+import Peer, { MediaConnection } from "peerjs";
 import _intersectionBy from 'lodash.intersectionby'
 import { User } from ".prisma/client";
 
@@ -29,7 +29,53 @@ class VideoCallPeer {
 
     peersMediaConnections: PeerMediaConnection[] = []
     remoteStreams: { stream: MediaStream, metadata: ConnectionMetadata }[] = []
-    cb2: (args: VideoCallPeer) => any
+    rerender: (args: VideoCallPeer) => any
+
+    constructor(
+        data: {
+            roomTransientId: string,
+            user: { user: User, id: string } | null | undefined
+            userName: string
+        },
+        cb: (args: VideoCallPeer) => any,
+        rerender: (args: VideoCallPeer) => any
+    ) {
+        this.roomTransientId = data.roomTransientId
+        this.user = data.user
+        this.userName = data.userName
+        this.rerender = rerender
+
+        this.peer = new Peer(this.generatePeerConnectionId(this.roomTransientId), {
+            debug: process.env.NODE_ENV === 'development' ? 3 : 0
+        })
+
+
+        this.isMuted = JSON.parse(window.localStorage.getItem(`${APP_NAME}-video-call-is-muted`) || 'true')
+        this.isVideoDisabled = JSON.parse(window.localStorage.getItem(`${APP_NAME}-video-call-is-video-disabled`) || 'true')
+
+        const getUserMediaOptions = {
+            audio: !this.isMuted,
+            video: !this.isVideoDisabled
+        }
+
+        this.myMediaStream = new MediaStream([
+            this.createEmptyAudioTrack(),
+            this.createEmptyVideoTrack({ width: 300, height: 300 })
+        ])
+        this.rerender(this)
+
+        if (!this.isMuted || !this.isVideoDisabled) {
+            navigator.mediaDevices.getUserMedia(getUserMediaOptions).then(s => {
+                this.myMediaStream = s
+                this.rerender(this)
+            })
+        }
+
+        this.peer.on('open', () => {
+            cb(this)
+            this.peer.on('call', this.handleSomeoneCalled.bind(this))
+        })
+    }
 
     get myMetadata() {
         const myMetadata: ConnectionMetadata = {
@@ -128,14 +174,25 @@ class VideoCallPeer {
                     }
                 })
                 this.peersMediaConnections.push(mediaConnection)
-                this.cb2(this)
+                this.rerender(this)
             })
         })
     }
 
 
     async handleWhenSomeoneLeft(data: VideoChatSubscriptionResult) {
+        data.forEach(vcs => {
+            const maybePeerMediaConnection = this.peersMediaConnections.find(pmc => pmc.metadata.roomTransientId === vcs.roomTransientId)
 
+            if (maybePeerMediaConnection) {
+                maybePeerMediaConnection.close()
+                this.peersMediaConnections = this.peersMediaConnections.filter(pmc => pmc.metadata.roomTransientId !== vcs.roomTransientId)
+            }
+
+            this.remoteStreams = this.remoteStreams.filter(rs => rs.metadata.roomTransientId !== vcs.roomTransientId)
+        })
+
+        this.rerender(this)
     }
 
     async handleWhenSomeoneStateChanged(data: VideoChatSubscriptionResult) {
@@ -147,10 +204,11 @@ class VideoCallPeer {
             }
         })
 
-        this.cb2(this)
+        this.rerender(this)
     }
 
     async toggleVideo() {
+        console.log('BEFORE TOGGLING VALUES: ', { isMuted: this.isMuted, isVideoDisabled: this.isVideoDisabled })
         const newVideoDisabledState = !this.isVideoDisabled
         if (newVideoDisabledState) {
             this.myMediaStream?.getVideoTracks().forEach(t => {
@@ -177,56 +235,43 @@ class VideoCallPeer {
         this.isVideoDisabled = newVideoDisabledState
         window.localStorage.setItem(`${APP_NAME}-video-call-is-video-disabled`, JSON.stringify(newVideoDisabledState))
 
-        this.cb2(this)
+        this.rerender(this)
+
+        console.log('BEFORE TOGGLING VALUES: ', { isMuted: this.isMuted, isVideoDisabled: this.isVideoDisabled })
     }
 
     async toggleAudio() {
-    }
+        console.log('BEFORE TOGGLING VALUES: ', { isMuted: this.isMuted, isVideoDisabled: this.isVideoDisabled })
 
-    constructor(
-        data: {
-            roomTransientId: string,
-            user: { user: User, id: string } | null | undefined
-            userName: string
-        },
-        cb: (args: VideoCallPeer) => any,
-        cb2: (args: VideoCallPeer) => any
-    ) {
-        this.roomTransientId = data.roomTransientId
-        this.user = data.user
-        this.userName = data.userName
-        this.cb2 = cb2
-
-        this.peer = new Peer(this.generatePeerConnectionId(this.roomTransientId), {
-            debug: process.env.NODE_ENV === 'development' ? 3 : 0
-        })
-
-
-        this.isMuted = JSON.parse(window.localStorage.getItem(`${APP_NAME}-video-call-is-muted`) || 'true')
-        this.isVideoDisabled = JSON.parse(window.localStorage.getItem(`${APP_NAME}-video-call-is-video-disabled`) || 'true')
-
-        const getUserMediaOptions = {
-            audio: !this.isMuted,
-            video: !this.isVideoDisabled
-        }
-
-        this.myMediaStream = new MediaStream([
-            this.createEmptyAudioTrack(),
-            this.createEmptyVideoTrack({ width: 300, height: 300 })
-        ])
-        this.cb2(this)
-
-        if (!this.isMuted || !this.isVideoDisabled) {
-            navigator.mediaDevices.getUserMedia(getUserMediaOptions).then(s => {
-                this.myMediaStream = s
-                this.cb2(this)
+        const newIsMutedState = !this.isMuted
+        if (newIsMutedState) {
+            this.myMediaStream?.getAudioTracks().forEach(t => {
+                t.enabled = false
+                setTimeout(() => {
+                    t.stop()
+                }, 100)
             })
+        } else {
+            this.myMediaStream = await navigator.mediaDevices.getUserMedia({
+                audio: true,
+                video: !this.isVideoDisabled
+            })
+
+            const [audioTrack] = this.myMediaStream.getAudioTracks()
+            this.peersMediaConnections.forEach(pmc => {
+                const sender = pmc.peerConnection.getSenders().find(s => s.track?.kind === audioTrack.kind)
+
+                sender?.replaceTrack(audioTrack)
+            })
+
         }
 
-        this.peer.on('open', () => {
-            cb(this)
-            this.peer.on('call', this.handleSomeoneCalled.bind(this))
-        })
+        this.isMuted = newIsMutedState
+        window.localStorage.setItem(`${APP_NAME}-video-call-is-muted`, JSON.stringify(newIsMutedState))
+
+        this.rerender(this)
+
+        console.log('BEFORE TOGGLING VALUES: ', { isMuted: this.isMuted, isVideoDisabled: this.isVideoDisabled })
     }
 
     private handleSomeoneCalled(mediaConnection: PeerMediaConnection) {
@@ -241,7 +286,7 @@ class VideoCallPeer {
             if (this.remoteStreams.find(rs => rs.stream.id === remoteStream.id)) return
             this.remoteStreams.push({ stream: remoteStream, metadata: mediaConnection.metadata })
             this.peersMediaConnections.push(mediaConnection)
-            this.cb2(this)
+            this.rerender(this)
         })
     }
 
