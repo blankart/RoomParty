@@ -108,7 +108,6 @@ class VideoCallPeer {
                 this.createEmptyVideoTrack({ width: 300, height: 300 })
             ])
 
-            console.log('MY METADATA: ', this.myMetadata, vcs)
             const mediaConnection = this.peer.call(
                 this.generatePeerConnectionId(vcs.roomTransientId),
                 myMediaStream,
@@ -129,7 +128,6 @@ class VideoCallPeer {
                     }
                 })
                 this.peersMediaConnections.push(mediaConnection)
-                console.log('streaming...s')
                 this.cb2(this)
             })
         })
@@ -145,7 +143,6 @@ class VideoCallPeer {
             const maybeChangedState = data.find(s => s.roomTransientId === rs.metadata.roomTransientId)
 
             if (maybeChangedState) {
-                console.log(rs.metadata, maybeChangedState)
                 Object.assign(rs.metadata, maybeChangedState)
             }
         })
@@ -233,7 +230,6 @@ class VideoCallPeer {
     }
 
     private handleSomeoneCalled(mediaConnection: PeerMediaConnection) {
-        console.log('someone called!', mediaConnection.metadata)
         mediaConnection.answer(this.myMediaStream ??
             new MediaStream([
                 this.createEmptyAudioTrack(),
@@ -245,9 +241,19 @@ class VideoCallPeer {
             if (this.remoteStreams.find(rs => rs.stream.id === remoteStream.id)) return
             this.remoteStreams.push({ stream: remoteStream, metadata: mediaConnection.metadata })
             this.peersMediaConnections.push(mediaConnection)
-            console.log('streaming... after someone called')
             this.cb2(this)
         })
+    }
+
+    cleanUp() {
+        this.peer.disconnect()
+        this.peer.destroy()
+        this.myMediaStream.getTracks().forEach(t => t.stop())
+        this.peersMediaConnections.forEach(pmc => {
+            pmc.close()
+            pmc.removeAllListeners()
+        })
+        this.remoteStreams = []
     }
 }
 
