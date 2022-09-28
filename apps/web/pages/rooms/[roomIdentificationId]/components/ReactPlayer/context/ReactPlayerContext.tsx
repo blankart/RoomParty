@@ -97,6 +97,7 @@ function getShouldClickTheVideoFirstOnReadyOrChangeUrl(
   switch (videoPlatform) {
     case "Vimeo":
     case "Mixcloud":
+    case "Twitch":
       return false;
     case "Youtube":
     case "Facebook":
