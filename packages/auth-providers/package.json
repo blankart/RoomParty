@@ -1,5 +1,5 @@
 {
-  "name": "@partyfy/auth-providers",
+  "name": "@RoomParty/auth-providers",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./index.ts",
@@ -12,14 +12,14 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@partyfy/prisma-client": "*",
+    "@RoomParty/prisma-client": "*",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
-    "@partyfy/shared-lib": "*"
+    "@RoomParty/shared-lib": "*"
   },
   "devDependencies": {
-    "@partyfy/eslint-config-custom": "*",
-    "@partyfy/tsconfig": "*",
+    "@RoomParty/eslint-config-custom": "*",
+    "@RoomParty/tsconfig": "*",
     "@types/express": "^4.17.14",
     "@types/node": "^17.0.12",
     "@types/passport": "^1.0.11",

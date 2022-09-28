@@ -1,4 +1,4 @@
-import { APP_NAME } from "@partyfy/shared-lib";
+import { APP_NAME } from "@RoomParty/shared-lib";
 import { InferSubscriptionOutput } from "@web/types/trpc";
 import Peer, { MediaConnection } from "peerjs";
 import _intersectionBy from "lodash.intersectionby";

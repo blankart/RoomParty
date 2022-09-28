@@ -1,4 +1,4 @@
-import { VideoPlatform } from "@partyfy/prisma-client";
+import { VideoPlatform } from "@RoomParty/prisma-client";
 import { ControlSchema } from "../modules/player/player.dto";
 
 export type PlayerStatus = {

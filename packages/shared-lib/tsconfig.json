@@ -1,5 +1,5 @@
 {
-  "extends": "@partyfy/tsconfig/base.json",
+  "extends": "@RoomParty/tsconfig/base.json",
   "include": ["."],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {

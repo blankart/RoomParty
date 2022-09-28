@@ -1,5 +1,5 @@
 import { Subscription, TRPCError } from "@trpc/server";
-import type { Chat } from "@partyfy/prisma-client";
+import type { Chat } from "@RoomParty/prisma-client";
 import type { CurrentUser } from "../../types/user";
 import type ModelsService from "../models/models.service";
 import type _RoomsService from "../rooms/rooms.service";

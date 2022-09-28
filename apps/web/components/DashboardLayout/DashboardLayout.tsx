@@ -59,7 +59,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
               >
                 <li>
                   <Link href="/">
-                    <a className="link">partyfy</a>
+                    <a className="link">RoomParty</a>
                   </Link>
                 </li>
                 <li>
@@ -75,7 +75,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
           <Link href="/" passHref>
             <a className="text-xl normal-case btn btn-ghost">
               <BsPlayCircleFill className="inline mr-2" />
-              partyfy
+              RoomParty
             </a>
           </Link>
         </div>
@@ -186,7 +186,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
         </div> */}
         <div className="container mx-auto">
           <p className="text-sm text-center md:text-md">
-            Copyright © partyfy 2022
+            Copyright © RoomParty 2022
           </p>
         </div>
       </footer>

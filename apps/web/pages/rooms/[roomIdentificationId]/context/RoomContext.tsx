@@ -10,7 +10,7 @@ import { FaKey, FaSpinner } from "react-icons/fa";
 import {
   CHAT_LOCAL_STORAGE_SESSION_KEY,
   CHAT_NAME_KEY,
-} from "@partyfy/shared-lib";
+} from "@RoomParty/shared-lib";
 import { BsPlayCircleFill } from "react-icons/bs";
 import { RoomsDTO } from "@web/../../packages/trpc/dto";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -63,7 +63,7 @@ function RoomWrapper(props: {
       </video>
       <h1 className="text-3xl font-bold md:text-5xl">
         <BsPlayCircleFill className="inline mr-4" />
-        partyfy
+        RoomParty
       </h1>
       <div className="w-[min(400px,100%)] p-8 shadow-2xl bg-base-100 z-20">
         <div className="py-2 space-x-2 text-xl font-bold">{props.title}</div>

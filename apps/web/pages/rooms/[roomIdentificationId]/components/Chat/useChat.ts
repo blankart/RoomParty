@@ -4,7 +4,7 @@ import shallow from "zustand/shallow";
 import uniqBy from "lodash.uniqby";
 import randomColor from "randomcolor";
 
-import { CHAT_NAME_KEY } from "@partyfy/shared-lib";
+import { CHAT_NAME_KEY } from "@RoomParty/shared-lib";
 
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import { trpc } from "@web/api";

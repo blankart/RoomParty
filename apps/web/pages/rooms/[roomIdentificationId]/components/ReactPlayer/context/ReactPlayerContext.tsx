@@ -1,5 +1,5 @@
-import { VideoPlatform } from "@partyfy/prisma-client";
-import { APP_NAME } from "@partyfy/shared-lib";
+import { VideoPlatform } from "@RoomParty/prisma-client";
+import { APP_NAME } from "@RoomParty/shared-lib";
 import useLocalStorage from "@web/hooks/useLocalStorage";
 import React, {
   createContext,

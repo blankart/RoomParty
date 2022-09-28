@@ -1,4 +1,4 @@
-import { Chat } from "@partyfy/prisma-client";
+import { Chat } from "@RoomParty/prisma-client";
 import { inject, injectable } from "inversify";
 import { SERVICES_TYPES } from "../../types/container";
 import EmitterService from "../emitter/emitter.service";

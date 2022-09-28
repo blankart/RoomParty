@@ -4,8 +4,8 @@ import Error from "next/error";
 import { useRouter } from "next/router";
 import { NextSeo } from "next-seo";
 
-import type { PlayerStatus } from "@partyfy/trpc";
-import { APP_NAME } from "@partyfy/shared-lib";
+import type { PlayerStatus } from "@RoomParty/trpc";
+import { APP_NAME } from "@RoomParty/shared-lib";
 
 import { trpc } from "@web/api";
 import Chat from "@web/pages/rooms/[roomIdentificationId]/components/Chat/Chat";

@@ -2,7 +2,7 @@ import * as trpc from "@trpc/server";
 import type {
   JwtPayloadDecoded,
   JwtVerifier,
-} from "@partyfy/auth-providers";
+} from "@RoomParty/auth-providers";
 import { injectable, inject } from "inversify";
 import type * as trpcExpress from "@trpc/server/adapters/express";
 import { inferAsyncReturnType } from "@trpc/server";

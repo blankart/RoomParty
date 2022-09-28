@@ -3,7 +3,7 @@ import { BsPlayCircleFill } from "react-icons/bs";
 import { NextSeo } from "next-seo";
 import Image from "next/image";
 
-import { APP_NAME } from "@partyfy/shared-lib";
+import { APP_NAME } from "@RoomParty/shared-lib";
 
 import thumbnail from "@web/public/images/thumbnail.png";
 import UI from "@web/public/images/interface.jpg";
@@ -21,7 +21,7 @@ import FavoritedRoom from "./components/FavoritedRoom";
 export default function IndexPage() {
   const title = `${APP_NAME} - Watch Videos with your Friends`;
   const description =
-    "partyfy lets you watch Youtube, Twitch, Facebook videos and more synchronously with your friends with added features that allows you to chat and video with them throughout the whole experience.";
+    "RoomParty lets you watch Youtube, Twitch, Facebook videos and more synchronously with your friends with added features that allows you to chat and video with them throughout the whole experience.";
   const canonical = process.env.NEXT_PUBLIC_WEB_BASE_URL;
   return (
     <>
@@ -43,7 +43,7 @@ export default function IndexPage() {
               <div className="max-w-[min(600px)] p-4 text-center">
                 <h1 className="text-3xl font-bold md:text-3xl xl:text-5xl">
                   <BsPlayCircleFill className="inline mr-4" />
-                  partyfy
+                  RoomParty
                 </h1>
                 <h2 className="text-sm text-left md:text-2xl xl:text-3xl">
                   You can now watch videos together with your friends!
@@ -129,7 +129,7 @@ export default function IndexPage() {
                 <div className="aspect-[16/12] w-full">
                   <Image
                     loading="lazy"
-                    alt="partyfy User Interface"
+                    alt="RoomParty User Interface"
                     src={UI.src}
                     width={200}
                     height={150}
@@ -143,7 +143,7 @@ export default function IndexPage() {
 
         <section className="bg-info px-4 py-10 mt-10 w-[100%] xl:mt-[150px]">
           <h1 className="text-center">
-            Create your first <b>partyfy</b> room
+            Create your first <b>RoomParty</b> room
           </h1>
           <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
             <Suspense>

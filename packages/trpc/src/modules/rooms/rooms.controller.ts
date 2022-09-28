@@ -19,7 +19,7 @@ import type {
 import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type RoomsService from "./rooms.service";
 import RoomsEmitter from "./rooms.emitter";
-import { Prisma, VideoControlRights } from "@partyfy/prisma-client";
+import { Prisma, VideoControlRights } from "@RoomParty/prisma-client";
 
 enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",

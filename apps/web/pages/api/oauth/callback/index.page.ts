@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_KEY } from "@partyfy/shared-lib";
+import { ACCESS_TOKEN_KEY } from "@RoomParty/shared-lib";
 import { NextApiRequest, NextApiResponse } from "next";
 
 export default function handler(req: NextApiRequest, res: NextApiResponse) {

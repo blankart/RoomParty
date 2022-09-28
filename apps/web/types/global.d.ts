@@ -1,4 +1,4 @@
-import type { CustomProcessEnv } from "@partyfy/shared-lib/types/env";
+import type { CustomProcessEnv } from "@RoomParty/shared-lib/types/env";
 import type GoogleAccounts from "google.accounts";
 import type GApi from "gapi";
 

@@ -1,7 +1,7 @@
 import {
   createPrismaClient,
   CustomPrismaClient,
-} from "@partyfy/prisma-client";
+} from "@RoomParty/prisma-client";
 import { injectable } from "inversify";
 
 @injectable()

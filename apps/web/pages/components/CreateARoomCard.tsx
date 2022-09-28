@@ -4,8 +4,8 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 
-import type { RoomsDTO } from "@partyfy/trpc/dto";
-import { RoomsSchema } from "@partyfy/trpc/schema";
+import type { RoomsDTO } from "@RoomParty/trpc/dto";
+import { RoomsSchema } from "@RoomParty/trpc/schema";
 
 import Input from "@web/components/Input/Input";
 import { trpc } from "@web/api";

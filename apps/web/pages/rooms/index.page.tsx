@@ -1,6 +1,6 @@
 import { NextSeo } from "next-seo";
 
-import { APP_NAME } from "@partyfy/shared-lib";
+import { APP_NAME } from "@RoomParty/shared-lib";
 
 import Rooms from "./components/Rooms";
 import thumbnail from "@web/public/images/thumbnail.png";

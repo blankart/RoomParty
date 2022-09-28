@@ -1,5 +1,5 @@
 {
-  "name": "@partyfy/trpc",
+  "name": "@RoomParty/trpc",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./index.ts",
@@ -13,9 +13,9 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@partyfy/auth-providers": "*",
-    "@partyfy/prisma-client": "*",
-    "@partyfy/shared-lib": "*",
+    "@RoomParty/auth-providers": "*",
+    "@RoomParty/prisma-client": "*",
+    "@RoomParty/shared-lib": "*",
     "@trpc/server": "^9.27.2",
     "eventemitter2": "^6.4.9",
     "inversify": "^6.0.1",
@@ -29,8 +29,8 @@
     "zod": "^3.19.0"
   },
   "devDependencies": {
-    "@partyfy/eslint-config-custom": "*",
-    "@partyfy/tsconfig": "*",
+    "@RoomParty/eslint-config-custom": "*",
+    "@RoomParty/tsconfig": "*",
     "@types/node": "^17.0.12",
     "eslint": "7.32.0",
     "tsc-watch": "^5.0.3",

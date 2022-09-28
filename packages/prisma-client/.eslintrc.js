@@ -1,4 +1,4 @@
 module.exports = {
   root: true,
-  extends: ["@partyfy/eslint-config-custom"],
+  extends: ["@RoomParty/eslint-config-custom"],
 };

@@ -1,4 +1,4 @@
-import { ACCESS_TOKEN_KEY } from "@partyfy/shared-lib";
+import { ACCESS_TOKEN_KEY } from "@RoomParty/shared-lib";
 import { parseCookies } from "nookies";
 import * as trpcExpress from "@trpc/server/adapters/express";
 

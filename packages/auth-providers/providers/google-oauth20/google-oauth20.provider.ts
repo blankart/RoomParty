@@ -2,7 +2,7 @@ import type { PassportStatic } from "passport";
 import type { Express } from "express";
 import { Strategy as GoogleOAuth2Strategy } from "passport-google-oauth20";
 import { AuthNextCallback, JwtSigner } from "../../types";
-import type { CustomPrismaClient } from "@partyfy/prisma-client";
+import type { CustomPrismaClient } from "@RoomParty/prisma-client";
 
 export const OAUTH_URL_REDIRECT_ROUTE = "/oauth2/redirect/google";
 

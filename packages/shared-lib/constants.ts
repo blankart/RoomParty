@@ -1,4 +1,4 @@
-export const APP_NAME = "partyfy";
+export const APP_NAME = "RoomParty";
 
 export const ACCESS_TOKEN_KEY = `__${APP_NAME}-access-token`;
 

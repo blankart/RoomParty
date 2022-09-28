@@ -4,8 +4,8 @@ import type ChatsService from "../chats/chats.service";
 import { inject, injectable } from "inversify";
 import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import ChatsEmitter from "../chats/chats.emitter";
-import { convertTimeToFormattedTime } from "@partyfy/shared-lib";
-import { Room } from "@partyfy/prisma-client";
+import { convertTimeToFormattedTime } from "@RoomParty/shared-lib";
+import { Room } from "@RoomParty/prisma-client";
 
 export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
 
