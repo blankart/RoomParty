@@ -37,6 +37,9 @@ import RoomsEmitter from "../modules/rooms/rooms.emitter";
 import VideoChatEmitter from "../modules/video-chat/video-chat.emitter";
 import VideoChatController from "../modules/video-chat/video-chat.controller";
 import VideoChatRouter from "../modules/video-chat/video-chat.router";
+import TemporaryChatsEmitter from "../modules/temporary-chats/temporary-chats.emitter";
+import TemporaryChatsController from "../modules/temporary-chats/temporary-chats.controller";
+import TemporaryChatsRouter from "../modules/temporary-chats/temporary-chats.router";
 
 const trpcContainerModule = new ContainerModule((bind) => {
   /**
@@ -85,6 +88,10 @@ const trpcContainerModule = new ContainerModule((bind) => {
     .to(VideoChatEmitter)
     .inSingletonScope();
 
+  bind<TemporaryChatsEmitter>(EMITTER_TYPES.TemporaryChats)
+    .to(TemporaryChatsEmitter)
+    .inSingletonScope();
+
   /**
    * Injected Controller
    */
@@ -117,6 +124,10 @@ const trpcContainerModule = new ContainerModule((bind) => {
     .to(VideoChatController)
     .inSingletonScope();
 
+  bind<TemporaryChatsController>(CONTROLLER_TYPES.TemporaryChats)
+    .to(TemporaryChatsController)
+    .inSingletonScope();
+
   /**
    * Injected Routes
    */
@@ -136,8 +147,13 @@ const trpcContainerModule = new ContainerModule((bind) => {
   bind<YoutubeRouter>(ROUTER_TYPES.Youtube)
     .to(YoutubeRouter)
     .inSingletonScope();
+
   bind<VideoChatRouter>(ROUTER_TYPES.VideoChat)
     .to(VideoChatRouter)
+    .inSingletonScope();
+
+  bind<TemporaryChatsRouter>(ROUTER_TYPES.TemporaryChats)
+    .to(TemporaryChatsRouter)
     .inSingletonScope();
 
   /**

@@ -15,6 +15,7 @@ export const EMITTER_TYPES = {
   Player: Symbol("PlayerEmitter"),
   Rooms: Symbol("RoomsEmitter"),
   VideoChat: Symbol("VideoChatEmitter"),
+  TemporaryChats: Symbol('TemporaryChatsEmitter')
 };
 
 export const CONTROLLER_TYPES = {
@@ -25,6 +26,7 @@ export const CONTROLLER_TYPES = {
   Users: Symbol("UsersController"),
   Youtube: Symbol("YoutubeController"),
   VideoChat: Symbol("VideoChatController"),
+  TemporaryChats: Symbol("TemporaryChatsController"),
 };
 
 export const ROUTER_TYPES = {
@@ -35,6 +37,7 @@ export const ROUTER_TYPES = {
   Users: Symbol("UsersRouter"),
   Youtube: Symbol("YoutubeRouter"),
   VideoChat: Symbol("VideoChatRouter"),
+  TemporaryChats: Symbol("TemporaryChatsRouter"),
 };
 
 export const TRPC_ROUTES = Symbol("TRPCRoutes");

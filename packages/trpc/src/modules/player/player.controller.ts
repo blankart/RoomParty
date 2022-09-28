@@ -8,7 +8,6 @@ import PlayerEmitter from "./player.emitter";
 import { ControlSchema, StatusSubscriptionSchema } from "./player.dto";
 import { VideoPlatform } from "@RoomParty/prisma-client";
 
-export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
 @injectable()
 class PlayerController {
   constructor(
