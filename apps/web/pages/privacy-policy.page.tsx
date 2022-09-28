@@ -602,21 +602,6 @@ export default function PrivacyPolicyPage() {
           privacy policies or practices of any third party sites or services.
         </p>
         <p>
-          For example, the outlined{" "}
-          <a href="https://policymaker.io/privacy-policy/">privacy policy</a>{" "}
-          has been made using{" "}
-          <a href="https://policymaker.io/">PolicyMaker.io</a>, a free tool that
-          helps create high-quality legal documents. PolicyMaker’s{" "}
-          <a href="https://policymaker.io/privacy-policy/">
-            privacy policy generator
-          </a>{" "}
-          is an easy-to-use tool for creating a{" "}
-          <a href="https://policymaker.io/blog-privacy-policy/">
-            privacy policy for blog
-          </a>
-          , website, e-commerce store or mobile app.
-        </p>
-        <p>
           19.{" "}
           <b>
             <b>Children’s Privacy</b>
