@@ -24,7 +24,7 @@ export default function TermsAndConditions() {
 
         <p>
           These terms and conditions outline the rules and regulations for the
-          use of RoomParty&amp;s Website, located at roomparty.me.
+          use of RoomParty&apos;s Website, located at roomparty.me.
         </p>
 
         <p>
@@ -58,7 +58,7 @@ export default function TermsAndConditions() {
 
         <p>
           We employ the use of cookies. By accessing RoomParty, you agreed to
-          use cookies in agreement with the RoomParty&amp;s Privacy Policy.{" "}
+          use cookies in agreement with the RoomParty&apos;s Privacy Policy.{" "}
         </p>
 
         <p>
@@ -233,7 +233,7 @@ export default function TermsAndConditions() {
         </ul>
 
         <p>
-          No use of RoomParty&amp;s logo or other artwork will be allowed for
+          No use of RoomParty&apos;s logo or other artwork will be allowed for
           linking absent a trademark license agreement.
         </p>
 
