@@ -106,7 +106,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                   <div className="dropdown dropdown-left">
                     <label
                       tabIndex={0}
-                      className="tooltip tooltip-left tooltip-primary"
+                      className="tooltip tooltip-left tooltip-secondary"
                       data-tip={user?.user?.name}
                     >
                       <button className="avatar online" aria-label="User Menu">
@@ -137,7 +137,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                 </>
               ) : (
                 <div
-                  className="tooltip tooltip-left tooltip-primary"
+                  className="tooltip tooltip-left tooltip-secondary"
                   data-tip="Login with Google"
                 >
                   <button
@@ -186,6 +186,15 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
             <Link href="/privacy-policy" passHref>
               <a className="text-white link link-hover">Privacy Policy</a>
             </Link>
+          </div>
+          <div>
+            <span className="text-white footer-title">Contact</span>
+            <a
+              className="text-white link link-hover"
+              href="mailto:blankartwp@gmail.com"
+            >
+              Support
+            </a>
           </div>
         </div>
         <div className="container mx-auto">

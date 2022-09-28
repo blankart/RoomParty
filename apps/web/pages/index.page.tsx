@@ -38,10 +38,10 @@ export default function IndexPage() {
       />
       <div className="container block w-full overflow-y-auto prose max-w-none">
         <div className="mt-10 hero">
-          <div className="grid grid-cols-1 xl:grid-cols-2">
+          <div className="grid grid-cols-1 md:grid-cols-2">
             <div className="flex flex-col items-center justify-center">
-              <div className="max-w-[min(600px)] p-4 text-center">
-                <h1 className="text-3xl font-bold md:text-3xl xl:text-5xl">
+              <div className="max-w-[min(600px)] p-4 text-left">
+                <h1 className="text-3xl font-bold md:text-4xl xl:text-5xl">
                   <BsPlayCircleFill className="inline mr-4" />
                   RoomParty
                 </h1>
@@ -56,7 +56,7 @@ export default function IndexPage() {
                 </h2>
                 <div className="flex flex-wrap items-center justify-center p-4 shadow-xl gap-x-4 xl:gap-x-5 gap-y-2 xl:gap-y-5 rounded-2xl dark:shadow-none">
                   <div
-                    className="w-[130px] xl:w-[170px] h-auto tooltip tooltip-primary tooltip-top"
+                    className="w-[130px] xl:w-[170px] h-auto tooltip tooltip-secondary tooltip-top"
                     data-tip="Youtube"
                   >
                     <Image
@@ -70,7 +70,7 @@ export default function IndexPage() {
                   </div>
 
                   <div
-                    className="w-[90px] xl:w-[130px] h-auto tooltip tooltip-primary tooltip-top"
+                    className="w-[90px] xl:w-[130px] h-auto tooltip tooltip-secondary tooltip-top"
                     data-tip="Twitch"
                   >
                     <Image
@@ -83,7 +83,7 @@ export default function IndexPage() {
                     />
                   </div>
                   <div
-                    className="w-[100px] xl:w-[180px] h-auto tooltip tooltip-primary tooltip-top"
+                    className="w-[100px] xl:w-[180px] h-auto tooltip tooltip-secondary tooltip-top"
                     data-tip="Facebook"
                   >
                     <Image
@@ -96,7 +96,7 @@ export default function IndexPage() {
                     />
                   </div>
                   <div
-                    className="w-[100px] xl:w-[140px] h-auto tooltip tooltip-primary tooltip-top"
+                    className="w-[100px] xl:w-[140px] h-auto tooltip tooltip-secondary tooltip-top"
                     data-tip="Vimeo"
                   >
                     <Image
@@ -109,7 +109,7 @@ export default function IndexPage() {
                     />
                   </div>
                   <div
-                    className="w-[100px] xl:w-[180px] h-auto tooltip tooltip-primary tooltip-top"
+                    className="w-[100px] xl:w-[180px] h-auto tooltip tooltip-secondary tooltip-top"
                     data-tip="Mixcloud"
                   >
                     <Image

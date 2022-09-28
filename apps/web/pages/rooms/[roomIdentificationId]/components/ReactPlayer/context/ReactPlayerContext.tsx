@@ -100,8 +100,8 @@ function getShouldClickTheVideoFirstOnReadyOrChangeUrl(
     case "Twitch":
       return false;
     case "Youtube":
-    case "Facebook":
       return isMobile();
+    case "Facebook":
     default:
       return true;
   }
@@ -283,7 +283,7 @@ export function ReactPlayerProvider(props: {
             setIsReady(true);
           },
           onPlay() {
-            if (hasInitiallyPlayed || !isMobile()) return;
+            if (hasInitiallyPlayed) return;
             setHasInitiallyPlayed(true);
             playVideo();
           },

@@ -27,7 +27,7 @@ export default function ChatNamePrompt(props: ChatNamePromptProps) {
       <form onSubmit={handleSubmit(props.onSetName)}>
         <Input
           placeholder="Your name"
-          className="input input-bordered input-primary"
+          className="input input-bordered input-secondary"
           {...register("name", {
             required: "Name is required.",
             minLength: 3,

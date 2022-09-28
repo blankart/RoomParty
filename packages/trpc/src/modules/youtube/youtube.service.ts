@@ -6,7 +6,7 @@ const SEARCH_LIMIT = 30;
 
 @injectable()
 class YoutubeService {
-  constructor() {}
+  constructor() { }
   async getVideosByQ(q: string) {
     const searchFilter = await ytrs.getFilters(q);
 

@@ -75,10 +75,10 @@ export default memo(function ReactPlayerRoomInfo(
           the link below:
         </p>
         <div
-          className="tooltip tooltip-accent"
+          className="tooltip tooltip-info"
           data-tip={`${process.env.NEXT_PUBLIC_WEB_BASE_URL}/rooms/${router.query.roomIdentificationId}`}
         >
-          <p className="!m-0 text-center italic text-md font-bold py-4 rounded-md ring-accent ring-1 relative break-all p-2">
+          <p className="!m-0 text-center italic text-md font-bold py-4 rounded-md ring-info ring-1 relative break-all p-2">
             {process.env.NEXT_PUBLIC_WEB_BASE_URL?.substring(0, 20) + "..."}
             /rooms/
             {router.query.roomIdentificationId}
@@ -103,13 +103,13 @@ export default memo(function ReactPlayerRoomInfo(
             href={process.env.NEXT_PUBLIC_WEB_BASE_URL}
             target="_blank"
             rel="noreferrer"
-            className="font-bold link link-accent"
+            className="font-bold link link-info"
           >
             {process.env.NEXT_PUBLIC_WEB_BASE_URL}
           </a>
           :
         </p>
-        <p className="text-4xl font-bold text-center !m-0 p-2 ring-1 ring-accent rounded-md">
+        <p className="text-4xl font-bold text-center !m-0 p-2 ring-1 ring-info rounded-md">
           {router.query.roomIdentificationId}
         </p>
       </Modal>
@@ -136,7 +136,7 @@ export default memo(function ReactPlayerRoomInfo(
           {showSettingsButton && <ReactPlayerRoomSettings id={props.id} />}
 
           <div
-            className="tooltip tooltip-primary tooltip-left"
+            className="tooltip tooltip-secondary tooltip-left"
             data-tip="Share with your friends"
           >
             <button
@@ -150,7 +150,7 @@ export default memo(function ReactPlayerRoomInfo(
 
           {showFavoriteButton && (
             <div
-              className="tooltip tooltip-primary tooltip-left"
+              className="tooltip tooltip-secondary tooltip-left"
               data-tip={
                 !isRoomFavorited ? "Add to Favorites" : "Remove to Favorites"
               }
@@ -178,7 +178,7 @@ export default memo(function ReactPlayerRoomInfo(
           )}
 
           <div
-            className="tooltip tooltip-primary tooltip-left"
+            className="tooltip tooltip-secondary tooltip-left"
             data-tip="Exit Room"
           >
             <Link href="/" passHref>

@@ -14,7 +14,7 @@ interface ClickableCardProps {
 
 export default function ClickableCard(props: ClickableCardProps) {
   const wrapperClassName = classNames(
-    "overflow-hidden rounded-lg bg-base-200 duration-100 border-2 border-transparent hover:border-primary flex md:block",
+    "overflow-hidden rounded-lg bg-base-200 duration-100 border-2 border-transparent hover:border-secondary flex md:block",
     props.className
   );
   let content = (
@@ -27,7 +27,7 @@ export default function ClickableCard(props: ClickableCardProps) {
           className="!m-0 aspect-video h-full md:h-[150px] object-cover w-[40%] md:w-full"
         />
       ) : (
-        <div className="!m-0 aspect-video max-h-[150px] bg-primary object-cover !w-full" />
+        <div className="!m-0 aspect-video max-h-[150px] bg-secondary object-cover !w-full" />
       )}
       <div className="p-4">{props.children}</div>
     </>

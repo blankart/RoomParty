@@ -2,8 +2,8 @@ import classNames from "classnames";
 import { FaSpinner } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import useChat from "./useChat";
-import { memo, useState } from "react";
-import Button from "@web/components/Button/Button";
+import { memo } from "react";
+import { BsArrowsCollapse } from "react-icons/bs";
 const ChatItem = dynamic(() => import("./ChatItem"), {
   ssr: false,
 });
@@ -23,7 +23,7 @@ export default memo(function Chat(props: ChatProps) {
     <>
       <div
         className={classNames(
-          "relative lg:h-screen flex flex-col shadow-xl",
+          "relative lg:h-screen flex flex-col shadow-xl duration-500 transition-all",
           !ctx.collapsed
             ? "w-full md:w-0 h-0 md:h-[50%]"
             : "w-full lg:w-[400px] h-[50%]"
@@ -31,15 +31,23 @@ export default memo(function Chat(props: ChatProps) {
       >
         <button
           aria-label={ctx.collapsed ? "Uncollapse" : "Collapse"}
-          className="hidden md:block absolute right-[100%] top-[50%] w-4 h-20 rounded-l-full bg-primary shadow-2xl z-10"
+          className="hidden md:block absolute right-[100%] top-[50%] w-4 h-20 rounded-l-full shadow-2xl z-10 btn btn-secondary btn-sm"
           onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}
         />
-        <section className="p-0 md:p-4 bg-base-200 tabs">
+        <button
+          className="absolute md:hidden bottom-[100%] right-[0] btn btn-xs p-2 rounded-t-full rounded-b-none btn-secondary"
+          aria-label={ctx.collapsed ? "Uncollapse" : "Collapse"}
+          onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
+          title={ctx.collapsed ? "Uncollapse" : "Collapse"}
+        >
+          <BsArrowsCollapse className="w-3 h-auto" />
+        </button>
+        <section className="w-full p-0 md:p-4 bg-base-200 tabs lg:w-[400px]">
           <VideoCall />
         </section>
 
-        <section className="flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100 overflow-hidden relative">
+        <section className="flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100 overflow-hidden relative w-full lg:w-[400px]">
           <section className="absolute inset-0 flex flex-col justify-end flex-1 h-full overflow-hidden bg-base-100">
             <div
               ref={ctx.chatsRef}

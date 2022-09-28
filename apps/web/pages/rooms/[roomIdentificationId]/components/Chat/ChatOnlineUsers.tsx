@@ -40,7 +40,7 @@ export default memo(function ChatOnlineUsers(props: ChatOnlineUsersProps) {
 
   return (
     <div
-      className="tooltip tooltip-right tooltip-primary"
+      className="tooltip tooltip-right tooltip-secondary"
       data-tip={`${data?.count} online user${
         (data?.count ?? 0) > 1 ? "s" : ""
       }`}
@@ -64,7 +64,7 @@ export default memo(function ChatOnlineUsers(props: ChatOnlineUsersProps) {
                   className="!m-0 w-6 h-6 relative rounded-full"
                 />
               ) : (
-                <div className="!m-0 w-full h-full text-[.9rem] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-primary rounded-full">
+                <div className="!m-0 w-full h-full text-[.9rem] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-secondary rounded-full">
                   {onlineInfo.name?.substring(0, 1)?.toUpperCase() ?? "U"}
                 </div>
               )}
@@ -75,7 +75,7 @@ export default memo(function ChatOnlineUsers(props: ChatOnlineUsersProps) {
         {(data?.count ?? 0) > 3 && (
           <div className="avatar placeholder">
             <div className="w-6 h-6 text-xs bg-neutral-focus text-neutral-content">
-              <div className="!m-0 w-full h-full text-[.9rem] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-primary rounded-full">
+              <div className="!m-0 w-full h-full text-[.9rem] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-secondary rounded-full">
                 +{data?.count ?? 0}
               </div>
             </div>
