@@ -33,7 +33,7 @@ class TemporaryChatsController {
         this.temporaryChatsEmitter.emitter.channel('SEND').emit(data.id, data)
     }
 
-    async chatsSubscription(data: ChatsSubscriptionSchema, user: CurrentUser) {
+    async chatSubscription(data: ChatsSubscriptionSchema, user: CurrentUser) {
         const tempRoomSessionMapKey = data.roomTransientId;
 
         const maybeRoom = await this.modelsService.client.room.findFirst({
