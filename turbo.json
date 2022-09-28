@@ -2,35 +2,21 @@
   "$schema": "https://turborepo.org/schema.json",
   "pipeline": {
     "build": {
-      "dependsOn": [
-        "^build",
-        "generate"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ]
+      "dependsOn": ["^build", "generate"],
+      "outputs": ["dist/**", ".next/**"]
     },
     "dev:build": {
-      "dependsOn": [
-        "^dev:build",
-        "build",
-        "typecheck"
-      ],
-      "outputs": [
-        "dist/**",
-        ".next/**"
-      ]
+      "dependsOn": ["^dev:build", "build", "typecheck"],
+      "outputs": ["dist/**", ".next/**"]
     },
     "generate": {
-      "outputs": [
-        "node_modules/.prisma/client/**"
-      ],
-      "inputs": [
-        "prisma/schema.prisma"
-      ]
+      "outputs": ["node_modules/.prisma/client/**"],
+      "inputs": ["prisma/schema.prisma"]
     },
     "test:unit": {
+      "cache": false
+    },
+    "test": {
       "cache": false
     },
     "typecheck": {
@@ -61,9 +47,7 @@
       "cache": false
     }
   },
-  "globalDependencies": [
-    ".env.local"
-  ],
+  "globalDependencies": [".env.local"],
   "globalEnv": [
     "PORT",
     "SERVER_ENV",

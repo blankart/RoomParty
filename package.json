@@ -18,6 +18,7 @@
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "test:unit": "turbo run test:unit --color",
+    "test": "turbo run test --color",
     "format": "prettier --write \"**/*.{ts,tsx,md,js}\"",
     "dev:build": "env-cmd --file .env.local turbo run dev:build",
     "dev:start": "env-cmd --file .env.local turbo run start",
