@@ -1,5 +1,5 @@
 {
-  "name": "@rooms2watch/web",
+  "name": "@partyfy/web",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -12,8 +12,8 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^2.9.8",
-    "@rooms2watch/shared-lib": "*",
-    "@rooms2watch/trpc": "*",
+    "@partyfy/shared-lib": "*",
+    "@partyfy/trpc": "*",
     "@tanstack/react-query": "^4.3.4",
     "@trpc/client": "^9.27.2",
     "@trpc/next": "^9.27.2",
@@ -42,9 +42,9 @@
     "zustand": "^4.1.1"
   },
   "devDependencies": {
-    "@rooms2watch/eslint-config-custom": "*",
-    "@rooms2watch/prisma-client": "*",
-    "@rooms2watch/tsconfig": "*",
+    "@partyfy/eslint-config-custom": "*",
+    "@partyfy/prisma-client": "*",
+    "@partyfy/tsconfig": "*",
     "@tailwindcss/forms": "^0.5.3",
     "@tailwindcss/line-clamp": "^0.4.2",
     "@tailwindcss/typography": "^0.5.7",

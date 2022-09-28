@@ -2,7 +2,7 @@ import * as trpc from "@trpc/server";
 import type {
   JwtPayloadDecoded,
   JwtVerifier,
-} from "@rooms2watch/auth-providers";
+} from "@partyfy/auth-providers";
 import { injectable, inject } from "inversify";
 import type * as trpcExpress from "@trpc/server/adapters/express";
 import { inferAsyncReturnType } from "@trpc/server";
@@ -16,7 +16,7 @@ type Context = inferAsyncReturnType<ReturnType<TRPCRouter["createContext"]>>;
 class TRPCRouter {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) {}
+  ) { }
   createContext(jwt: JwtVerifier) {
     return ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
       return {
@@ -38,7 +38,7 @@ class TRPCRouter {
         let user = null;
         try {
           decoded = await jwt(getAccessToken(ctx));
-        } catch {}
+        } catch { }
 
         if (decoded) {
           user = await this.modelsService.client.account.findFirst({
@@ -63,7 +63,7 @@ class TRPCRouter {
         let decoded: undefined | JwtPayloadDecoded;
         try {
           decoded = await jwt(getAccessToken(ctx));
-        } catch {}
+        } catch { }
 
         if (!decoded) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
 

@@ -3,7 +3,7 @@ import type {
   inferProcedureInput,
   inferSubscriptionOutput,
 } from "@trpc/server";
-import { AppRouter } from "@rooms2watch/trpc";
+import { AppRouter } from "@partyfy/trpc";
 /**
  * Enum containing all api query paths
  */

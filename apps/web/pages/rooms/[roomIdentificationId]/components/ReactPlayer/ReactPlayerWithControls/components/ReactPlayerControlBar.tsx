@@ -2,8 +2,8 @@ import classNames from "classnames";
 import { useEffect, useState } from "react";
 import { FaPause, FaPlay, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import _debounce from "lodash.debounce";
-import { convertTimeToFormattedTime } from "@rooms2watch/shared-lib";
-import { PlayerStatus } from "@rooms2watch/trpc";
+import { convertTimeToFormattedTime } from "@partyfy/shared-lib";
+import { PlayerStatus } from "@partyfy/trpc";
 
 export interface ReactPlayerControlBarProps {
   isPlayed: boolean;

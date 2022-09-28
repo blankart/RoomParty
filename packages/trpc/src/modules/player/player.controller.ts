@@ -6,7 +6,7 @@ import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type PlayerService from "./player.service";
 import PlayerEmitter from "./player.emitter";
 import { ControlSchema, StatusSubscriptionSchema } from "./player.dto";
-import { VideoPlatform } from "@rooms2watch/prisma-client";
+import { VideoPlatform } from "@partyfy/prisma-client";
 
 export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
 @injectable()

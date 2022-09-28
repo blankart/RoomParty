@@ -9,8 +9,8 @@ import { createTRPCClient as _createTRPCClient } from "@trpc/client";
 import superjson from "superjson";
 import { parseCookies } from "nookies";
 
-import type { AppRouter } from "@rooms2watch/trpc";
-import { ACCESS_TOKEN_KEY } from "@rooms2watch/shared-lib";
+import type { AppRouter } from "@partyfy/trpc";
+import { ACCESS_TOKEN_KEY } from "@partyfy/shared-lib";
 
 export const trpc = createReactQueryHooks<AppRouter>();
 

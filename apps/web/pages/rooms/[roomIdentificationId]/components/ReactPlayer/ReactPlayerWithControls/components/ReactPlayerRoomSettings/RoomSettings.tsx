@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RoomsDTO } from "@rooms2watch/trpc/dto";
-import { RoomsSchema } from "@rooms2watch/trpc/schema";
+import { RoomsDTO } from "@partyfy/trpc/dto";
+import { RoomsSchema } from "@partyfy/trpc/schema";
 import { trpc } from "@web/api";
 import Button from "@web/components/Button/Button";
 import Input from "@web/components/Input/Input";

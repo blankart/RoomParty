@@ -19,7 +19,7 @@ import type {
 import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type RoomsService from "./rooms.service";
 import RoomsEmitter from "./rooms.emitter";
-import { Prisma, VideoControlRights } from "@rooms2watch/prisma-client";
+import { Prisma, VideoControlRights } from "@partyfy/prisma-client";
 
 enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",
@@ -38,7 +38,7 @@ class RoomsController {
     @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
     @inject(EMITTER_TYPES.Rooms) private roomsEmitter: RoomsEmitter
-  ) {}
+  ) { }
   async findByRoomIdentificationId(
     data: FindByRoomIdentificationIdSchema,
     user: CurrentUser
@@ -300,15 +300,15 @@ class RoomsController {
             },
             ...(user
               ? [
-                  {
-                    user: {
-                      id: user.user.id,
-                    },
-                    room: {
-                      roomIdentificationId: data.roomIdentificationId,
-                    },
+                {
+                  user: {
+                    id: user.user.id,
                   },
-                ]
+                  room: {
+                    roomIdentificationId: data.roomIdentificationId,
+                  },
+                },
+              ]
               : []),
           ],
         },
@@ -333,21 +333,21 @@ class RoomsController {
 
       const updateObject = user
         ? {
-            name: data.userName,
-            user: {
-              connect: {
-                id: user.user.id,
-              },
+          name: data.userName,
+          user: {
+            connect: {
+              id: user.user.id,
             },
-          }
+          },
+        }
         : !!maybeExistingTransientUser
-        ? {
+          ? {
             name: data.userName,
             user: {
               disconnect: true,
             },
           }
-        : {
+          : {
             name: data.userName,
           };
 
@@ -365,12 +365,12 @@ class RoomsController {
         name: data.userName ?? "User",
         ...(user
           ? {
-              user: {
-                connect: {
-                  id: user?.user.id,
-                },
+            user: {
+              connect: {
+                id: user?.user.id,
               },
-            }
+            },
+          }
           : {}),
         localStorageSessionid: data.localStorageSessionId,
         room: {

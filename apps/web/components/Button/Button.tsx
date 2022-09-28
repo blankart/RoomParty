@@ -16,7 +16,7 @@ export default function Button({ disabled, loading, ...props }: ButtonProps) {
     <button
       {...props}
       className={classNames(
-        "btn btn-secondary",
+        "btn btn-info",
         disabled && "btn-disabled",
         props.className
       )}

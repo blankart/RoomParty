@@ -5,7 +5,7 @@ RUN apt-get install -y openssl
 WORKDIR /app
 RUN yarn global add turbo@latest
 COPY . .
-RUN turbo prune --scope=@rooms2watch/server --docker
+RUN turbo prune --scope=@partyfy/server --docker
 
 # Add lockfile and package.json's of isolated subworkspace
 FROM node:16-slim AS installer

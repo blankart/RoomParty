@@ -1,7 +1,7 @@
 import {
   createPrismaClient,
   CustomPrismaClient,
-} from "@rooms2watch/prisma-client";
+} from "@partyfy/prisma-client";
 import { injectable } from "inversify";
 
 @injectable()

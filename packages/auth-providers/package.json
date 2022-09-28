@@ -1,5 +1,5 @@
 {
-  "name": "@rooms2watch/auth-providers",
+  "name": "@partyfy/auth-providers",
   "version": "0.0.0",
   "main": "./dist/index.js",
   "types": "./index.ts",
@@ -12,14 +12,14 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@rooms2watch/prisma-client": "*",
+    "@partyfy/prisma-client": "*",
     "passport": "^0.6.0",
     "passport-google-oauth20": "^2.0.0",
-    "@rooms2watch/shared-lib": "*"
+    "@partyfy/shared-lib": "*"
   },
   "devDependencies": {
-    "@rooms2watch/eslint-config-custom": "*",
-    "@rooms2watch/tsconfig": "*",
+    "@partyfy/eslint-config-custom": "*",
+    "@partyfy/tsconfig": "*",
     "@types/express": "^4.17.14",
     "@types/node": "^17.0.12",
     "@types/passport": "^1.0.11",

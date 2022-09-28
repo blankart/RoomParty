@@ -1,4 +1,4 @@
-import { JwtVerifier } from "@rooms2watch/auth-providers";
+import { JwtVerifier } from "@partyfy/auth-providers";
 import appContainer from "../container/container";
 import { TRPC_ROUTER } from "../types/container";
 import TRPCRouter from "./router";

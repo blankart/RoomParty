@@ -10,12 +10,12 @@ import { randomUUID } from "crypto";
 import * as trpcExpress from "@trpc/server/adapters/express";
 import { applyWSSHandler } from "@trpc/server/adapters/ws";
 
-import { createRootRouter, createContext } from "@rooms2watch/trpc";
+import { createRootRouter, createContext } from "@partyfy/trpc";
 import {
   createAuthProviderJwt,
   initializeGoogleOAuth20Provider,
-} from "@rooms2watch/auth-providers";
-import { createPrismaClient } from "@rooms2watch/prisma-client";
+} from "@partyfy/auth-providers";
+import { createPrismaClient } from "@partyfy/prisma-client";
 
 const allowList = [process.env.WEB_BASE_URL];
 const port = process.env.SERVER_PORT || process.env.PORT || 8000;

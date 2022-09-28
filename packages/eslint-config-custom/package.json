@@ -1,5 +1,5 @@
 {
-  "name": "@rooms2watch/eslint-config-custom",
+  "name": "@partyfy/eslint-config-custom",
   "version": "0.0.0",
   "main": "index.js",
   "license": "MIT",

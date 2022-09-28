@@ -1,3 +1,3 @@
-import type { Account, User } from "@rooms2watch/prisma-client";
+import type { Account, User } from "@partyfy/prisma-client";
 
 export type CurrentUser = (Account & { user: User }) | null | undefined;

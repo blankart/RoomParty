@@ -13,7 +13,7 @@ interface RoomItemProps extends FindMyRoomQueryOutput {
 
 export default function RoomItem(props: RoomItemProps) {
   return (
-    <div className="overflow-visible no-underline duration-100 rounded-none card w-96 bg-base-100 basis-[400px]">
+    <div className="no-underline duration-100 rounded-2xl overflow-hidden card w-96 bg-base-100 basis-[300px]">
       <figure className="!m-0">
         {props.thumbnail ? (
           <img
@@ -22,7 +22,7 @@ export default function RoomItem(props: RoomItemProps) {
             alt={props.name}
           />
         ) : (
-          <div className="!m-0 !p-0 w-full object-cover bg-primary h-[150px]" />
+          <div className="!m-0 !p-0 w-full object-cover bg-info h-[150px]" />
         )}
       </figure>
       <div className="card-body">

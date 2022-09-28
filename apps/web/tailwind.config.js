@@ -16,6 +16,6 @@ module.exports = {
 
   daisyui: {
     log: true,
-    themes: ["business", "light"],
+    themes: ["halloween", "cupcake"],
   },
 };

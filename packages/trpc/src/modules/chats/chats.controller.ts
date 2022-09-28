@@ -1,5 +1,5 @@
 import { Subscription, TRPCError } from "@trpc/server";
-import type { Chat } from "@rooms2watch/prisma-client";
+import type { Chat } from "@partyfy/prisma-client";
 import type { CurrentUser } from "../../types/user";
 import type ModelsService from "../models/models.service";
 import type _RoomsService from "../rooms/rooms.service";
@@ -20,7 +20,7 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) {}
+  ) { }
   async chats(data: ChatsSchema) {
     return await this.modelsService.client.room
       .findFirst({
@@ -55,13 +55,13 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-              color: data.color,
-              user: {
-                connect: {
-                  id: data.userId,
-                },
+            color: data.color,
+            user: {
+              connect: {
+                id: data.userId,
               },
-            }
+            },
+          }
           : {}),
       },
     });

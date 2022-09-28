@@ -1,4 +1,4 @@
-export const APP_NAME = "rooms2watch";
+export const APP_NAME = "partyfy";
 
 export const ACCESS_TOKEN_KEY = `__${APP_NAME}-access-token`;
 

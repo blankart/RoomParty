@@ -1,5 +1,5 @@
 {
-  "extends": "@rooms2watch/tsconfig/base.json",
+  "extends": "@partyfy/tsconfig/base.json",
   "include": ["."],
   "exclude": ["node_modules", "dist"],
   "compilerOptions": {

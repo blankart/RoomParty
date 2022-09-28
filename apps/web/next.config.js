@@ -1,4 +1,4 @@
-const withTM = require("next-transpile-modules")(["@rooms2watch/shared-lib"]);
+const withTM = require("next-transpile-modules")(["@partyfy/shared-lib"]);
 const { withSuperjson } = require("next-superjson");
 
 // module.exports = withTM({

@@ -4,8 +4,8 @@ import type ChatsService from "../chats/chats.service";
 import { inject, injectable } from "inversify";
 import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import ChatsEmitter from "../chats/chats.emitter";
-import { convertTimeToFormattedTime } from "@rooms2watch/shared-lib";
-import { Room } from "@rooms2watch/prisma-client";
+import { convertTimeToFormattedTime } from "@partyfy/shared-lib";
+import { Room } from "@partyfy/prisma-client";
 
 export const RoomSyncIntervalMap = new Map<string, NodeJS.Timer>();
 
@@ -15,7 +15,7 @@ class PlayerService {
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) {}
+  ) { }
 
   async synchronizeScrubTime({
     id,
@@ -68,17 +68,15 @@ class PlayerService {
 
     switch (params.data.statusObject.type) {
       case "SEEK_TO":
-        message = `${
-          params.data.statusObject.name
-        } jumped the video to ${convertTimeToFormattedTime(
-          params.data.statusObject.time
-        )}.`;
+        message = `${params.data.statusObject.name
+          } jumped the video to ${convertTimeToFormattedTime(
+            params.data.statusObject.time
+          )}.`;
         break;
       case "PAUSED":
       case "PLAYED":
-        message = `${params.data.statusObject.name} ${
-          params.data.statusObject.type === "PAUSED" ? "paused" : "played"
-        } the video.`;
+        message = `${params.data.statusObject.name} ${params.data.statusObject.type === "PAUSED" ? "paused" : "played"
+          } the video.`;
         break;
       case "CHANGE_URL":
         if (

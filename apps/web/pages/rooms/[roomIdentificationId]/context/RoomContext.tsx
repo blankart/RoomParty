@@ -10,7 +10,7 @@ import { FaKey, FaSpinner } from "react-icons/fa";
 import {
   CHAT_LOCAL_STORAGE_SESSION_KEY,
   CHAT_NAME_KEY,
-} from "@rooms2watch/shared-lib";
+} from "@partyfy/shared-lib";
 import { BsPlayCircleFill } from "react-icons/bs";
 import { RoomsDTO } from "@web/../../packages/trpc/dto";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -53,11 +53,19 @@ function RoomWrapper(props: {
 }) {
   return (
     <div className="absolute inset-0 flex flex-col items-center justify-center prose max-w-none">
+      <video
+        className="absolute inset-0 w-full opacity-5  blur-lg !m-0 h-full object-cover"
+        autoPlay
+        loop
+        muted
+      >
+        <source src="/images/bg.mp4" type="video/mp4" />
+      </video>
       <h1 className="text-3xl font-bold md:text-5xl">
         <BsPlayCircleFill className="inline mr-4" />
-        rooms2watch
+        partyfy
       </h1>
-      <div className="w-[min(400px,100%)] p-8 shadow-2xl">
+      <div className="w-[min(400px,100%)] p-8 shadow-2xl bg-base-100 z-20">
         <div className="py-2 space-x-2 text-xl font-bold">{props.title}</div>
         {props.children}
       </div>
@@ -113,7 +121,10 @@ function RoomPasswordPrompt(props: RoomModalProps) {
         </>
       }
     >
-      <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+      <form
+        className="flex flex-col bg-base-100"
+        onSubmit={handleSubmit(onSubmit)}
+      >
         <p className="text-sm">
           This room is password protected. Please enter room password.
         </p>
@@ -285,7 +296,7 @@ export function RoomProvider(props: { children?: React.ReactNode }) {
   if (roomPermissions && !userName) {
     return (
       <RoomWrapper title={<>Enter your name</>}>
-        <div className="flex flex-col">
+        <div className="flex flex-col bg-base-100">
           <ChatNamePrompt
             onSetName={(prompt) => setUserNameFromLocalStorage(prompt.name)}
           />

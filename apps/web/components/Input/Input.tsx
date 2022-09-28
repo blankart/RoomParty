@@ -37,7 +37,7 @@ function InputWithoutForwardedRef(
         id={"input-" + id}
         {...props}
         className={classNames(
-          "w-full input input-bordered input-primary duration-100",
+          "w-full input input-bordered input-info duration-100",
           props.className,
           {
             "input-error": !!props.error,

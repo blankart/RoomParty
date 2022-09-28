@@ -10,8 +10,8 @@ interface DashboardLayoutProps {
   children?: React.ReactNode;
 }
 
-export const LIGHT_THEME = "light";
-export const DARK_THEME = "business";
+export const LIGHT_THEME = "cupcake";
+export const DARK_THEME = "halloween";
 
 export default function DashboardLayout(props: DashboardLayoutProps) {
   const { user, isLoading, handleSignout } = useMe();
@@ -24,6 +24,15 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
 
   return (
     <div className="absolute inset-0 flex flex-col w-full overflow-y-auto prose max-w-none">
+      <video
+        className="fixed inset-0 w-full opacity-40 dark:opacity-10 blur-lg !m-0 h-full object-cover z-[-1]"
+        autoPlay
+        loop
+        muted
+        preload="none"
+      >
+        <source src="/images/bg.mp4" type="video/mp4" />
+      </video>
       <div className="p-4 navbar bg-base-100">
         <div className="navbar-start">
           {!!user && (
@@ -50,7 +59,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
               >
                 <li>
                   <Link href="/">
-                    <a className="link">rooms2watch</a>
+                    <a className="link">partyfy</a>
                   </Link>
                 </li>
                 <li>
@@ -66,7 +75,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
           <Link href="/" passHref>
             <a className="text-xl normal-case btn btn-ghost">
               <BsPlayCircleFill className="inline mr-2" />
-              rooms2watch
+              partyfy
             </a>
           </Link>
         </div>
@@ -101,7 +110,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                       data-tip={user?.user?.name}
                     >
                       <button className="avatar online">
-                        <div className="rounded-full w-7 md:w-10 ring ring-primary ring-offset-base-100 ring-offset-2">
+                        <div className="rounded-full w-7 md:w-10 ring ring-info ring-offset-base-100 ring-offset-2">
                           <img src={user?.user?.picture!} className="!m-0" />
                         </div>
                       </button>
@@ -140,45 +149,41 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
               )}
             </>
           )}
-
-          {/* <button className="btn btn-ghost btn-circle">
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-              />
-            </svg>
-          </button>
-          <button className="btn btn-ghost btn-circle">
-            <div className="indicator">
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth="2"
-                  d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"
-                />
-              </svg>
-              <span className="badge badge-xs badge-primary indicator-item"></span>
-            </div>
-          </button> */}
         </div>
       </div>
-      <>{props.children}</>
+      <div className="z-10">
+        <>{props.children}</>
+      </div>
+      <footer className="bg-neutral">
+        {/* <div className="container p-10 mx-auto footer">
+          <div>
+            <span className="text-white footer-title">Services</span>
+            <a className="text-white link link-hover">Branding</a>
+            <a className="text-white link link-hover">Design</a>
+            <a className="text-white link link-hover">Marketing</a>
+            <a className="text-white link link-hover">Advertisement</a>
+          </div>
+          <div>
+            <span className="text-white footer-title">Company</span>
+            <a className="text-white link link-hover">Branding</a>
+            <a className="text-white link link-hover">Design</a>
+            <a className="text-white link link-hover">Marketing</a>
+            <a className="text-white link link-hover">Advertisement</a>
+          </div>
+          <div>
+            <span className="text-white footer-title">Legal</span>
+            <a className="text-white link link-hover">Branding</a>
+            <a className="text-white link link-hover">Design</a>
+            <a className="text-white link link-hover">Marketing</a>
+            <a className="text-white link link-hover">Advertisement</a>
+          </div>
+        </div> */}
+        <div className="container mx-auto">
+          <p className="text-sm text-center md:text-md">
+            Copyright © partyfy 2022
+          </p>
+        </div>
+      </footer>
     </div>
   );
 }

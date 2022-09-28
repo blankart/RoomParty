@@ -1,5 +1,5 @@
 {
-  "name": "@rooms2watch/prisma-client",
+  "name": "@partyfy/prisma-client",
   "version": "1.0.0",
   "main": "./dist/index.js",
   "types": "./index.ts",
@@ -18,12 +18,12 @@
   "dependencies": {
     "@prisma/client": "^4.3.1",
     "prisma": "^4.3.1",
-    "@rooms2watch/shared-lib": "*"
+    "@partyfy/shared-lib": "*"
   },
   "devDependencies": {
     "@types/node": "^18.7.18",
-    "@rooms2watch/tsconfig": "*",
-    "@rooms2watch/eslint-config-custom": "*",
+    "@partyfy/tsconfig": "*",
+    "@partyfy/eslint-config-custom": "*",
     "ts-node": "^10.9.1",
     "tsc-watch": "^5.0.3",
     "typescript": "^4.8.3"

@@ -1,5 +1,5 @@
 {
-  "name": "@rooms2watch/server",
+  "name": "@partyfy/server",
   "version": "0.0.0",
   "private": true,
   "scripts": {
@@ -9,10 +9,10 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@rooms2watch/auth-providers": "*",
-    "@rooms2watch/prisma-client": "*",
-    "@rooms2watch/shared-lib": "*",
-    "@rooms2watch/trpc": "*",
+    "@partyfy/auth-providers": "*",
+    "@partyfy/prisma-client": "*",
+    "@partyfy/shared-lib": "*",
+    "@partyfy/trpc": "*",
     "@trpc/server": "^9.27.2",
     "@types/express": "^4.17.13",
     "@types/jsonwebtoken": "^8.5.9",
@@ -26,8 +26,8 @@
     "zod": "^3.19.0"
   },
   "devDependencies": {
-    "@rooms2watch/eslint-config-custom": "*",
-    "@rooms2watch/tsconfig": "*",
+    "@partyfy/eslint-config-custom": "*",
+    "@partyfy/tsconfig": "*",
     "@types/cors": "^2.8.12",
     "@types/express-session": "^1.17.5",
     "@types/jsonwebtoken": "^8.5.9",

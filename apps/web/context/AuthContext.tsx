@@ -4,7 +4,7 @@ import { parseCookies, destroyCookie } from "nookies";
 import { useRouter } from "next/router";
 
 import { trpc } from "@web/api";
-import { ACCESS_TOKEN_KEY } from "@rooms2watch/shared-lib";
+import { ACCESS_TOKEN_KEY } from "@partyfy/shared-lib";
 
 // Only used for inferring types
 function useQueryUsersMe() {

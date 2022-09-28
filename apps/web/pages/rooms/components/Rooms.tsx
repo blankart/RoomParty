@@ -80,19 +80,19 @@ export default function Rooms() {
       )}
       <h1 className="mt-10 text-center">My Rooms</h1>
       {shouldShowLoadingIndicator ? (
-        <div className="flex flex-wrap gap-4 p-4 max-w-[min(1300px,100vw)] justify-center mx-auto h-[400px]">
+        <div className="flex flex-wrap gap-4 p-4 max-w-[min(1000px,100%)] justify-center mx-auto h-[400px]">
           <FaSpinner className="w-12 h-auto animate-spin" />
         </div>
       ) : (
         <>
           {!!myRooms?.length ? (
-            <div className="flex flex-wrap gap-4 p-4 max-w-[min(1300px,100vw)] justify-center mx-auto">
+            <div className="flex flex-wrap gap-4 p-4 max-w-[min(1000px,100%)] justify-center mx-auto">
               {myRooms.map((room) => (
                 <RoomItem key={room.id} {...room} handleDelete={handleDelete} />
               ))}
             </div>
           ) : (
-            <div className="min-h-[min(800px,80vh)] w-full flex flex-col justify-center items-center p-4">
+            <div className="min-h-[min(1000px,100%)] w-full flex flex-col justify-center items-center p-4">
               <FaSadTear className="w-20 h-auto" />
               <h2 className="text-lg text-center md:text-2xl">
                 No rooms created yet.{" "}
