@@ -111,7 +111,11 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                     >
                       <button className="avatar online" aria-label="User Menu">
                         <div className="rounded-full w-7 md:w-10 ring ring-info ring-offset-base-100 ring-offset-2">
-                          <img src={user?.user?.picture!} className="!m-0" />
+                          <img
+                            src={user?.user?.picture!}
+                            className="!m-0"
+                            alt="User profile image"
+                          />
                         </div>
                       </button>
                     </label>

@@ -49,10 +49,10 @@ export default function CreateARoomCard() {
           onSubmit={handleSubmit(onCreateRoom)}
           className="flex flex-col justify-center flex-1 gap-3"
         >
-          <h3>
+          <h2>
             Create a room and watch <FaYoutube className="inline mb-1" />{" "}
             together with your friends!
-          </h3>
+          </h2>
           <div className="flex flex-col">
             <Input
               type="text"

@@ -61,7 +61,7 @@ export default function JoinARoomCard(props: JoinARoomCardProps) {
           onSubmit={handleSubmit(onJoinRoom)}
           className="flex flex-col justify-center flex-1 gap-3"
         >
-          <h3>Join an existing room by entering the room ID below!</h3>
+          <h2>Join an existing room by entering the room ID below!</h2>
           <div className="flex flex-col">
             <Input
               type="text"
