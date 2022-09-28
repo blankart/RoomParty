@@ -39,6 +39,7 @@ export default memo(function ReactPlayerWithControls2() {
             {!control.isControlsDisabled && <VideoSearch />}
             {showPlayPauseOverlay && (
               <button
+                aria-label={control.isPlayed ? "Pause video" : "Play video"}
                 className="absolute inset-0 z-[1]"
                 onClick={
                   !hasEnded && (scrubTime < duration || isLive)

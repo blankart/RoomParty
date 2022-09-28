@@ -29,6 +29,7 @@ export default function ReactPlayerRoomSettings(
         data-tip="Room Settings"
       >
         <button
+          aria-label="Room settings"
           className={classNames("btn btn-ghost btn-sm btn-circle")}
           onClick={() => setShowRoomSettings(true)}
         >

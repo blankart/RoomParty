@@ -62,7 +62,11 @@ export default function CreateARoomCard() {
               disabled={isLoading}
             />
           </div>
-          <Button loading={isLoading} disabled={isLoading}>
+          <Button
+            loading={isLoading}
+            disabled={isLoading}
+            aria-label="Create a room"
+          >
             Create a room
           </Button>
         </form>

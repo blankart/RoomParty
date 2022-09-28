@@ -109,7 +109,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                       className="tooltip tooltip-left tooltip-primary"
                       data-tip={user?.user?.name}
                     >
-                      <button className="avatar online">
+                      <button className="avatar online" aria-label="User Menu">
                         <div className="rounded-full w-7 md:w-10 ring ring-info ring-offset-base-100 ring-offset-2">
                           <img src={user?.user?.picture!} className="!m-0" />
                         </div>
@@ -121,6 +121,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                     >
                       <li>
                         <button
+                          aria-label="Logout"
                           className="text-xs md:text-sm btn-xs md:btn-md"
                           onClick={handleSignout}
                         >
@@ -136,6 +137,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                   data-tip="Login with Google"
                 >
                   <button
+                    aria-label="Login with Google"
                     className="btn btn-sm btn-circle btn-outline"
                     onClick={() => {
                       (window as any).location =

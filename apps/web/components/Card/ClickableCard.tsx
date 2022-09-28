@@ -35,7 +35,11 @@ export default function ClickableCard(props: ClickableCardProps) {
 
   if (!props.href) {
     content = (
-      <button className={wrapperClassName} onClick={props.onClick}>
+      <button
+        aria-label={props.href}
+        className={wrapperClassName}
+        onClick={props.onClick}
+      >
         {content}
       </button>
     );

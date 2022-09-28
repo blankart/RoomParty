@@ -162,6 +162,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
       </div>
 
       <Button
+        aria-label="Save settings"
         type="submit"
         role="submit"
         loading={isLoading}

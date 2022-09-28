@@ -35,6 +35,7 @@ export default function FavoritedRoomItem(props: FavoritedRoomItemProps) {
           </span>
           <span className="tooltip" data-tip="Remove to Favorites">
             <button
+              aria-label={"Remote to favorites"}
               className="btn btn-sm btn-ghost btn-circle"
               onClick={() => props.handleToggleFavorite(props.id)}
             >

@@ -45,7 +45,10 @@ export default memo(function ChatOnlineUsers(props: ChatOnlineUsersProps) {
         (data?.count ?? 0) > 1 ? "s" : ""
       }`}
     >
-      <button className="inline-block p-1 -space-x-3 align-middle avatar-group">
+      <button
+        className="inline-block p-1 -space-x-3 align-middle avatar-group"
+        aria-label="Online users"
+      >
         {first3OnlineInfo.map((onlineInfo, i) => (
           <div
             className={classNames(

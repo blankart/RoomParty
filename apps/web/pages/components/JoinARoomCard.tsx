@@ -72,7 +72,11 @@ export default function JoinARoomCard(props: JoinARoomCardProps) {
               disabled={isFetching}
             />
           </div>
-          <Button loading={isFetching} disabled={isFetching}>
+          <Button
+            loading={isFetching}
+            disabled={isFetching}
+            aria-label="Join room"
+          >
             Join room
           </Button>
         </form>

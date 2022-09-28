@@ -46,6 +46,7 @@ export default function Modal(props: ModalProps) {
           <div className={classNames("modal-box", props.containerClassName)}>
             {props.showCloseButton && (
               <button
+                aria-label="Close modal"
                 className="absolute top-2 right-2 btn btn-sm btn-circle btn-ghost"
                 onClick={props.onClose}
               >

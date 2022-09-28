@@ -36,7 +36,9 @@ export default function ChatNamePrompt(props: ChatNamePromptProps) {
           error={errors.name?.message}
         />
 
-        <Button className="w-full btn btn-sm">Let me in!</Button>
+        <Button className="w-full btn btn-sm" aria-label="Let me in">
+          Let me in!
+        </Button>
       </form>
     </>
   );

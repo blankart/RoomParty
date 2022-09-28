@@ -98,6 +98,7 @@ export default function ReactPlayerControlBar(
         )}
       >
         <button
+          aria-label={props.isPlayed ? "Pause video" : "Play video"}
           className={classNames(
             "flex items-center justify-center h-full p-2 btn btn-xs btn-ghost relative",
             shouldDisablePlayButton && "btn-disabled"
@@ -149,6 +150,7 @@ export default function ReactPlayerControlBar(
           <div className="w-[70px] p-2 text-xs">
             {props.isLive ? (
               <button
+                aria-label="Seek to live"
                 onClick={async () => {
                   if (props.duration === Infinity) {
                     await props.onSeek(100);

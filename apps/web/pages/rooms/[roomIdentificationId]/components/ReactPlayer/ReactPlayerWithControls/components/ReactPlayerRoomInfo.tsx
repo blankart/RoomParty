@@ -83,6 +83,7 @@ export default memo(function ReactPlayerRoomInfo(
             /rooms/
             {router.query.roomIdentificationId}
             <button
+              aria-label="Copy link"
               className="mx-2 btn btn-xs btn-circle btn-ghost"
               onClick={() => {
                 navigator.clipboard.writeText(
@@ -139,6 +140,7 @@ export default memo(function ReactPlayerRoomInfo(
             data-tip="Share with your friends"
           >
             <button
+              aria-label="Share with your friends"
               className="btn btn-ghost btn-sm btn-circle"
               onClick={onClickShareWithYourFriends}
             >
@@ -154,6 +156,9 @@ export default memo(function ReactPlayerRoomInfo(
               }
             >
               <button
+                aria-label={
+                  !isRoomFavorited ? "Add to Favorites" : "Remove to Favorites"
+                }
                 className={classNames(
                   "btn btn-ghost btn-sm btn-circle",
                   isRoomFavoritedLoading && "btn-disabled"

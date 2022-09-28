@@ -76,6 +76,7 @@ export default memo(function FacebookVideoSearch(props: VideoSearchProps) {
         )}
       >
         <button
+          aria-label="Close modal"
           className="fixed md:absolute btn btn-ghost btn-sm top-2 right-2 btn-circle"
           onClick={props.onCloseModal}
         >
@@ -107,7 +108,9 @@ export default memo(function FacebookVideoSearch(props: VideoSearchProps) {
               })}
               error={errors?.link?.message}
             />
-            <Button className="w-full btn-sm md:btn-md">Watch</Button>
+            <Button className="w-full btn-sm md:btn-md" aria-label="Watch">
+              Watch
+            </Button>
           </form>
         </div>
       </div>
