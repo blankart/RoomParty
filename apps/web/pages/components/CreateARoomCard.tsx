@@ -49,7 +49,7 @@ export default function CreateARoomCard() {
           onSubmit={handleSubmit(onCreateRoom)}
           className="flex flex-col justify-center flex-1 gap-3"
         >
-          <h2>
+          <h2 className="text-lg lg:text-2xl">
             Create a room and watch <FaYoutube className="inline mb-1" />{" "}
             together with your friends!
           </h2>
@@ -63,6 +63,7 @@ export default function CreateARoomCard() {
             />
           </div>
           <Button
+            className="btn-sm lg:btn-md"
             loading={isLoading}
             disabled={isLoading}
             aria-label="Create a room"

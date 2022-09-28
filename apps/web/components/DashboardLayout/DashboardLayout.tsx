@@ -157,7 +157,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
           )}
         </div>
       </div>
-      <div className="z-10">
+      <div className="z-10 flex-1">
         <>{props.children}</>
       </div>
       <footer className="bg-neutral">

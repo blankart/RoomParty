@@ -142,7 +142,7 @@ export default function IndexPage() {
         </div>
 
         <section className="bg-info px-4 py-10 mt-10 w-[100%] xl:mt-[150px]">
-          <h1 className="text-center">
+          <h1 className="text-2xl text-center lg:text-4xl">
             Create your first <b>RoomParty</b> room
           </h1>
           <div className="flex flex-col items-center justify-center gap-4 md:flex-row">
