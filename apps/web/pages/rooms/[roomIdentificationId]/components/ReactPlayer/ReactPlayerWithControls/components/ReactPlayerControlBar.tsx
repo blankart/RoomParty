@@ -92,7 +92,7 @@ export default function ReactPlayerControlBar(
         className={classNames(
           "flex duration-300 items-center w-full h-8 gap-2 bg-base-100 z-[2]",
           {
-            "h-0 overflow-hidden":
+            "!h-0 overflow-hidden":
               !props.hasInitiallyPlayed || props.isControlsDisabled,
           }
         )}
