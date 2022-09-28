@@ -1,8 +1,8 @@
 import type { Chat } from "@RoomParty/prisma-client";
+import { TemporaryChat } from "@RoomParty/trpc";
 import create from "zustand";
 
 export interface RoomsStore {
-  chats?: Chat[];
   id?: string;
   name?: string;
   collapsed: boolean;
@@ -17,23 +17,36 @@ export interface RoomsStore {
   thumbnail?: string;
 
   set: (roomStore?: Partial<RoomsStore>) => void;
-  addChat: (chat: Chat) => void;
-  chatsLength: () => number;
+
+  // addChat: (chat: Chat) => void;
+  // chatsLength: () => number;
+  // chats?: Chat[];
+
+  addTemporaryChat: (chat: TemporaryChat) => void
+  temporaryChatsLength: () => number;
+  temporaryChats: TemporaryChat[];
 }
 
 export const useRoomsStore = create<RoomsStore>((set, get) => ({
-  chats: [],
   collapsed: true,
 
   isPlayed: true,
   scrubTime: 0,
   tabSessionId: Math.floor((Math.random() * 1_000_000) % 1_000_0),
 
-  chatsLength: () => get().chats?.length ?? 0,
-  addChat: (chat) =>
-    set((state) => ({
-      ...state,
-      chats: state.chats ? [...state.chats, chat] : [chat],
-    })),
+  // chats: [],
+  // chatsLength: () => get().chats?.length ?? 0,
+  // addChat: (chat) =>
+  //   set((state) => ({
+  //     ...state,
+  //     chats: state.chats ? [...state.chats, chat] : [chat],
+  //   })),
+  temporaryChats: [],
+  temporaryChatsLength: () => get().temporaryChats?.length ?? 0,
+  addTemporaryChat: (chat) => set((state) => ({
+    ...state,
+    chats: [...state.temporaryChats, chat],
+  }))
+  ,
   set: (newState) => set((state) => ({ ...state, ...newState })),
 }));

@@ -1,9 +1,14 @@
-import { InferQueryOutput } from "@web/types/trpc";
+import { TemporaryChat } from "@RoomParty/trpc";
+// import { InferQueryOutput } from "@web/types/trpc";
 import reactStringReplace from "react-string-replace";
 
-export type ChatsQueryOutput = InferQueryOutput<"chats.chats">[number];
+// export type ChatsQueryOutput = InferQueryOutput<"chats.chats">[number];
 
-interface ChatItemProps extends ChatsQueryOutput {
+// interface ChatItemProps extends ChatsQueryOutput {
+//   owner: string | undefined;
+// }
+
+interface ChatItemProps extends TemporaryChat {
   owner: string | undefined;
 }
 

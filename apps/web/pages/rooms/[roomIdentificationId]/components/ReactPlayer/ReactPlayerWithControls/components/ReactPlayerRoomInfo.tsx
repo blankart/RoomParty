@@ -126,10 +126,12 @@ export default memo(function ReactPlayerRoomInfo(
               <FaLock className="inline w-3 h-auto align-middle" />
             )}
           </div>
-          {!!props.owner?.user.name && (
+          {!!props.owner?.user.name ? (
             <p className="!m-0 text-xs md:text-lg">
               Hosted by: {props.owner?.user.name}
             </p>
+          ) : (
+            <p className="!m-0 text-xs md:text-lg">Temporary Room</p>
           )}
         </div>
         <div className="flex gap-2">

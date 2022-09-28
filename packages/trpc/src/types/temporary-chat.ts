@@ -3,4 +3,5 @@ export interface TemporaryChat {
     message: string
     color?: string
     isSystemMessage?: boolean
+    userId?: string
 }

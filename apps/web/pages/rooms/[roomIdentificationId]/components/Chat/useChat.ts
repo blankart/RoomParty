@@ -28,9 +28,12 @@ export default function useChat(props: ChatProps) {
       collapsed: s.collapsed,
       id: s.id,
       set: s.set,
-      chats: s.chats,
-      addChat: s.addChat,
-      chatsLength: s.chatsLength,
+      // chats: s.chats,
+      // addChat: s.addChat,
+      // chatsLength: s.chatsLength,
+      temporaryChats: s.temporaryChats,
+      temporaryChatsLength: s.temporaryChatsLength,
+      addTemporaryChat: s.addTemporaryChat,
       name: s.name,
     }),
     shallow
@@ -62,19 +65,9 @@ export default function useChat(props: ChatProps) {
     }
   );
 
-  const chatsFetchedOnceRef = useRef<boolean>(false);
-
-  useEffect(() => {
-    if (chatsFetchedOnceRef.current || !data || !roomStore.chats) return;
-    roomStore.set({
-      chats: uniqBy([...data, ...roomStore.chats], (c) => c.id),
-    });
-    chatsFetchedOnceRef.current = true;
-  }, [data, roomStore.chats]);
-
   trpc.useSubscription(
     [
-      "chats.chatSubscription",
+      "temporary-chats.chatSubscription",
       {
         id: roomStore.id!,
         name: userName,
@@ -86,15 +79,55 @@ export default function useChat(props: ChatProps) {
     {
       enabled: shouldEnableQueries && !!roomTransientId,
       onNext: (data) => {
-        roomStore.addChat(data);
+        roomStore.set({ temporaryChats: [...useRoomsStore.getState().temporaryChats, data] })
         removeUnusedLocalStorageItems();
       },
     }
   );
 
+  // const chatsFetchedOnceRef = useRef<boolean>(false);
+
+  // useEffect(() => {
+  //   if (chatsFetchedOnceRef.current || !data || !roomStore.chats) return;
+  //   roomStore.set({
+  //     chats: uniqBy([...data, ...roomStore.chats], (c) => c.id),
+  //   });
+  //   chatsFetchedOnceRef.current = true;
+  // }, [data, roomStore.chats]);
+
+  // trpc.useSubscription(
+  //   [
+  //     "chats.chatSubscription",
+  //     {
+  //       id: roomStore.id!,
+  //       name: userName,
+  //       localStorageSessionId: localStorageSessionId!,
+  //       roomTransientId: roomTransientId!,
+  //       password: password ?? "",
+  //     },
+  //   ],
+  //   {
+  //     enabled: shouldEnableQueries && !!roomTransientId,
+  //     onNext: (data) => {
+  //       roomStore.addChat(data);
+  //       removeUnusedLocalStorageItems();
+  //     },
+  //   }
+  // );
+
   const toast = useToast();
 
-  const { mutateAsync: send } = trpc.useMutation(["chats.send"], {
+  // const { mutateAsync: send } = trpc.useMutation(["chats.send"], {
+  //   onError(error, variables, context) {
+  //     toast.add(error.message, "error", "chat-exceed-limit");
+  //   },
+  // });
+
+  // useEffect(() => {
+  //   scrollChatsToBottom();
+  // }, [roomStore.chatsLength()]);
+
+  const { mutateAsync: send } = trpc.useMutation(["temporary-chats.send"], {
     onError(error, variables, context) {
       toast.add(error.message, "error", "chat-exceed-limit");
     },
@@ -112,19 +145,28 @@ export default function useChat(props: ChatProps) {
     if (!roomStore.id) return;
     let color = userNameChatColorFromLocalStorage;
     if (!color) color = randomColor();
+    // send({
+    //   name: userName,
+    //   message: data.message,
+    //   id: roomStore.id,
+    //   userId: user?.user?.id,
+    //   color,
+    // });
     send({
       name: userName,
       message: data.message,
       id: roomStore.id,
       userId: user?.user?.id,
       color,
-    });
+      roomTransientId: roomTransientId!
+    })
     setUserNameChatColorFromLocalStorage(color);
   }
 
   useEffect(() => {
     scrollChatsToBottom();
-  }, [roomStore.chatsLength()]);
+  }, [roomStore.temporaryChatsLength()]);
+
 
   useEffect(() => {
     const newId = roomStore.id ?? (router.query?.id as string | undefined);

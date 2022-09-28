@@ -2,7 +2,7 @@ import { Subscription, TRPCError } from "@trpc/server";
 import { inject, injectable } from "inversify";
 
 import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
-import { TemporaryChat } from "../../types/temporary-chats";
+import { TemporaryChat } from "../../types/temporary-chat";
 import { CurrentUser } from "../../types/user";
 import ChatsService from "../chats/chats.service";
 import ModelsService from "../models/models.service";

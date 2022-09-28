@@ -1,6 +1,6 @@
 import { inject, injectable } from "inversify";
 import { SERVICES_TYPES } from "../../types/container";
-import { TemporaryChat } from '../../types/temporary-chats'
+import { TemporaryChat } from '../../types/temporary-chat'
 import EmitterService from "../emitter/emitter.service";
 
 interface EmitterTypes {

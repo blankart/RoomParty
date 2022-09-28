@@ -60,10 +60,18 @@ export default memo(function Chat(props: ChatProps) {
                   <FaSpinner className="w-10 h-auto animate-spin" />
                 </div>
               )}
-              {!ctx.isLoading && ctx.userName && !ctx.isFetching && (
+              {/* {!ctx.isLoading && ctx.userName && !ctx.isFetching && (
                 <>
                   {ctx.chats?.map((chat) => (
                     <ChatItem key={chat.id} {...chat} owner={ctx.owner} />
+                  ))}
+                </>
+              )} */}
+
+              {!ctx.isLoading && ctx.userName && !ctx.isFetching && (
+                <>
+                  {ctx.temporaryChats?.map((chat, i) => (
+                    <ChatItem key={i} {...chat} owner={ctx.owner} />
                   ))}
                 </>
               )}

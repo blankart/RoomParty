@@ -57,7 +57,7 @@ function RoomIdentificationId() {
       scrubTime: playerStatus?.time,
       type: playerStatus?.type,
       thumbnail: playerStatus?.thumbnail,
-      chats: room.chats,
+      // chats: room.chats,
       owner: room.owner?.userId,
       videoPlatform: room.videoPlatform,
       ownerName: room.owner?.user.name,

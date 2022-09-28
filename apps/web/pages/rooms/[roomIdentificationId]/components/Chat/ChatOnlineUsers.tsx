@@ -21,13 +21,15 @@ export default memo(function ChatOnlineUsers(props: ChatOnlineUsersProps) {
     }
   );
 
-  const chatLength = useRoomsStore((s) => s.chatsLength());
+  // const chatLength = useRoomsStore((s) => s.chatsLength());
+  const temporaryChatsLength = useRoomsStore((s) => s.temporaryChatsLength());
 
   useDebouncedEffect(
     () => {
       refetch();
     },
-    [chatLength],
+    // [chatLength],
+    [temporaryChatsLength],
     5_000
   );
 
