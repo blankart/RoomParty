@@ -6,7 +6,7 @@ import Image from "next/image";
 import { APP_NAME } from "@RoomParty/shared-lib";
 
 import thumbnail from "@web/public/images/thumbnail.png";
-import UI from "@web/public/images/interface.jpg";
+import UI from "@web/public/images/interface.png";
 
 import ytIcon from "@web/public/images/yt-icon.png";
 import twitchIcon from "@web/public/images/twitch-icon.svg";
@@ -52,7 +52,7 @@ export default function IndexPage() {
                   {description}
                 </p>
                 <h2 className="text-sm text-left uppercase md:text-md xl:text-lg">
-                  Supported Platforms:
+                  Watch from your favorite streaming platforms
                 </h2>
                 <div className="flex flex-wrap items-center justify-center p-4 shadow-xl gap-x-4 xl:gap-x-5 gap-y-2 xl:gap-y-5 rounded-2xl dark:shadow-none">
                   <div
@@ -91,7 +91,7 @@ export default function IndexPage() {
                       alt="Facebook"
                       src={fbIcon.src}
                       width={300}
-                      height={220}
+                      height={120}
                       layout={"responsive"}
                     />
                   </div>
@@ -124,18 +124,16 @@ export default function IndexPage() {
                 </div>
               </div>
             </div>
-            <div className="flex items-center">
-              <div className="w-[min(700px,90vw)] mx-auto mockup-window border border-base-100 bg-base-100 shadow-2xl">
-                <div className="aspect-[16/12] w-full">
-                  <Image
-                    loading="lazy"
-                    alt="RoomParty User Interface"
-                    src={UI.src}
-                    width={200}
-                    height={150}
-                    layout="responsive"
-                  />
-                </div>
+            <div className="w-[min(700px,90vw)] mx-auto flex items-center">
+              <div className="aspect-[16/12] w-full">
+                <Image
+                  loading="lazy"
+                  alt="RoomParty User Interface"
+                  src={UI.src}
+                  width={200}
+                  height={120}
+                  layout="responsive"
+                />
               </div>
             </div>
           </div>
