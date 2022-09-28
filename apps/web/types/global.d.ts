@@ -4,7 +4,7 @@ import type GApi from "gapi";
 
 declare global {
   namespace NodeJS {
-    interface ProcessEnv extends CustomProcessEnv { }
+    interface ProcessEnv extends CustomProcessEnv {}
   }
 
   const google: GoogleAccounts;
@@ -16,4 +16,4 @@ declare global {
   }
 }
 
-export { };
+export {};

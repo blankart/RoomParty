@@ -161,29 +161,33 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
         <>{props.children}</>
       </div>
       <footer className="bg-neutral">
-        {/* <div className="container p-10 mx-auto footer">
+        <div className="container p-10 mx-auto footer">
           <div>
-            <span className="text-white footer-title">Services</span>
-            <a className="text-white link link-hover">Branding</a>
-            <a className="text-white link link-hover">Design</a>
-            <a className="text-white link link-hover">Marketing</a>
-            <a className="text-white link link-hover">Advertisement</a>
+            <Link href="/" passHref>
+              <a className="my-4 text-2xl no-underline normal-case">
+                <BsPlayCircleFill className="inline-block mr-2" />
+                <span className="inline-block font-bold align-middle">
+                  RoomParty
+                </span>
+              </a>
+            </Link>
+            <Link href="/" passHref>
+              <a className="text-white link link-hover">Home</a>
+            </Link>
+            <Link href="/rooms" passHref>
+              <a className="text-white link link-hover">My Rooms</a>
+            </Link>
           </div>
           <div>
-            <span className="text-white footer-title">Company</span>
-            <a className="text-white link link-hover">Branding</a>
-            <a className="text-white link link-hover">Design</a>
-            <a className="text-white link link-hover">Marketing</a>
-            <a className="text-white link link-hover">Advertisement</a>
+            <span className="text-white footer-title">Policies</span>
+            <Link href="/terms-and-conditions" passHref>
+              <a className="text-white link link-hover">Terms and Conditions</a>
+            </Link>
+            <Link href="/privacy-policy" passHref>
+              <a className="text-white link link-hover">Privacy Policy</a>
+            </Link>
           </div>
-          <div>
-            <span className="text-white footer-title">Legal</span>
-            <a className="text-white link link-hover">Branding</a>
-            <a className="text-white link link-hover">Design</a>
-            <a className="text-white link link-hover">Marketing</a>
-            <a className="text-white link link-hover">Advertisement</a>
-          </div>
-        </div> */}
+        </div>
         <div className="container mx-auto">
           <p className="text-sm text-center md:text-md">
             Copyright © RoomParty 2022

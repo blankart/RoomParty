@@ -3,8 +3,10 @@ import { injectable } from "inversify";
 
 @injectable()
 class ChatsService {
-  constructor() { }
-  convertEmoticonsToEmojisInChatsObject<T extends { message: string }>(chat: T): T {
+  constructor() {}
+  convertEmoticonsToEmojisInChatsObject<T extends { message: string }>(
+    chat: T
+  ): T {
     return { ...chat, message: checkText(chat.message) };
   }
 }

@@ -1,1 +1,1 @@
-export type TemporaryChats = {}
+export type TemporaryChats = {};

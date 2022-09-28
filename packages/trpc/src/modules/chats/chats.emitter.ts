@@ -11,7 +11,7 @@ interface EmitterTypes {
 class ChatsEmitter {
   constructor(
     @inject(SERVICES_TYPES.Emitter) private emitterService: EmitterService
-  ) { }
+  ) {}
 
   get emitter() {
     return this.emitterService.for<EmitterTypes>("CHATS");

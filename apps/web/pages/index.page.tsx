@@ -36,7 +36,7 @@ export default function IndexPage() {
           images: [{ url: thumbnail.src }],
         }}
       />
-      <div className="block w-full overflow-y-auto prose max-w-none">
+      <div className="container block w-full overflow-y-auto prose max-w-none">
         <div className="mt-10 hero">
           <div className="grid grid-cols-1 xl:grid-cols-2">
             <div className="flex flex-col items-center justify-center">
