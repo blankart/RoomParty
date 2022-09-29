@@ -124,7 +124,7 @@ export default function IndexPage() {
                 </div>
               </div>
             </div>
-            <div className="w-[min(700px,90vw)] mx-auto flex items-center">
+            <div className="flex items-center w-full mx-auto">
               <div className="aspect-[16/12] w-full">
                 <Image
                   loading="lazy"
