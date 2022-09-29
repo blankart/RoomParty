@@ -9,12 +9,13 @@
     "lint": "next lint",
     "typecheck": "tsc",
     "test:unit": "jest --watch",
-    "test": "yarn test:unit"
+    "test": "yarn test:unit",
+    "postbuild": "next-sitemap --config next-sitemap.config.js"
   },
   "dependencies": {
-    "@hookform/resolvers": "^2.9.8",
     "@RoomParty/shared-lib": "*",
     "@RoomParty/trpc": "*",
+    "@hookform/resolvers": "^2.9.8",
     "@tanstack/react-query": "^4.3.4",
     "@trpc/client": "^9.27.2",
     "@trpc/next": "^9.27.2",
@@ -26,6 +27,7 @@
     "lodash.uniqby": "^4.7.0",
     "next": "^12.3.0",
     "next-seo": "^5.5.0",
+    "next-sitemap": "^3.1.23",
     "next-superjson": "^0.0.4",
     "next-themes": "^0.2.1",
     "nookies": "^2.5.2",
