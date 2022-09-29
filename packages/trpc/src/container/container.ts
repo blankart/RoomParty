@@ -40,6 +40,7 @@ import VideoChatRouter from "../modules/video-chat/video-chat.router";
 import TemporaryChatsEmitter from "../modules/temporary-chats/temporary-chats.emitter";
 import TemporaryChatsController from "../modules/temporary-chats/temporary-chats.controller";
 import TemporaryChatsRouter from "../modules/temporary-chats/temporary-chats.router";
+import DiscordService from "../modules/discord/discord.service";
 
 const trpcContainerModule = new ContainerModule((bind) => {
   /**
@@ -71,6 +72,10 @@ const trpcContainerModule = new ContainerModule((bind) => {
 
   bind<EmitterService>(SERVICES_TYPES.Emitter)
     .to(EmitterService)
+    .inSingletonScope();
+
+  bind<DiscordService>(SERVICES_TYPES.Discord)
+    .to(DiscordService)
     .inSingletonScope();
 
   /**

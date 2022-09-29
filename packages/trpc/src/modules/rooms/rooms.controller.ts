@@ -19,7 +19,8 @@ import type {
 import { EMITTER_TYPES, SERVICES_TYPES } from "../../types/container";
 import type RoomsService from "./rooms.service";
 import RoomsEmitter from "./rooms.emitter";
-import { Prisma, VideoControlRights } from "@RoomParty/prisma-client";
+import { Prisma, Room, VideoControlRights } from "@RoomParty/prisma-client";
+import DiscordService from "../discord/discord.service";
 
 enum ROOMS_SERVICE_QUEUE {
   DELETE_ROOM = "DELETE_ROOM",
@@ -37,8 +38,9 @@ class RoomsController {
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(SERVICES_TYPES.Queue) private queueService: QueueService,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
-    @inject(EMITTER_TYPES.Rooms) private roomsEmitter: RoomsEmitter
-  ) {}
+    @inject(EMITTER_TYPES.Rooms) private roomsEmitter: RoomsEmitter,
+    @inject(SERVICES_TYPES.Discord) private discordService: DiscordService
+  ) { }
   async findByRoomIdentificationId(
     data: FindByRoomIdentificationIdSchema,
     user: CurrentUser
@@ -130,7 +132,9 @@ class RoomsController {
       },
     });
 
-    if (!user?.id) {
+    const isAuthenticated = !!user?.id
+
+    if (!isAuthenticated) {
       const startAfter = new Date();
       const ONE_DAY_IN_MS = 1_000 * 60 * 60 * 24;
       startAfter.setTime(startAfter.getTime() + ONE_DAY_IN_MS);
@@ -143,6 +147,13 @@ class RoomsController {
         room.id
       );
     }
+
+    /**
+     * Discord webhook
+     */
+    this.discordService.sendRoomNotificationMessage(
+      `Someone created a room. Room ID: ${room.roomIdentificationId}.${isAuthenticated ? ' User is authenticated.' : ' User is guest.'} ${process.env.WEB_BASE_URL}/rooms/${room.roomIdentificationId}`
+    )
 
     return room;
   }
@@ -300,15 +311,15 @@ class RoomsController {
             },
             ...(user
               ? [
-                  {
-                    user: {
-                      id: user.user.id,
-                    },
-                    room: {
-                      roomIdentificationId: data.roomIdentificationId,
-                    },
+                {
+                  user: {
+                    id: user.user.id,
                   },
-                ]
+                  room: {
+                    roomIdentificationId: data.roomIdentificationId,
+                  },
+                },
+              ]
               : []),
           ],
         },
@@ -333,21 +344,21 @@ class RoomsController {
 
       const updateObject = user
         ? {
-            name: data.userName,
-            user: {
-              connect: {
-                id: user.user.id,
-              },
+          name: data.userName,
+          user: {
+            connect: {
+              id: user.user.id,
             },
-          }
+          },
+        }
         : !!maybeExistingTransientUser
-        ? {
+          ? {
             name: data.userName,
             user: {
               disconnect: true,
             },
           }
-        : {
+          : {
             name: data.userName,
           };
 
@@ -365,12 +376,12 @@ class RoomsController {
         name: data.userName ?? "User",
         ...(user
           ? {
-              user: {
-                connect: {
-                  id: user?.user.id,
-                },
+            user: {
+              connect: {
+                id: user?.user.id,
               },
-            }
+            },
+          }
           : {}),
         localStorageSessionid: data.localStorageSessionId,
         room: {

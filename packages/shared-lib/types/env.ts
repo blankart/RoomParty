@@ -26,4 +26,6 @@ export interface CustomProcessEnv {
   SERVER_JWT_SECRET?: string;
 
   NODE_TLS_REJECT_UNAUTHORIZED?: string;
+
+  DISCORD_WEBHOOK_ROOM_NOTIFICATION_URL?: string;
 }
