@@ -1,7 +1,6 @@
 import { injectable } from "inversify";
 import { Webhook } from 'discord-webhook-node'
 
-
 @injectable()
 class DiscordService {
     roomNotificationsWebhook: Webhook

@@ -74,6 +74,19 @@ export function useReactPlayerContext() {
   return useContext(ReactPlayerContext);
 }
 
+function seekToFromControlComponentToReactPlayerSeekTo(
+  videoPlatform: VideoPlatform | undefined,
+  time: number,
+  type?: "seconds"
+) {
+  switch (videoPlatform) {
+    case "SoundCloud":
+      return time * 1_000;
+    default:
+      return time;
+  }
+}
+
 function volumeFromControlComponentToReactPlayerVolume(
   videoPlatform: VideoPlatform | undefined,
   volume: number
@@ -186,11 +199,19 @@ export function ReactPlayerProvider(props: {
   ) {
     Promise.all([
       (reactPlayerRef as any)?.current?.player?.player?.player?.seek?.(
-        time,
+        seekToFromControlComponentToReactPlayerSeekTo(
+          videoPlatform,
+          time,
+          type
+        ),
         type
       ),
       (reactPlayerRef as any)?.current?.player?.player?.player?.seekTo?.(
-        time,
+        seekToFromControlComponentToReactPlayerSeekTo(
+          videoPlatform,
+          time,
+          type
+        ),
         type
       ),
       (
@@ -224,11 +245,17 @@ export function ReactPlayerProvider(props: {
     Promise.all([
       (() => {
         if (muted) {
+          (reactPlayerRef as any)?.current?.player?.player?.player?.toggle?.(
+            "mute"
+          );
           (reactPlayerRef as any)?.current?.player?.player?.player?.setMuted?.(
             true
           );
           (reactPlayerRef as any)?.current?.player?.player?.player?.mute?.();
         } else {
+          (reactPlayerRef as any)?.current?.player?.player?.player?.toggle?.(
+            "mute"
+          );
           (reactPlayerRef as any)?.current?.player?.player?.player?.setMuted?.(
             false
           );
@@ -279,12 +306,15 @@ export function ReactPlayerProvider(props: {
             setHasEnded(true);
             pauseVideo();
           },
-          onReady() {
+          onReady(player) {
             setIsReady(true);
+            setDuration(player.getDuration());
           },
           onPlay() {
             if (hasInitiallyPlayed) return;
             setHasInitiallyPlayed(true);
+            reactPlayerRef.current?.getCurrentTime() &&
+              setScrubTime(reactPlayerRef.current?.getCurrentTime());
             playVideo();
           },
           onError() {

@@ -21,6 +21,7 @@ export const controlSchema = zod.object({
       "Facebook",
       "Vimeo",
       "Mixcloud",
+      "SoundCloud"
     ]),
   }),
 });

@@ -13,6 +13,7 @@ import twitchIcon from "@web/public/images/twitch-icon.svg";
 import fbIcon from "@web/public/images/fb-icon.svg";
 import vimeoIcon from "@web/public/images/vimeo-icon.svg";
 import mixcloudIcon from "@web/public/images/mixcloud-icon.png";
+import soundCloudIcon from "@web/public/images/soundcloud-icon.png";
 
 import CreateARoomCard from "./components/CreateARoomCard";
 import JoinARoomCard from "./components/JoinARoomCard";
@@ -126,6 +127,19 @@ export default function IndexPage() {
                       src={mixcloudIcon.src}
                       width={350}
                       height={80}
+                      layout={"responsive"}
+                    />
+                  </div>
+                  <div
+                    className="w-[100px] xl:w-[130px] h-auto tooltip tooltip-secondary tooltip-top"
+                    data-tip="SoundCloud"
+                  >
+                    <Image
+                      loading="lazy"
+                      alt="SoundCloud"
+                      src={soundCloudIcon.src}
+                      width={320}
+                      height={180}
                       layout={"responsive"}
                     />
                   </div>

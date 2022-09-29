@@ -52,6 +52,8 @@ class PlayerController {
         videoPlatform = "Vimeo" as const;
       if (data.statusObject.url?.match(/mixcloud\.com/))
         videoPlatform = "Mixcloud" as const;
+      if (data.statusObject.url?.match(/soundcloud\.com/))
+        videoPlatform = "SoundCloud" as const;
     }
 
     const maybeHasPermissions = await this.modelsService.client.roomTransient.findFirst({

@@ -141,6 +141,7 @@ export default function useReactPlayerWithControls2(): {
     hasError,
     url,
     thumbnail,
+    videoPlatform,
   ]);
 
   async function onSeek(time: number) {
@@ -176,8 +177,11 @@ export default function useReactPlayerWithControls2(): {
 
   const context = trpc.useContext();
 
-  function onNext(newPlayerStatus: PlayerStatus) {
-    setLastPlayerStatus(newPlayerStatus);
+  const [lastPlayerStatus, setLastPlayerStatus] = useState<null | PlayerStatus>(
+    null
+  );
+
+  function whenPlayerStatusChanged(newPlayerStatus: PlayerStatus) {
     if (newPlayerStatus.type === "PLAYED") {
       playVideo();
       return;
@@ -203,6 +207,15 @@ export default function useReactPlayerWithControls2(): {
   }
 
   useEffect(() => {
+    if (!lastPlayerStatus) return;
+    whenPlayerStatusChanged(lastPlayerStatus);
+  }, [lastPlayerStatus]);
+
+  function onNext(newPlayerStatus: PlayerStatus) {
+    setLastPlayerStatus(newPlayerStatus);
+  }
+
+  useEffect(() => {
     if (
       !isReady ||
       !isFetchedAfterMount ||
@@ -219,10 +232,6 @@ export default function useReactPlayerWithControls2(): {
   function onReady() {
     scrubTime && seekTo(scrubTime, "seconds", !isPlayed);
   }
-
-  const [lastPlayerStatus, setLastPlayerStatus] = useState<null | PlayerStatus>(
-    null
-  );
 
   return {
     control: {

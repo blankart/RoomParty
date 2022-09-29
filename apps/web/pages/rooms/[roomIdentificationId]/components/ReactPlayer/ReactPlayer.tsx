@@ -28,6 +28,14 @@ const MIXCLOUD_PLAYER_CONFIG = {
   },
 };
 
+const SOUNDCLOUD_PLAYER_CONFIG = {
+  options: {
+    show_artwork: true,
+    show_playcount: true,
+    show_user: true,
+  },
+};
+
 export default function ReactPlayer({
   reactPlayerRef,
   ...props
@@ -37,6 +45,7 @@ export default function ReactPlayer({
     facebook: FACEBOOK_PLAYER_CONFIG,
     vimeo: VIMEO_PLAYER_CONFIG,
     mixcloud: MIXCLOUD_PLAYER_CONFIG,
+    soundcloud: SOUNDCLOUD_PLAYER_CONFIG,
   });
 
   const [isReady, setIsReady] = useState(false);
