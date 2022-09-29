@@ -164,7 +164,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
         <div className="container p-10 mx-auto footer">
           <div>
             <Link href="/" passHref>
-              <a className="my-4 text-2xl no-underline normal-case">
+              <a className="my-4 text-2xl text-white no-underline normal-case">
                 <BsPlayCircleFill className="inline-block mr-2" />
                 <span className="inline-block font-bold align-middle">
                   RoomParty
