@@ -1,5 +1,5 @@
 import { BsMoon, BsPlayCircleFill, BsSun } from "react-icons/bs";
-import { FaGoogle, FaSpinner } from "react-icons/fa";
+import { FaGoogle, FaSpinner, FaTwitter } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -194,6 +194,14 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
               href="mailto:blankartwp@gmail.com"
             >
               Support
+            </a>
+            <a
+              className="text-white link link-hover"
+              href="https://twitter.com/roompartyME"
+              rel="noreferrer"
+              target="_blank"
+            >
+              <FaTwitter className="inline-block" /> RoomPartyME
             </a>
           </div>
         </div>
