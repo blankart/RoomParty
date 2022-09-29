@@ -46,11 +46,12 @@ export default memo(function VimeoVideoSearch(props: VideoSearchProps) {
     };
   }, []);
 
-  const { userName } = useRoomContext();
+  const { userName, roomTransientId } = useRoomContext();
 
   async function onSubmit(data: { link: string }) {
     await control({
       id: id!,
+      roomTransientId: roomTransientId!,
       statusObject: {
         videoPlatform: "Vimeo",
         tabSessionId: tabSessionId,

@@ -46,11 +46,12 @@ export default memo(function FacebookVideoSearch(props: VideoSearchProps) {
     };
   }, []);
 
-  const { userName } = useRoomContext();
+  const { userName, roomTransientId } = useRoomContext();
 
   async function onSubmit(data: { link: string }) {
     await control({
       id: id!,
+      roomTransientId: roomTransientId!,
       statusObject: {
         videoPlatform: "Facebook",
         tabSessionId: tabSessionId,

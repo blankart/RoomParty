@@ -1,4 +1,4 @@
-import { Subscription } from "@trpc/server";
+import { Subscription, TRPCError } from "@trpc/server";
 import type { PlayerStatus } from "../../types/player";
 import type ModelsService from "../models/models.service";
 import { inject, injectable } from "inversify";
@@ -7,13 +7,15 @@ import type PlayerService from "./player.service";
 import PlayerEmitter from "./player.emitter";
 import { ControlSchema, StatusSubscriptionSchema } from "./player.dto";
 import { VideoPlatform } from "@RoomParty/prisma-client";
+import RoomsService from "../rooms/rooms.service";
 
 @injectable()
 class PlayerController {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Player) private playerService: PlayerService,
-    @inject(EMITTER_TYPES.Player) private playerEmitter: PlayerEmitter
+    @inject(EMITTER_TYPES.Player) private playerEmitter: PlayerEmitter,
+    @inject(SERVICES_TYPES.Rooms) private roomsSeervice: RoomsService
   ) {
     this.playerEmitter.emitter
       .channel("CONTROL")
@@ -51,6 +53,33 @@ class PlayerController {
       if (data.statusObject.url?.match(/mixcloud\.com/))
         videoPlatform = "Mixcloud" as const;
     }
+
+    const maybeHasPermissions = await this.modelsService.client.roomTransient.findFirst({
+      where: {
+        id: data.roomTransientId,
+        OR: [
+          {
+            room: {
+              videoControlRights: 'OwnerOnly',
+              owner: {
+                user: {
+                  RoomTransient: {
+                    some: {
+                      id: data.roomTransientId
+                    }
+                  }
+                }
+              }
+            }
+          },
+          {
+            room: { videoControlRights: 'Everyone' }
+          }
+        ]
+      }
+    })
+
+    if (!maybeHasPermissions) throw new TRPCError({ code: 'UNAUTHORIZED' })
 
     data.statusObject.videoPlatform = videoPlatform;
 

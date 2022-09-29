@@ -6,6 +6,7 @@ export const statusSubscriptionSchema = zod.object({
 });
 
 export const controlSchema = zod.object({
+  roomTransientId: zod.string(),
   id: zod.string(),
   statusObject: zod.object({
     type: zod.enum(["CHANGE_URL", "PAUSED", "PLAYED", "SEEK_TO"]),

@@ -12,7 +12,7 @@ export function useYoutubeVideoSearch(props: VideoSearchProps) {
   const youtubeInputRef = useRef<HTMLInputElement>(null);
   const [q, debouncedQ, setQ] = useDebouncedState("", 300);
 
-  const { userName } = useRoomContext();
+  const { userName, roomTransientId } = useRoomContext();
 
   const { id, tabSessionId } = useRoomsStore(
     (s) => ({
@@ -50,6 +50,7 @@ export function useYoutubeVideoSearch(props: VideoSearchProps) {
 
   async function onSelectLink(url: string, thumbnail: string) {
     await control({
+      roomTransientId: roomTransientId!,
       id: id!,
       statusObject: {
         videoPlatform: "Youtube",

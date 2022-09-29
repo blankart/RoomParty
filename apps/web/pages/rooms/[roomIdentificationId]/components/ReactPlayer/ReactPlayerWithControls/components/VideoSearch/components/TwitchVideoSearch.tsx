@@ -46,12 +46,13 @@ export default memo(function TwitchVideoSearch(props: VideoSearchProps) {
     };
   }, []);
 
-  const { userName } = useRoomContext();
+  const { userName, roomTransientId } = useRoomContext();
 
   async function onSubmit(data: { link: string }) {
     const isVideoLive = !data.link?.match(/\/videos\//);
     await control({
       id: id!,
+      roomTransientId: roomTransientId!,
       statusObject: {
         videoPlatform: "Twitch",
         tabSessionId: tabSessionId,

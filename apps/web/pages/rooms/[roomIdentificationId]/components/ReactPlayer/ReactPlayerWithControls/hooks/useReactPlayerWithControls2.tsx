@@ -53,7 +53,7 @@ export default function useReactPlayerWithControls2(): {
 
   const { user } = useMe();
 
-  const { password, userName } = useRoomContext();
+  const { password, userName, roomTransientId } = useRoomContext();
 
   const { data: findByRoomIdentificationIdResponse, isFetchedAfterMount } =
     trpc.useQuery(
@@ -104,6 +104,7 @@ export default function useReactPlayerWithControls2(): {
   async function onPlay() {
     if (isControlsDisabled || hasError) return;
     await control({
+      roomTransientId: roomTransientId!,
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
         videoPlatform: videoPlatform!,
@@ -120,6 +121,7 @@ export default function useReactPlayerWithControls2(): {
   async function onPause() {
     if (isControlsDisabled || hasError) return;
     await control({
+      roomTransientId: roomTransientId!,
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
         videoPlatform: videoPlatform!,
@@ -144,6 +146,7 @@ export default function useReactPlayerWithControls2(): {
   async function onSeek(time: number) {
     if (isControlsDisabled || hasError) return;
     await control({
+      roomTransientId: roomTransientId!,
       id: findByRoomIdentificationIdResponse?.id!,
       statusObject: {
         videoPlatform: videoPlatform!,

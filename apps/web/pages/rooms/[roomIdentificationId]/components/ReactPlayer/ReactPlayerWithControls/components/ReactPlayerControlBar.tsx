@@ -65,15 +65,15 @@ export default function ReactPlayerControlBar(
 
   const VolumeIcon = props.isMuted ? FaVolumeMute : FaVolumeUp;
 
-  const shouldDisableTimeControl = !props.url;
+  const shouldDisableTimeControl = props.isControlsDisabled || !props.url;
 
   const shouldDisablePlayButton =
+    props.isControlsDisabled ||
     !props.url ||
     props.hasEnded ||
     (!props.isLive && props.duration <= props.scrubTime);
 
-  const shouldDisableControlBar =
-    !props.hasInitiallyPlayed || props.isControlsDisabled;
+  const shouldDisableControlBar = !props.hasInitiallyPlayed;
 
   return (
     <>
