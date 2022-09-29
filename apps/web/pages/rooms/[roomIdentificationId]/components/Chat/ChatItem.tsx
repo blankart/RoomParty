@@ -39,14 +39,14 @@ export default function ChatItem(props: ChatItemProps) {
             {props.name}
             {props.userId === props.owner && (
               <span
-                className="inline-block m-0 ml-2 mb-1 text-[0.9rem] align-middle tooltip tooltip-secondary"
+                className="inline-block m-0 ml-1 mb-1 text-[0.9rem] align-middle tooltip tooltip-secondary"
                 data-tip="Room Host"
               >
                 👑
               </span>
             )}
-          </b>
-          :<>{parseMessage(props.message)}</>
+          </b>{" "}
+          : <>{parseMessage(props.message)}</>
         </div>
       )}
     </div>
