@@ -40,7 +40,7 @@ export default function CreateARoomCard() {
 
   return (
     <BaseCard>
-      <div className="flex flex-col card-body">
+      <div className="flex flex-col card-body" id="create-a-room">
         <h1 className="card-title">
           <BsPlayCircleFill className="inline mr-2" />
           Create a room

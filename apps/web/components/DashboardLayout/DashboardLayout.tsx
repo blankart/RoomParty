@@ -23,7 +23,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
   }
 
   return (
-    <div className="absolute inset-0 flex flex-col w-full overflow-y-auto prose max-w-none">
+    <div className="absolute inset-0 flex flex-col w-full overflow-y-auto prose max-w-none scroll-smooth">
       <video
         className="fixed inset-0 w-full opacity-40 dark:opacity-10 blur-lg !m-0 h-full object-cover z-[-1]"
         autoPlay

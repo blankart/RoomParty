@@ -17,6 +17,7 @@ import mixcloudIcon from "@web/public/images/mixcloud-icon.png";
 import CreateARoomCard from "./components/CreateARoomCard";
 import JoinARoomCard from "./components/JoinARoomCard";
 import FavoritedRoom from "./components/FavoritedRoom";
+import Button from "@web/components/Button/Button";
 
 export default function IndexPage() {
   const title = `${APP_NAME} - Watch Videos with your Friends`;
@@ -51,6 +52,13 @@ export default function IndexPage() {
                 <p className="text-sm text-left md:text-xl xl:text-xl">
                   {description}
                 </p>
+                <a
+                  className="w-full no-underline btn btn-info"
+                  href="#create-a-room"
+                >
+                  <BsPlayCircleFill className="inline mr-4" />
+                  Create a room
+                </a>
                 <h2 className="text-sm text-left uppercase md:text-md xl:text-lg">
                   Watch from your favorite streaming platforms
                 </h2>
