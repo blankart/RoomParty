@@ -11,6 +11,7 @@ class DiscordService {
     }
 
     async sendRoomNotificationMessage(message: string) {
+        if (process.env.NODE_ENV !== 'production') return
         this.roomNotificationsWebhook.send(message)
     }
 }

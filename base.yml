@@ -3,6 +3,7 @@ version: "3"
 services:
   base:
     environment:
+      - NODE_ENV
       - SERVER_PORT
       - NEXT_PUBLIC_SERVER_URL
       - SERVER_URL
