@@ -87,28 +87,28 @@ export default memo(function VideoCall() {
           ) : (
             <>
               <div className="flex-col items-center justify-center hidden gap-4 lg:flex">
-                <p className="text-sm text-center max-w-[min(300px,80%)]">
+                <p className="text-xl text-center max-w-[min(300px,80%)] font-bold">
                   Video chat with your friends while watching your favorite
                   videos!
                 </p>
                 <Button
-                  className="space-x-4 btn-ghost"
+                  className="space-x-4 font-bold btn-ghost"
                   onClick={() => ctx.setJoinedVideoChat(true)}
                 >
-                  <FaVideo className="w-6 h-6 lg:w-10 lg:h-10" />
+                  <FaVideo className="w-6 h-6 text-green-500 lg:w-10 lg:h-10 animate-pulse" />
                   <p className="text-xs lg:text-md">Join Video Chat</p>
                 </Button>
               </div>
 
               <div className="flex items-center lg:hidden">
-                <p className="!m-0 text-sm text-center">
+                <p className="!m-0 text-sm text-center font-bold">
                   Enter the video chat with your friends!
                 </p>
                 <Button
                   className="btn-ghost btn-xs"
                   onClick={() => ctx.setJoinedVideoChat(true)}
                 >
-                  <FaVideo className="w-4 h-4" />
+                  <FaVideo className="w-4 h-auto text-green-500 animate-pulse" />
                 </Button>
               </div>
             </>
