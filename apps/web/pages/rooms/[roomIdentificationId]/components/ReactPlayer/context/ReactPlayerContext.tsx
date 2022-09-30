@@ -7,6 +7,7 @@ import React, {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react";
 import type ReactPlayer from "react-player";
@@ -146,6 +147,8 @@ export function ReactPlayerProvider(props: {
     { isMuted: false, volume: 100 }
   );
 
+  const lastVolumeBeforeMuted = useRef<number>(localStorageSoundState.volume);
+
   function setUrl(newUrl?: string) {
     setIsReady(false);
     setHasEnded(false);
@@ -170,8 +173,8 @@ export function ReactPlayerProvider(props: {
     setHasInitiallyPlayed(!shouldClickTheVideoFirstOnReadyOrChangeUrl);
   }, [shouldClickTheVideoFirstOnReadyOrChangeUrl]);
 
-  function playVideo() {
-    Promise.all([
+  async function playVideo() {
+    return Promise.all([
       (reactPlayerRef as any)?.current?.player?.player?.player?.playVideo?.(),
       (reactPlayerRef as any)?.current?.player?.player?.player?.play?.(),
     ])
@@ -181,8 +184,8 @@ export function ReactPlayerProvider(props: {
       .catch(console.warn);
   }
 
-  function pauseVideo() {
-    Promise.all([
+  async function pauseVideo() {
+    return Promise.all([
       (reactPlayerRef as any)?.current?.player?.player?.player?.pauseVideo?.(),
       (reactPlayerRef as any)?.current?.player?.player?.player?.pause?.(),
     ])
@@ -192,12 +195,12 @@ export function ReactPlayerProvider(props: {
       .catch(console.warn);
   }
 
-  function seekTo(
+  async function seekTo(
     time: number,
     type?: "seconds",
     shouldPauseAfterScrub = true
   ) {
-    Promise.all([
+    return Promise.all([
       (reactPlayerRef as any)?.current?.player?.player?.player?.seek?.(
         seekToFromControlComponentToReactPlayerSeekTo(
           videoPlatform,
@@ -227,8 +230,8 @@ export function ReactPlayerProvider(props: {
       .catch(console.warn);
   }
 
-  function setVolume(volume: number, setMuteState = true) {
-    Promise.all([
+  async function setVolume(volume: number, setMuteState = true) {
+    return Promise.all([
       (reactPlayerRef as any)?.current?.player?.player?.player?.setVolume?.(
         volumeFromControlComponentToReactPlayerVolume(videoPlatform, volume)
       ),
@@ -236,42 +239,23 @@ export function ReactPlayerProvider(props: {
       .then(() => {
         setLocalStorageSoundState({ ...localStorageSoundState, volume });
         _setVolume(volume);
-        setMuteState && setMuted(volume === 0);
+        setMuteState && _setIsMuted(volume === 0);
       })
       .catch(console.warn);
   }
 
-  function setMuted(muted: boolean) {
-    Promise.all([
-      (() => {
-        if (muted) {
-          (reactPlayerRef as any)?.current?.player?.player?.player?.toggle?.(
-            "mute"
-          );
-          (reactPlayerRef as any)?.current?.player?.player?.player?.setMuted?.(
-            true
-          );
-          (reactPlayerRef as any)?.current?.player?.player?.player?.mute?.();
-        } else {
-          (reactPlayerRef as any)?.current?.player?.player?.player?.toggle?.(
-            "mute"
-          );
-          (reactPlayerRef as any)?.current?.player?.player?.player?.setMuted?.(
-            false
-          );
-          (reactPlayerRef as any)?.current?.player?.player?.player?.unMute?.();
-          (reactPlayerRef as any)?.current?.player?.player?.player?.unmute?.();
-        }
-      })(),
-    ])
-      .then(() => {
-        setLocalStorageSoundState({
-          ...localStorageSoundState,
-          isMuted: muted,
-        });
-        _setIsMuted(muted);
-      })
-      .catch(console.warn);
+  async function setMuted(muted: boolean) {
+    if (muted) {
+      lastVolumeBeforeMuted.current = volume;
+    }
+
+    return setVolume(muted ? 0 : lastVolumeBeforeMuted.current).then(() => {
+      setLocalStorageSoundState({
+        ...localStorageSoundState,
+        isMuted: muted,
+      });
+      _setIsMuted(muted);
+    });
   }
 
   useEffect(() => {
