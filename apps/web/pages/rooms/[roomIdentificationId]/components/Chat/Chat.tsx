@@ -3,7 +3,7 @@ import { FaSpinner } from "react-icons/fa";
 import dynamic from "next/dynamic";
 import useChat from "./useChat";
 import { memo } from "react";
-import { BsArrowsCollapse } from "react-icons/bs";
+import { BsThreeDotsVertical, BsThreeDots } from "react-icons/bs";
 const ChatItem = dynamic(() => import("./ChatItem"), {
   ssr: false,
 });
@@ -31,17 +31,19 @@ export default memo(function Chat(props: ChatProps) {
       >
         <button
           aria-label={ctx.collapsed ? "Uncollapse" : "Collapse"}
-          className="hidden md:block absolute right-[100%] top-[50%] w-4 h-20 rounded-l-full shadow-2xl z-10 btn btn-secondary btn-sm"
+          className="hidden md:block absolute right-[100%] top-[50%] shadow-2xl z-10 bg-secondary p-0 w-4 h-20 rounded-l-md"
           onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}
-        />
+        >
+          <BsThreeDotsVertical className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-10 h-auto" />
+        </button>
         <button
-          className="absolute md:hidden bottom-[100%] right-[0] btn btn-xs p-2 rounded-t-full rounded-b-none btn-secondary"
+          className="absolute md:hidden bottom-[100%] left-[50%] translate-x-[-50%] rounded-t-lg rounded-b-none h-4 w-14 bg-secondary"
           aria-label={ctx.collapsed ? "Uncollapse" : "Collapse"}
           onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}
         >
-          <BsArrowsCollapse className="w-3 h-auto" />
+          <BsThreeDots className="w-8 h-auto absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]" />
         </button>
         <section className="w-full p-0 md:p-4 bg-base-200 tabs lg:w-[400px]">
           <VideoCall />

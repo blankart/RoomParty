@@ -44,25 +44,29 @@ export default function Toast() {
   const toasts = useToastStore((s) => s.toasts);
 
   return (
-    <div className="toast toast-center toast-bottom z-[999]">
-      {toasts.map((toast) => (
-        <div
-          key={toast.id}
-          className={classNames(
-            "text-xs alert animate-pulse md:text-sm w-[min(100vw,400px)]",
-            {
-              "alert-success": toast.type === "success",
-              "alert-error": toast.type === "error",
-              "alert-info": toast.type === "info",
-              "alert-warning": toast.type === "warning",
-            }
-          )}
-        >
-          <div>
-            <span>{toast.message}</span>
-          </div>
+    <>
+      {!!toasts.length && (
+        <div className="toast toast-center toast-bottom z-[999]">
+          {toasts.map((toast) => (
+            <div
+              key={toast.id}
+              className={classNames(
+                "text-xs alert animate-pulse md:text-sm w-[min(100vw,400px)]",
+                {
+                  "alert-success": toast.type === "success",
+                  "alert-error": toast.type === "error",
+                  "alert-info": toast.type === "info",
+                  "alert-warning": toast.type === "warning",
+                }
+              )}
+            >
+              <div>
+                <span>{toast.message}</span>
+              </div>
+            </div>
+          ))}
         </div>
-      ))}
-    </div>
+      )}
+    </>
   );
 }
