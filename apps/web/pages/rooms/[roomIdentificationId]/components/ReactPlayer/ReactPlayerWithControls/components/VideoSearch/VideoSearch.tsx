@@ -1,21 +1,52 @@
-import { trpc } from "@web/api";
-import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
-import classNames from "classnames";
-import dynamic from "next/dynamic";
 import { useRouter } from "next/router";
 import { memo, useState } from "react";
-import FacebookVideoSearch from "./components/FacebookVideoSearch";
-import FacebookVideoSearchButton from "./components/FacebookVideoSearchButton";
-import MixcloudAudioSearch from "./components/MixcloudAudioSearch";
-import MixcloudAudioSearchButton from "./components/MixcloudAudioSearchButton";
-import SoundCloudAudioSearch from "./components/SoundCloudAudioSearch";
-import SoundCloudAudioSearchButton from "./components/SoundCloudAudioSearchButton";
-import TwitchVideoSearch from "./components/TwitchVideoSearch";
-import TwitchVideoSearchButton from "./components/TwitchVideoSearchButton";
-import VimeoVideoSearch from "./components/VimeoVideoSearch";
-import VimeoVideoSearchButton from "./components/VimeoVideoSearchButton";
+import classNames from "classnames";
+import dynamic from "next/dynamic";
 
+import { trpc } from "@web/api";
+import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
+
+import FacebookVideoSearchButton from "./components/FacebookVideoSearchButton";
+import MixcloudAudioSearchButton from "./components/MixcloudAudioSearchButton";
+import SoundCloudAudioSearchButton from "./components/SoundCloudAudioSearchButton";
+import TwitchVideoSearchButton from "./components/TwitchVideoSearchButton";
+import VimeoVideoSearchButton from "./components/VimeoVideoSearchButton";
 import YoutubeVideoSearchButton from "./components/YoutubeVideoSearchButton";
+
+const FacebookVideoSearch = dynamic(
+  () => import("./components/FacebookVideoSearch"),
+  {
+    ssr: false,
+  }
+);
+
+const MixcloudAudioSearch = dynamic(
+  () => import("./components/MixcloudAudioSearch"),
+  {
+    ssr: false,
+  }
+);
+
+const SoundCloudAudioSearch = dynamic(
+  () => import("./components/SoundCloudAudioSearch"),
+  {
+    ssr: false,
+  }
+);
+
+const TwitchVideoSearch = dynamic(
+  () => import("./components/TwitchVideoSearch"),
+  {
+    ssr: false,
+  }
+);
+
+const VimeoVideoSearch = dynamic(
+  () => import("./components/VimeoVideoSearch"),
+  {
+    ssr: false,
+  }
+);
 const YoutubeVideoSearch = dynamic(
   () => import("./components/YoutubeVideoSearch"),
   {
