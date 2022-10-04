@@ -60,13 +60,14 @@ model Room {
 }
 
 model RoomTransient {
-  id                    String  @id @default(cuid())
-  localStorageSessionid Int
-  user                  User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId                String?
-  room                  Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
-  roomId                String
-  name                  String
+  id                     String  @id @default(cuid())
+  localStorageSessionid  Int
+  user                   User?   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId                 String?
+  room                   Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
+  roomId                 String
+  name                   String
+  concurrentSessionCount Int     @default(1)
 }
 
 model Chat {

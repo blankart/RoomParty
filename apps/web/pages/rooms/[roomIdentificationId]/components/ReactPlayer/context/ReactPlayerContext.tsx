@@ -291,6 +291,11 @@ export function ReactPlayerProvider(props: {
             pauseVideo();
           },
           onReady(player) {
+            const isLive =
+              duration === Infinity ||
+              getInternalPlayer()?.getVideoData?.()?.isLive;
+
+            setIsLive(isLive);
             setIsReady(true);
             setDuration(player.getDuration());
           },

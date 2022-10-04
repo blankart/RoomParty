@@ -13,8 +13,6 @@ import { ChatsSubscriptionSchema, SendSchema } from "./temporary-chats.dto";
 import TemporaryChatsEmitter from "./temporary-chats.emitter";
 
 
-const TempRoomSessionMap = new Map<string, number>();
-
 @injectable()
 class TemporaryChatsController {
     constructor(
@@ -25,17 +23,10 @@ class TemporaryChatsController {
     ) { }
 
     async send(data: SendSchema) {
-        const tempRoomSessionMapKey = data.roomTransientId;
-        if (!TempRoomSessionMap.get(tempRoomSessionMapKey)) {
-            throw new TRPCError({ code: 'UNAUTHORIZED' })
-        }
-
         this.temporaryChatsEmitter.emitter.channel('SEND').emit(data.id, data)
     }
 
     async chatSubscription(data: ChatsSubscriptionSchema, user: CurrentUser) {
-        const tempRoomSessionMapKey = data.roomTransientId;
-
         const maybeRoom = await this.modelsService.client.room.findFirst({
             where: { id: data.id },
             select: { roomIdentificationId: true },
@@ -55,20 +46,33 @@ class TemporaryChatsController {
                 message: "You are not allowed to enter this room.",
             });
 
-        return new Subscription<TemporaryChat>(emit => {
+        const myRoomTransient = await this.modelsService.client.roomTransient.findFirst({
+            where: { id: data.roomTransientId },
+            select: {
+                id: true
+            }
+        })
+
+        if (!myRoomTransient) throw new TRPCError({ code: 'NOT_FOUND' })
+
+        return new Subscription<TemporaryChat>(async emit => {
             const onAdd = (data: TemporaryChat) => {
                 emit.data(data);
             };
 
             this.temporaryChatsEmitter.emitter.channel("SEND").on(data.id, onAdd);
-            TempRoomSessionMap.set(
-                tempRoomSessionMapKey,
-                (TempRoomSessionMap.get(tempRoomSessionMapKey) ?? 0) + 1
-            );
+            await this.modelsService.client.roomTransient.update({
+                where: { id: myRoomTransient.id },
+                data: {
+                    concurrentSessionCount: {
+                        increment: 1
+                    }
+                }
+            })
 
             Promise.all([
                 (async () => {
-                    if ((TempRoomSessionMap.get(tempRoomSessionMapKey) ?? 0) > 1) return;
+                    if (((await this.modelsService.client.roomTransient.findFirst({ where: { id: myRoomTransient.id }, select: { concurrentSessionCount: true } }))?.concurrentSessionCount ?? 0) > 1) return;
 
                     const temporaryChat = {
                         name: 'System Message',
@@ -87,14 +91,19 @@ class TemporaryChatsController {
             ])
 
             return async () => {
-                TempRoomSessionMap.set(
-                    tempRoomSessionMapKey,
-                    Math.max(0, (TempRoomSessionMap.get(tempRoomSessionMapKey) ?? 0) - 1)
-                );
+                const updatedRoomTransient = await this.modelsService.client.roomTransient.update({
+                    where: { id: myRoomTransient.id },
+                    data: {
+                        concurrentSessionCount: {
+                            decrement: 1
+                        }
+                    },
+                    select: { concurrentSessionCount: true }
+                })
 
                 this.temporaryChatsEmitter.emitter.channel('SEND').off(data.id, onAdd)
 
-                if ((TempRoomSessionMap.get(tempRoomSessionMapKey) ?? 0) === 0)
+                if ((updatedRoomTransient.concurrentSessionCount ?? 0) === 0)
                     await Promise.all([
                         this.temporaryChatsEmitter.emitter.channel('SEND').emit(data.id, this.chatsService.convertEmoticonsToEmojisInChatsObject({
                             name: 'System Message',

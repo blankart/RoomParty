@@ -17,6 +17,7 @@
     "@RoomParty/prisma-client": "*",
     "@RoomParty/shared-lib": "*",
     "@trpc/server": "^9.27.2",
+    "bcrypt": "^5.0.1",
     "discord-webhook-node": "^1.1.8",
     "eventemitter2": "^6.4.9",
     "inversify": "^6.0.1",
