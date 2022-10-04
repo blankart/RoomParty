@@ -79,7 +79,9 @@ export default function useChat(props: ChatProps) {
     {
       enabled: shouldEnableQueries && !!roomTransientId,
       onNext: (data) => {
-        roomStore.set({ temporaryChats: [...useRoomsStore.getState().temporaryChats, data] })
+        roomStore.set({
+          temporaryChats: [...useRoomsStore.getState().temporaryChats, data],
+        });
         removeUnusedLocalStorageItems();
       },
     }
@@ -158,15 +160,14 @@ export default function useChat(props: ChatProps) {
       id: roomStore.id,
       userId: user?.user?.id,
       color,
-      roomTransientId: roomTransientId!
-    })
+      roomTransientId: roomTransientId!,
+    });
     setUserNameChatColorFromLocalStorage(color);
   }
 
   useEffect(() => {
     scrollChatsToBottom();
   }, [roomStore.temporaryChatsLength()]);
-
 
   useEffect(() => {
     const newId = roomStore.id ?? (router.query?.id as string | undefined);

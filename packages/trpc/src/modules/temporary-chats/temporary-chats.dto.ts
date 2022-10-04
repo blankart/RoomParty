@@ -1,6 +1,8 @@
-import zod from 'zod'
-import { chatsSubscriptionSchema, sendSchema } from './temporary-chats.schema'
+import zod from "zod";
+import { chatsSubscriptionSchema, sendSchema } from "./temporary-chats.schema";
 
-export type SendSchema = zod.TypeOf<typeof sendSchema>
+export type SendSchema = zod.TypeOf<typeof sendSchema>;
 
-export type ChatsSubscriptionSchema = zod.TypeOf<typeof chatsSubscriptionSchema>
+export type ChatsSubscriptionSchema = zod.TypeOf<
+  typeof chatsSubscriptionSchema
+>;

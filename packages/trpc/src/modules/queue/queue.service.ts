@@ -26,9 +26,9 @@ class QueueService {
 
   private onStart() {
     this.initialized = true;
-    for (const eq of this.unqueuedWorks) {
-      if (eq.method === "send") {
-        this.queue(...eq.params);
+    for (const uw of this.unqueuedWorks) {
+      if (uw.method === "send") {
+        this.queue(...uw.params);
       }
     }
 

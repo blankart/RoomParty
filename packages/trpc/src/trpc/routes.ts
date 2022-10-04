@@ -17,7 +17,9 @@ import TRPCRouter from "./router";
 import VideoChatRouter, {
   VIDEO_CHAT_ROUTER_NAME,
 } from "../modules/video-chat/video-chat.router";
-import TemporaryChatsRouter, { TEMPORARY_CHATS_ROUTER_NAME } from "../modules/temporary-chats/temporary-chats.router";
+import TemporaryChatsRouter, {
+  TEMPORARY_CHATS_ROUTER_NAME,
+} from "../modules/temporary-chats/temporary-chats.router";
 
 @injectable()
 class TRPCRoutes {
@@ -33,7 +35,7 @@ class TRPCRoutes {
     private favoritedRoomsRouter: FavoritedRoomsRouter,
     @inject(ROUTER_TYPES.TemporaryChats)
     private temporaryChatsRouter: TemporaryChatsRouter
-  ) { }
+  ) {}
   private routeNameForMerge<T extends string>(route: T): `${T}.` {
     return (route + ".") as `${T}.`;
   }
@@ -101,7 +103,7 @@ class TRPCRoutes {
       .merge(
         this.routeNameForMerge(TEMPORARY_CHATS_ROUTER_NAME),
         this.temporaryChatsRouter.router()
-      )
+      );
   }
 }
 

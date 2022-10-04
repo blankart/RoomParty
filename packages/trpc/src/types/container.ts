@@ -16,7 +16,7 @@ export const EMITTER_TYPES = {
   Player: Symbol("PlayerEmitter"),
   Rooms: Symbol("RoomsEmitter"),
   VideoChat: Symbol("VideoChatEmitter"),
-  TemporaryChats: Symbol('TemporaryChatsEmitter')
+  TemporaryChats: Symbol("TemporaryChatsEmitter"),
 };
 
 export const CONTROLLER_TYPES = {

@@ -18,7 +18,7 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) { }
+  ) {}
   async chats(data: ChatsSchema) {
     return await this.modelsService.client.room
       .findFirst({
@@ -53,13 +53,13 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-            color: data.color,
-            user: {
-              connect: {
-                id: data.userId,
+              color: data.color,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });
@@ -94,14 +94,15 @@ class ChatsController {
         message: "You are not allowed to enter this room.",
       });
 
-    const myRoomTransient = await this.modelsService.client.roomTransient.findFirst({
-      where: { id: data.roomTransientId },
-      select: {
-        id: true
-      }
-    })
+    const myRoomTransient =
+      await this.modelsService.client.roomTransient.findFirst({
+        where: { id: data.roomTransientId },
+        select: {
+          id: true,
+        },
+      });
 
-    if (!myRoomTransient) throw new TRPCError({ code: 'NOT_FOUND' })
+    if (!myRoomTransient) throw new TRPCError({ code: "NOT_FOUND" });
 
     return new Subscription<Chat & { color: string | null }>(async (emit) => {
       const onAdd = (data: Chat & { color: string | null }) => {
@@ -113,14 +114,22 @@ class ChatsController {
         where: { id: myRoomTransient.id },
         data: {
           concurrentSessionCount: {
-            increment: 1
-          }
-        }
-      })
+            increment: 1,
+          },
+        },
+      });
 
       Promise.all([
         (async () => {
-          if (((await this.modelsService.client.roomTransient.findFirst({ where: { id: myRoomTransient.id }, select: { concurrentSessionCount: true } }))?.concurrentSessionCount ?? 0) > 1) return;
+          if (
+            ((
+              await this.modelsService.client.roomTransient.findFirst({
+                where: { id: myRoomTransient.id },
+                select: { concurrentSessionCount: true },
+              })
+            )?.concurrentSessionCount ?? 0) > 1
+          )
+            return;
           await this.modelsService.client.chat
             .create({
               data: {
@@ -146,15 +155,16 @@ class ChatsController {
       ]);
 
       return async () => {
-        const updatedRoomTransient = await this.modelsService.client.roomTransient.update({
-          where: { id: myRoomTransient.id },
-          data: {
-            concurrentSessionCount: {
-              decrement: 1
-            }
-          },
-          select: { concurrentSessionCount: true }
-        })
+        const updatedRoomTransient =
+          await this.modelsService.client.roomTransient.update({
+            where: { id: myRoomTransient.id },
+            data: {
+              concurrentSessionCount: {
+                decrement: 1,
+              },
+            },
+            select: { concurrentSessionCount: true },
+          });
 
         this.chatsEmitter.emitter.channel("SEND").off(data.id, onAdd);
 

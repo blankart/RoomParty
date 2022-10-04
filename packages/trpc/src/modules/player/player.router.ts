@@ -12,7 +12,7 @@ class PlayerRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Player) private playerController: PlayerController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
 
   router() {
     const self = this;
@@ -34,8 +34,7 @@ class PlayerRouter {
       });
   }
 
-  routerWithUser() {
-  }
+  routerWithUser() {}
 }
 
 export default PlayerRouter;

@@ -56,32 +56,33 @@ class PlayerController {
         videoPlatform = "SoundCloud" as const;
     }
 
-    const maybeHasPermissions = await this.modelsService.client.roomTransient.findFirst({
-      where: {
-        id: data.roomTransientId,
-        OR: [
-          {
-            room: {
-              videoControlRights: 'OwnerOnly',
-              owner: {
-                user: {
-                  RoomTransient: {
-                    some: {
-                      id: data.roomTransientId
-                    }
-                  }
-                }
-              }
-            }
-          },
-          {
-            room: { videoControlRights: 'Everyone' }
-          }
-        ]
-      }
-    })
+    const maybeHasPermissions =
+      await this.modelsService.client.roomTransient.findFirst({
+        where: {
+          id: data.roomTransientId,
+          OR: [
+            {
+              room: {
+                videoControlRights: "OwnerOnly",
+                owner: {
+                  user: {
+                    RoomTransient: {
+                      some: {
+                        id: data.roomTransientId,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+            {
+              room: { videoControlRights: "Everyone" },
+            },
+          ],
+        },
+      });
 
-    if (!maybeHasPermissions) throw new TRPCError({ code: 'UNAUTHORIZED' })
+    if (!maybeHasPermissions) throw new TRPCError({ code: "UNAUTHORIZED" });
 
     data.statusObject.videoPlatform = videoPlatform;
 

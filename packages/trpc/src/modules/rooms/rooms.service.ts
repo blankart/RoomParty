@@ -11,7 +11,7 @@ const allowedCharacters = "QWERTYUIOPASDFGHJKLZXCVBNM1234567890";
 class RoomsService {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
 
   roomIdentificationIdGenerator() {
     let generatedId = "";

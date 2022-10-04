@@ -1,7 +1,7 @@
 export interface TemporaryChat {
-    name: string
-    message: string
-    color?: string
-    isSystemMessage?: boolean
-    userId?: string
+  name: string;
+  message: string;
+  color?: string;
+  isSystemMessage?: boolean;
+  userId?: string;
 }

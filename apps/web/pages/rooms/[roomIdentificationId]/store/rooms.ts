@@ -22,7 +22,7 @@ export interface RoomsStore {
   // chatsLength: () => number;
   // chats?: Chat[];
 
-  addTemporaryChat: (chat: TemporaryChat) => void
+  addTemporaryChat: (chat: TemporaryChat) => void;
   temporaryChatsLength: () => number;
   temporaryChats: TemporaryChat[];
 }
@@ -43,10 +43,10 @@ export const useRoomsStore = create<RoomsStore>((set, get) => ({
   //   })),
   temporaryChats: [],
   temporaryChatsLength: () => get().temporaryChats?.length ?? 0,
-  addTemporaryChat: (chat) => set((state) => ({
-    ...state,
-    chats: [...state.temporaryChats, chat],
-  }))
-  ,
+  addTemporaryChat: (chat) =>
+    set((state) => ({
+      ...state,
+      chats: [...state.temporaryChats, chat],
+    })),
   set: (newState) => set((state) => ({ ...state, ...newState })),
 }));

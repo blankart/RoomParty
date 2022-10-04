@@ -20,7 +20,7 @@ class VideoChatController {
     @inject(EMITTER_TYPES.VideoChat) private videoChatEmitter: VideoChatEmitter,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
 
   async videoChatSubscription(
     data: VideoChatSubscriptionSchema,
