@@ -42,10 +42,13 @@
     "docker:start": "docker-compose --env-file .env.production -f docker-compose.yml up -d",
     "dev:docker:build-and-push": "./scripts/server/build-and-push.sh .env.production",
     "docker:build-and-push": "./scripts/server/build-and-push.sh .env.production",
-    "docker:build-push-and-deploy": "./scripts/server/build-push-and-deploy.sh .env.production"
+    "docker:build-push-and-deploy": "./scripts/server/build-push-and-deploy.sh .env.production",
+    "check-branch-name": "chmod 755 ./.hooks/check_branch_naming.sh && sh ./.hooks/check_branch_naming.sh"
   },
   "devDependencies": {
     "@RoomParty/eslint-config-custom": "*",
+    "@commitlint/cli": "^17.1.2",
+    "@commitlint/config-conventional": "^17.1.0",
     "env-cmd": "^10.1.0",
     "husky": "^8.0.1",
     "prettier": "latest",
