@@ -8,7 +8,8 @@
     "start": "next start",
     "lint": "next lint",
     "typecheck": "tsc",
-    "test:unit": "jest --watch",
+    "test:unit:watch": "jest --watch",
+    "test:unit": "jest",
     "test": "yarn test:unit",
     "postbuild": "next-sitemap --config next-sitemap.config.js"
   },

@@ -11,10 +11,12 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "outDir": "dist",
-    "types": ["reflect-metadata"],
+    "types": ["reflect-metadata", "jest", "mocha"],
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
-    "strictPropertyInitialization": false
+    "strictPropertyInitialization": false,
+    "esModuleInterop": true,
+    "isolatedModules": false
   },
   "files": ["./types/global.d.ts"]
 }

@@ -81,7 +81,17 @@ describe("ReactPlayerContext", () => {
 
     expect(result.current.url).toBe(MOCK_TW_URL);
 
-    expect(result.current.volume).toBe(50);
+    expect(result.current.volume).toBe(0);
     expect(result.current.isMuted).toBe(true);
+
+    act(() => {
+      result.current.setMuted(false);
+    });
+
+    await waitForValueToChange(() => result.current.isMuted);
+
+    expect(result.current.isMuted).toBe(false);
+
+    expect(result.current.volume).toBe(50);
   });
 });

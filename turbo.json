@@ -16,6 +16,9 @@
     "test:unit": {
       "cache": false
     },
+    "test:unit:watch": {
+      "cache": false
+    },
     "test": {
       "cache": false
     },
