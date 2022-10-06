@@ -19,8 +19,8 @@ jobs:
         with:
           node-version: ${{ matrix.node-versions }}
 
-      - name: Install Next dependencies
-        run: npm ci
+      - name: Install dependencies
+        uses: bahmutov/npm-install@v1
 
       - name: Run Test Suite
         run: npm run test
