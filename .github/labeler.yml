@@ -1,18 +1,18 @@
-"@RoomParty/server": "./apps/server/**/*"
-"@RoomParty/web": "./apps/web/**/*"
-"@RoomParty/auth-providers": "./packages/auth-providers/**/*"
-"@RoomParty/eslint-config-custom": "./packages/eslint-config-custom/**/*"
-"@RoomParty/prisma-client": "./packages/prisma-client/**/*"
-"@RoomParty/shared-lib": "./packages/shared-lib/**/*"
-"@RoomParty/trpc": "./packages/trpc/**/*"
-"@RoomParty/tsconfig": "./packages/tsconfig/**/*"
+Server: "apps/server/**/*"
+Web: "apps/web/**/*"
+Auth Providers: "packages/auth-providers/**/*"
+ESLint Config Custom: "packages/eslint-config-custom/**/*"
+Prisma Client: "packages/prisma-client/**/*"
+Shared Library: "packages/shared-lib/**/*"
+TRPC: "packages/trpc/**/*"
+TS Config: "packages/tsconfig/**/*"
 
 Documentation: "README.md"
 
-Turbo Setup: "{tsconfig.json,package.json,package-lock.json,yarn-lock.json,!(packages|apps|.github|.hooks|)/**/*}"
+Turbo Setup: "{tsconfig.json,package.json,package-lock.json,yarn-lock.json,!(packages|apps|.github)/**/*}"
 
 Github Actions:
   - any: [".github/**/*"]
 
 Pre-commit Hooks:
-  - any: [".hooks/**/*", ".husky/**/*"]
+  - any: [".husky/**/*"]
