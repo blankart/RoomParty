@@ -43,7 +43,7 @@
     "dev:docker:build-and-push": "./scripts/server/build-and-push.sh .env.production",
     "docker:build-and-push": "./scripts/server/build-and-push.sh .env.production",
     "docker:build-push-and-deploy": "./scripts/server/build-push-and-deploy.sh .env.production",
-    "check-branch-name": "chmod 755 ./.hooks/check_branch_naming.sh && sh ./.hooks/check_branch_naming.sh"
+    "check-branch-name": "chmod 755 ./scripts/ci/check_branch_naming.sh && sh ./scripts/ci/check_branch_naming.sh"
   },
   "devDependencies": {
     "@RoomParty/eslint-config-custom": "*",

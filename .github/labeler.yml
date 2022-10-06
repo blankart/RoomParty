@@ -9,10 +9,10 @@ TS Config: "packages/tsconfig/**/*"
 
 Documentation: "README.md"
 
-Turbo Setup: "{tsconfig.json,package.json,package-lock.json,yarn-lock.json,!(packages|apps|.github|.hooks|)/**/*}"
+Turbo Setup: "{tsconfig.json,package.json,package-lock.json,yarn-lock.json,!(packages|apps|.github)/**/*}"
 
 Github Actions:
   - any: [".github/**/*"]
 
 Pre-commit Hooks:
-  - any: [".hooks/**/*", ".husky/**/*"]
+  - any: [".husky/**/*"]
