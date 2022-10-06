@@ -31,6 +31,5 @@ jobs:
         with:
           token: ${{ secrets.CODECOV_TOKEN }}
           files: ./packages/trpc/coverage/coverage-final.json,./apps/web/coverage/coverage-final.json
-          flags: trpc
           fail_ci_if_error: true
           verbose: true
