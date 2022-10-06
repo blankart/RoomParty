@@ -33,6 +33,16 @@ describe('player.controller', () => {
         expect(await playerController.statusSubscription({ id: 'ID', name: 'NAME' })).toBeInstanceOf(Subscription)
     })
 
+    test('control', async () => {
+        let maybeWillThrow = async () => await playerController.control({ id: 'ID', roomTransientId: 'ROOM_TRANSIENT_ID', statusObject: { type: 'CHANGE_URL', url: 'sample-url.com', name: 'Sample Name', tabSessionId: 123, time: 123, videoPlatform: 'Facebook' } })
+
+        await expect(maybeWillThrow).rejects.toThrow();
+
+        ; (modelsServiceMock as any).client.roomTransient.findFirst.mockImplementation(() => ({}))
+
+        await playerController.control({ id: 'ID', roomTransientId: 'ROOM_TRANSIENT_ID', statusObject: { type: 'CHANGE_URL', url: 'sample-url.com', name: 'Sample Name', tabSessionId: 123, time: 123, videoPlatform: 'Facebook' } })
+    })
+
     afterEach(() => {
         mockClear(modelsServiceMock)
         mockClear(playerServiceMock)

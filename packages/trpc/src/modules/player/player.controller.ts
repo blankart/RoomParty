@@ -104,9 +104,6 @@ class PlayerController {
       id: data.id,
     });
 
-    const startAfter = new Date();
-    startAfter.setTime(startAfter.getTime() + 1_000);
-
     // this.playerService.createChatAfterControl(room, { data });
   }
 }
