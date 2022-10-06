@@ -1,0 +1,27 @@
+name: @RoomParty Unit Tests
+
+on:
+  pull_request:
+    branches: [ master, develop, staging ]
+
+jobs:
+  test:
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        node-versions: [14.x]
+
+    steps:
+      - uses: actions/checkout@v2
+      - name: Use Node.JS Version ${{ matrix.node-versions }}
+        uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node-versions }}
+      
+      - name: Install Next dependencies
+        run: npm ci
+
+      - name: Run Test Suite
+        run: npm run test
