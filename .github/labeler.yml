@@ -4,7 +4,7 @@
 "@RoomParty/eslint-config-custom": "./packages/eslint-config-custom/**/*"
 "@RoomParty/prisma-client": "./packages/prisma-client/**/*"
 "@RoomParty/shared-lib": "./packages/shared-lib/**/*"
-"@RoomParty/trpc": "./packages/trpc/**/*"
+TRPC: "packages/trpc/**/*"
 "@RoomParty/tsconfig": "./packages/tsconfig/**/*"
 
 Documentation: "README.md"
