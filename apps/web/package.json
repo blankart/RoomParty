@@ -9,7 +9,7 @@
     "lint": "next lint",
     "typecheck": "tsc",
     "test:unit:watch": "jest --watch",
-    "test:unit": "jest",
+    "test:unit": "jest --coverage",
     "test": "yarn test:unit",
     "postbuild": "next-sitemap --config next-sitemap.config.js"
   },
