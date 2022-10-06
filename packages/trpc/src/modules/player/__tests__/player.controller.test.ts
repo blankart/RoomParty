@@ -1,7 +1,6 @@
 import { describe, expect, test, jest } from '@jest/globals';
 import { mockDeep, mockClear, DeepMockProxy } from 'jest-mock-extended'
 import type ModelsService from '../../models/models.service';
-import type RoomsService from '../../rooms/rooms.service';
 import type PlayerEmitter from '../player.emitter';
 import type PlayerService from '../player.service';
 import PlayerController from '../player.controller'
