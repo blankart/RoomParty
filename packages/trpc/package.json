@@ -12,7 +12,7 @@
     "dev:only": "yarn clean && tsc-watch --noClear --onSuccess \"node ./dist/index.js\"",
     "typecheck": "tsc",
     "test:unit:watch": "jest --watch",
-    "test:unit": "jest",
+    "test:unit": "jest --collect-coverage",
     "test": "yarn test:unit"
   },
   "dependencies": {
