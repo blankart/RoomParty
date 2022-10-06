@@ -9,7 +9,7 @@ import { IsRoomFavoritedSchema, ToggleSchema } from "./favorited-rooms.dto";
 class FavoritedRoomsController {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) {}
+  ) { }
   async toggle(data: ToggleSchema, user: CurrentUser) {
     const room = await this.modelsService.client.room.findFirst({
       where: { id: data.roomId },
@@ -18,7 +18,7 @@ class FavoritedRoomsController {
     if (!room)
       throw new TRPCError({ code: "BAD_REQUEST", message: "No room found" });
 
-    if (room.accountId === user?.id) {
+    if (user && room.accountId === user?.id) {
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: "You are not allowed to toggle favorite your own room.",
@@ -33,7 +33,7 @@ class FavoritedRoomsController {
           userId: user?.user.id,
         },
       });
-    } catch {}
+    } catch { }
 
     if (!favoritedRoom) {
       return await this.modelsService.client.favoritedRoom.create({
@@ -66,8 +66,7 @@ class FavoritedRoomsController {
         },
       });
 
-    if (!!favoritedRoom) return true;
-    return false;
+    return !!favoritedRoom
   }
 
   async findMyFavorites(user: CurrentUser) {
