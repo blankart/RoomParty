@@ -2,7 +2,7 @@ name: "@RoomParty Unit Tests"
 
 on:
   pull_request:
-    branches: [master, develop, staging]
+    branches: [main, develop, staging]
 
 jobs:
   test:
