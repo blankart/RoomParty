@@ -1,11 +1,11 @@
-"@RoomParty/server": "./apps/server/**/*"
-"@RoomParty/web": "./apps/web/**/*"
-"@RoomParty/auth-providers": "./packages/auth-providers/**/*"
-"@RoomParty/eslint-config-custom": "./packages/eslint-config-custom/**/*"
-"@RoomParty/prisma-client": "./packages/prisma-client/**/*"
-"@RoomParty/shared-lib": "./packages/shared-lib/**/*"
+Server: "apps/server/**/*"
+Web: "apps/web/**/*"
+Auth Providers: "packages/auth-providers/**/*"
+ESLint Config Custom: "packages/eslint-config-custom/**/*"
+Prisma Client: "packages/prisma-client/**/*"
+Shared Library: "packages/shared-lib/**/*"
 TRPC: "packages/trpc/**/*"
-"@RoomParty/tsconfig": "./packages/tsconfig/**/*"
+TS Config: "packages/tsconfig/**/*"
 
 Documentation: "README.md"
 
