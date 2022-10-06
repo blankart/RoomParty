@@ -1,0 +1,4 @@
+Feature: ["feat/*", "feature/*"]
+Bug Fix: ["bugfix/*", "fix/*"]
+Refactor: ["refactor/*"]
+Test: ["test/*"]
