@@ -7,7 +7,6 @@ import type PlayerService from "./player.service";
 import PlayerEmitter from "./player.emitter";
 import { ControlSchema, StatusSubscriptionSchema } from "./player.dto";
 import { VideoPlatform } from "@RoomParty/prisma-client";
-import RoomsService from "../rooms/rooms.service";
 
 @injectable()
 class PlayerController {
@@ -15,7 +14,6 @@ class PlayerController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Player) private playerService: PlayerService,
     @inject(EMITTER_TYPES.Player) private playerEmitter: PlayerEmitter,
-    @inject(SERVICES_TYPES.Rooms) private roomsSeervice: RoomsService
   ) {
     this.playerEmitter.emitter
       .channel("CONTROL")
