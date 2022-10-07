@@ -153,6 +153,7 @@ export default function ReactPlayerControlBar(
           <div className="w-[70px] p-2 text-xs">
             {props.isLive ? (
               <button
+                className="flex items-center"
                 aria-label="Seek to live"
                 onClick={async () => {
                   if (props.duration === Infinity) {
