@@ -24,15 +24,6 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
 
   return (
     <div className="absolute inset-0 flex flex-col w-full overflow-y-auto prose max-w-none scroll-smooth">
-      <video
-        className="fixed inset-0 w-full opacity-40 dark:opacity-10 blur-lg !m-0 h-full object-cover z-[-1]"
-        autoPlay
-        loop
-        muted
-        preload="none"
-      >
-        <source src="/images/bg.mp4" type="video/mp4" />
-      </video>
       <div className="p-4 navbar bg-base-100">
         <div className="navbar-start">
           {!!user && (
@@ -157,7 +148,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
           )}
         </div>
       </div>
-      <div className="z-10">
+      <div>
         <>{props.children}</>
       </div>
       <footer className="bg-neutral">

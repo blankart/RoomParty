@@ -8,12 +8,15 @@ datasource db {
 }
 
 model Account {
-  id         String @id @default(cuid())
-  provider   String
-  providerId String
-  userId     String
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Room       Room[]
+  id               String    @id @default(cuid())
+  provider         Providers @default(Local)
+  providerId       String?
+  userId           String
+  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Room             Room[]
+  email            String
+  verificationCode String?
+  isVerified       Boolean   @default(false)
 }
 
 model User {
@@ -95,4 +98,9 @@ enum VideoPlatform {
 enum VideoControlRights {
   OwnerOnly
   Everyone
+}
+
+enum Providers {
+  Google
+  Local
 }

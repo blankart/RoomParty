@@ -9,6 +9,7 @@ export const SERVICES_TYPES = {
   Youtube: Symbol("YoutubeService"),
   Emitter: Symbol("EmitterService"),
   Discord: Symbol("DiscordService"),
+  Email: Symbol("EmailService"),
 };
 
 export const EMITTER_TYPES = {

@@ -13,7 +13,7 @@ type Context = inferAsyncReturnType<ReturnType<TRPCRouter["createContext"]>>;
 class TRPCRouter {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) {}
+  ) { }
   createContext(jwt: JwtVerifier) {
     return ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
       return {
@@ -35,16 +35,19 @@ class TRPCRouter {
         let user = null;
         try {
           decoded = await jwt(getAccessToken(ctx));
-        } catch {}
+        } catch { }
 
         if (decoded) {
           user = await this.modelsService.client.account.findFirst({
             where: {
-              providerId: decoded.providerId,
-              provider: decoded.provider,
+              id: decoded.id
             },
             include: { user: true },
           });
+        }
+
+        if (!user?.isVerified) {
+          user = null
         }
 
         return next({
@@ -60,16 +63,19 @@ class TRPCRouter {
         let decoded: undefined | JwtPayloadDecoded;
         try {
           decoded = await jwt(getAccessToken(ctx));
-        } catch {}
+        } catch { }
 
         if (!decoded) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
 
         const user = await this.modelsService.client.account.findFirst({
-          where: { providerId: decoded.providerId, provider: decoded.provider },
+          where: {
+            id: decoded.id
+          },
           include: { user: true },
         });
 
         if (!user) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
+        if (!user.isVerified) throw new trpc.TRPCError({ code: 'FORBIDDEN' })
 
         return next({
           ctx: { ...ctx, user },

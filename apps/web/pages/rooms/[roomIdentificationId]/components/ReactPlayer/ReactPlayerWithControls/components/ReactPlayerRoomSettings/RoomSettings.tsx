@@ -97,7 +97,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
       )}
 
       {!!errorMessage && (
-        <div className="text-sm shadow-lg alert">
+        <div className="text-sm shadow-lg alert alert-error">
           <div>
             <IoMdCloseCircle />
             <span>{errorMessage}</span>
