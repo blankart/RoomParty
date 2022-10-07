@@ -261,6 +261,9 @@ export function ReactPlayerProvider(props: {
   useEffect(() => {
     setVolume(localStorageSoundState.volume, false);
     setMuted(localStorageSoundState.isMuted);
+    if (getInternalPlayer()?.getMuted() && !localStorageSoundState.isMuted) {
+      getInternalPlayer()?.setMuted(false);
+    }
   }, [isReady, videoPlatform]);
 
   return (
