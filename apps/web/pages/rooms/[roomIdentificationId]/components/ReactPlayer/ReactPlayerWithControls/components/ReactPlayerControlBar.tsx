@@ -130,14 +130,14 @@ export default function ReactPlayerControlBar(
             }}
           />
         </div>
-        <div className="flex items-cente">
+        <div className="flex items-center">
           <div className="relative flex w-full gap-2">
             <VolumeIcon
               role="button"
               className="w-4 h-auto cursor-pointer"
               onClick={() => props.setMuted(!props.isMuted)}
             />
-            <div className="w-[50px] md:w-[100px] bg-base-100 p-1">
+            <div className="w-[50px] md:w-[100px] bg-base-100">
               <input
                 min="0"
                 max="100"
