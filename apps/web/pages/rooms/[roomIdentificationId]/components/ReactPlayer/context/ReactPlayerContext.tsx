@@ -261,7 +261,7 @@ export function ReactPlayerProvider(props: {
   useEffect(() => {
     setVolume(localStorageSoundState.volume, false);
     setMuted(localStorageSoundState.isMuted);
-    if (getInternalPlayer()?.getMuted() && !localStorageSoundState.isMuted) {
+    if (getInternalPlayer()?.getMuted()) {
       getInternalPlayer()?.setMuted(false);
     }
   }, [isReady, videoPlatform]);
@@ -282,6 +282,9 @@ export function ReactPlayerProvider(props: {
               getInternalPlayer()?.getVideoData?.()?.isLive;
 
             setIsLive(isLive);
+            if (getInternalPlayer()?.getMuted()) {
+              getInternalPlayer()?.setMuted(false);
+            }
           },
           onBuffer() {
             setIsBuffering(true);

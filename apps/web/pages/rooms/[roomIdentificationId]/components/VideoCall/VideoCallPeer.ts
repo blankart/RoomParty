@@ -54,7 +54,7 @@ class VideoCallPeer {
 
     this.isMuted = JSON.parse(
       window.localStorage.getItem(this.LOCAL_STORAGE_VIDEO_CALL_MUTED_KEY) ||
-        "true"
+      "true"
     );
     this.isVideoDisabled = JSON.parse(
       window.localStorage.getItem(
@@ -79,8 +79,11 @@ class VideoCallPeer {
         .then((s) => {
           this.myMediaStream = s;
           this.rerender(this);
+          s.getTracks().forEach(t => {
+            console.log('ECHO CANCELLATION: ', t.getConstraints().echoCancellation)
+          })
         })
-        .catch(() => {});
+        .catch(() => { });
     }
 
     this.peer.on("open", () => {
@@ -341,10 +344,10 @@ class VideoCallPeer {
   private handleSomeoneCalled(mediaConnection: PeerMediaConnection) {
     mediaConnection.answer(
       this.myMediaStream ??
-        new MediaStream([
-          this.createEmptyAudioTrack(),
-          this.createEmptyVideoTrack({ width: 300, height: 300 }),
-        ])
+      new MediaStream([
+        this.createEmptyAudioTrack(),
+        this.createEmptyVideoTrack({ width: 300, height: 300 }),
+      ])
     );
 
     mediaConnection.on("stream", (remoteStream) => {
