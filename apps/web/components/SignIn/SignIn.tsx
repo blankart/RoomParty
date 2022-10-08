@@ -36,6 +36,7 @@ export default function SignIn(props: SignInProps) {
   async function onSubmit(data: UsersDTO.SignInSchema) {
     setErrorMessage(null);
     try {
+      console.log("submit");
       const res = await login(data);
       props.onSuccess(res, data);
     } catch (e) {

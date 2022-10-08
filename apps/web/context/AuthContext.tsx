@@ -1,4 +1,4 @@
-import React, { createContext, useContext } from "react";
+import React, { createContext, useContext, useMemo } from "react";
 import { useEffect, useState } from "react";
 import { parseCookies, destroyCookie } from "nookies";
 import { useRouter } from "next/router";
@@ -20,6 +20,7 @@ interface AuthContextState {
   hasAccessToken: boolean;
   hasUserInitialized: boolean;
   handleSignout: () => void;
+  setAccessToken: (token: string | null) => any;
 }
 
 export const AuthContext = createContext<AuthContextState>({
@@ -31,18 +32,20 @@ export const AuthContext = createContext<AuthContextState>({
   hasUserInitialized: false,
   refetch: async () => ({} as any),
   handleSignout: () => {},
+  setAccessToken: () => {},
 });
 
 export function AuthContextProvider(props: { children?: React.ReactNode }) {
-  const [hasAccessToken, setHasAccessToken] = useState(false);
   const [hasUserInitialized, setHasUserInitialized] = useState(false);
+  const [accessToken, setAccessToken] = useState<null | string>(null);
   const router = useRouter();
+  const hasAccessToken = useMemo(() => !!accessToken, [accessToken]);
 
   useEffect(() => {
     const accessTokenFromCookie = parseCookies(null)[ACCESS_TOKEN_KEY];
 
     if (accessTokenFromCookie) {
-      setHasAccessToken(true);
+      setAccessToken(accessTokenFromCookie);
     }
 
     setHasUserInitialized(true);
@@ -50,7 +53,7 @@ export function AuthContextProvider(props: { children?: React.ReactNode }) {
 
   function removeAuthenticationCallback() {
     destroyCookie(null, ACCESS_TOKEN_KEY, { path: "/" });
-    setHasAccessToken(false);
+    setAccessToken(null);
     context.setQueryData(["users.me"], () => null);
     context.setQueryData(["rooms.findMyRoom"], () => []);
     context.setQueryData(["favorited-rooms.findMyFavorites"], () => []);
@@ -64,7 +67,7 @@ export function AuthContextProvider(props: { children?: React.ReactNode }) {
     refetch,
     isIdle,
   } = trpc.useQuery(["users.me"], {
-    enabled: hasAccessToken && !!parseCookies(null)[ACCESS_TOKEN_KEY],
+    enabled: !!accessToken,
     onError() {
       removeAuthenticationCallback();
     },
@@ -87,6 +90,7 @@ export function AuthContextProvider(props: { children?: React.ReactNode }) {
         hasAccessToken,
         hasUserInitialized,
         handleSignout,
+        setAccessToken,
       }}
     >
       {props.children}
