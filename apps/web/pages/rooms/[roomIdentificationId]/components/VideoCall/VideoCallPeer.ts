@@ -78,10 +78,23 @@ class VideoCallPeer {
         .getUserMedia(getUserMediaOptions)
         .then((s) => {
           this.myMediaStream = s;
+
+          const [audioTrack] = this.myMediaStream.getAudioTracks();
+          const [videoTrack] = this.myMediaStream.getVideoTracks();
+
+          this.peersMediaConnections.forEach((pmc) => {
+            const audioSender = pmc.peerConnection
+              .getSenders()
+              .find((s) => s.track?.kind === audioTrack?.kind);
+            const videoSender = pmc.peerConnection
+              .getSenders()
+              .find((s) => s.track?.kind === videoTrack?.kind);
+
+            audioSender?.replaceTrack(audioTrack);
+            videoSender?.replaceTrack(videoTrack);
+          });
+
           this.rerender(this);
-          s.getTracks().forEach(t => {
-            console.log('ECHO CANCELLATION: ', t.getConstraints().echoCancellation)
-          })
         })
         .catch(() => { });
     }

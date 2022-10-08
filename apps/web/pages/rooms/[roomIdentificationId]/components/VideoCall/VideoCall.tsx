@@ -25,7 +25,7 @@ export default memo(function VideoCall() {
     <>
       <section
         className={classNames(
-          "w-full p-0 md:p-4 bg-base-200 tabs lg:w-[400px] h-[50%] relative duration-300",
+          "w-full p-0 md:p-4 bg-base-200 tabs lg:w-[400px] h-auto lg:h-[50%] relative duration-300 shadow-2xl",
           {
             "!h-full": ctx.isVideoChatCollapsed,
           }
@@ -35,15 +35,25 @@ export default memo(function VideoCall() {
           <>
             {ctx.joinedVideoChat ? (
               <>
-                <div className="relative flex flex-col items-center justify-between flex-1 gap-2 overflow-y-auto">
-                  <div className="flex-1">
+                <div className="relative flex flex-col flex-wrap items-start justify-between flex-1 gap-2 overflow-x-auto overflow-y-hidden lg:items-center">
+                  <div className="flex-1 overflow-auto">
                     {ctx.isJoiningChat && (
                       <div className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]">
                         <FaSpinner className="w-5 h-auto lg:w-10 animate-spin" />
                       </div>
                     )}
-                    <div className="w-full h-auto overflow-y-auto">
-                      <div className="block w-full h-full space-x-2 overflow-x-auto whitespace-nowrap lg:grid lg:grid-cols-2 lg:space-x-0 lg:gap-4">
+                    <div className="w-full h-auto overflow-auto">
+                      <div
+                        className={classNames(
+                          "block w-full h-full overflow-auto whitespace-nowrap lg:grid lg:grid-cols-2 lg:space-x-0 lg:gap-4 lg:[--video-width:100%] md:[--video-width:150px] duration-300",
+                          {
+                            "[--video-width:140px] flex flex-wrap justify-center gap-4 space-x-0":
+                              ctx.isVideoChatCollapsed,
+                            "[--video-width:60px] space-x-2":
+                              !ctx.isVideoChatCollapsed,
+                          }
+                        )}
+                      >
                         {!ctx.isJoiningChat &&
                           ctx.mediaStreams.map((ms) => (
                             <VideoChatItem
@@ -61,8 +71,7 @@ export default memo(function VideoCall() {
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between w-full gap-2 mt-0 lg:mt-4">
-                  <div></div>
+                <div className="flex items-center justify-end w-full gap-2 pt-2 mt-0 lg:mt-4">
                   <div className="flex items-center justify-center gap-2">
                     <Button
                       className={classNames(
@@ -129,7 +138,12 @@ export default memo(function VideoCall() {
           </>
         </div>
         <div
-          className="absolute bottom-0 left-0 tooltip tooltip-right lg:bottom-2 lg:left-2"
+          className={classNames(
+            "absolute bottom-0 left-0 tooltip tooltip-right lg:bottom-2 lg:left-2",
+            {
+              "hidden lg:block": !ctx.joinedVideoChat,
+            }
+          )}
           data-tip="Collapse Video Chat"
         >
           <button
