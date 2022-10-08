@@ -79,9 +79,7 @@ const trpcContainerModule = new ContainerModule((bind) => {
     .to(DiscordService)
     .inSingletonScope();
 
-  bind<EmailService>(SERVICES_TYPES.Email)
-    .to(EmailService)
-    .inSingletonScope();
+  bind<EmailService>(SERVICES_TYPES.Email).to(EmailService).inSingletonScope();
 
   /**
    * Injected Emitters

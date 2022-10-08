@@ -1,29 +1,31 @@
-import zod from 'zod'
+import zod from "zod";
 
-export const registerSchema = zod.object({
+export const registerSchema = zod
+  .object({
     email: zod.string().email(),
     password: zod.string().min(8),
     password2: zod.string().min(8),
-    agreeToTermsAndConditions: zod.boolean()
-}).superRefine(({ password, password2, agreeToTermsAndConditions }, ctx) => {
+    agreeToTermsAndConditions: zod.boolean(),
+  })
+  .superRefine(({ password, password2, agreeToTermsAndConditions }, ctx) => {
     if (password !== password2) {
-        ctx.addIssue({
-            path: ['password2'],
-            code: 'custom',
-            message: 'Passwords did not match.'
-        })
+      ctx.addIssue({
+        path: ["password2"],
+        code: "custom",
+        message: "Passwords did not match.",
+      });
     }
 
     if (!agreeToTermsAndConditions) {
-        ctx.addIssue({
-            path: ['agreeToTermsAndConditions'],
-            code: 'custom',
-            message: 'You must agree to terms and conditions'
-        })
+      ctx.addIssue({
+        path: ["agreeToTermsAndConditions"],
+        code: "custom",
+        message: "You must agree to terms and conditions",
+      });
     }
-})
+  });
 
 export const confirmVerificationCodeSchema = zod.object({
-    email: zod.string().email(),
-    code: zod.string().length(6)
-})
+  email: zod.string().email(),
+  code: zod.string().length(6),
+});

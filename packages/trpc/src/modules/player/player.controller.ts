@@ -13,7 +13,7 @@ class PlayerController {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Player) private playerService: PlayerService,
-    @inject(EMITTER_TYPES.Player) private playerEmitter: PlayerEmitter,
+    @inject(EMITTER_TYPES.Player) private playerEmitter: PlayerEmitter
   ) {
     this.playerEmitter.emitter
       .channel("CONTROL")

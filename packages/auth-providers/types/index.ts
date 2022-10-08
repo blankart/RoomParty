@@ -9,7 +9,7 @@ export type JwtVerifier = (token: string) => Promise<JwtPayloadDecoded>;
 
 export type AuthProviders = "Google";
 
-export interface JwtPayload extends Account { }
+export interface JwtPayload extends Account {}
 
 export type JwtPayloadDecoded = JwtPayload;
 

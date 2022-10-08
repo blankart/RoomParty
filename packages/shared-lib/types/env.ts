@@ -29,5 +29,5 @@ export interface CustomProcessEnv {
 
   DISCORD_WEBHOOK_ROOM_NOTIFICATION_URL?: string;
 
-  SIB_EMAIL_API_KEY?: string
+  SIB_EMAIL_API_KEY?: string;
 }

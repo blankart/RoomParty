@@ -9,7 +9,7 @@ import { IsRoomFavoritedSchema, ToggleSchema } from "./favorited-rooms.dto";
 class FavoritedRoomsController {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
   async toggle(data: ToggleSchema, user: CurrentUser) {
     const room = await this.modelsService.client.room.findFirst({
       where: { id: data.roomId },
@@ -33,7 +33,7 @@ class FavoritedRoomsController {
           userId: user?.user.id,
         },
       });
-    } catch { }
+    } catch {}
 
     if (!favoritedRoom) {
       return await this.modelsService.client.favoritedRoom.create({
@@ -66,7 +66,7 @@ class FavoritedRoomsController {
         },
       });
 
-    return !!favoritedRoom
+    return !!favoritedRoom;
   }
 
   async findMyFavorites(user: CurrentUser) {

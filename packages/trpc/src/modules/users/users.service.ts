@@ -7,28 +7,32 @@ import ModelsService from "../models/models.service";
 class UsersService {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
 
   generateVerificationCode() {
-    return Array(6).fill(null).reduce((p, c) => {
-      return p + String(Math.floor(Math.random() * 10))
-    }, '')
+    return Array(6)
+      .fill(null)
+      .reduce((p, c) => {
+        return p + String(Math.floor(Math.random() * 10));
+      }, "");
   }
 
   async updateUserVerificationCode(email: string) {
-    const maybeExistingAccount = await this.modelsService.client.account.findFirst({
-      where: { email }
-    })
+    const maybeExistingAccount =
+      await this.modelsService.client.account.findFirst({
+        where: { email },
+      });
 
-    if (!maybeExistingAccount) throw new TRPCError({ code: 'NOT_FOUND', message: 'Account not found.' })
+    if (!maybeExistingAccount)
+      throw new TRPCError({ code: "NOT_FOUND", message: "Account not found." });
 
     await this.modelsService.client.account.update({
       where: { id: maybeExistingAccount.id },
       data: {
         verificationCode: this.generateVerificationCode(),
-        isVerified: false
-      }
-    })
+        isVerified: false,
+      },
+    });
   }
 }
 
