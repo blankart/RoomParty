@@ -18,6 +18,7 @@ model Account {
   verificationCode           String?
   nextResendVerificationDate DateTime?
   isVerified                 Boolean   @default(false)
+  password                   String?
 }
 
 model User {
@@ -27,7 +28,7 @@ model User {
   lastName      String?
   picture       String?
   roomId        String?
-  Room          Room?           @relation(fields: [roomId], references: [id])
+  Room          Room?           @relation(fields: [roomId], references: [id], onDelete: Cascade)
   accounts      Account[]
   Chat          Chat[]
   FavoritedRoom FavoritedRoom[]

@@ -3,6 +3,7 @@ import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
 import {
   confirmVerificationCodeSchema,
   getVerificationDetailsSchema,
+  signInSchema,
   registerSchema,
   resendVerificationCodeSchema,
 } from "./users.schema";
@@ -16,16 +17,22 @@ class UsersRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Users) private usersController: UsersController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) {}
+  ) { }
 
   router() {
     const self = this;
     return this.trpcRouter
       .createRouter()
-      .mutation("register", {
+      .mutation('signIn', {
+        input: signInSchema,
+        async resolve({ input, ctx }) {
+          return await self.usersController.signIn(input, ctx.jwt)
+        }
+      })
+      .mutation("signUp", {
         input: registerSchema,
         async resolve({ input }) {
-          return await self.usersController.register(input);
+          return await self.usersController.signUp(input);
         },
       })
       .query("getVerificationDetails", {

@@ -1,6 +1,7 @@
 import {
   confirmVerificationCodeSchema,
   getVerificationDetailsSchema,
+  signInSchema,
   registerSchema,
   resendVerificationCodeSchema,
 } from "./users.schema";
@@ -18,4 +19,8 @@ export type ResendVerificationCodeSchema = zod.TypeOf<
 
 export type GetVerificationDetailsSchema = zod.TypeOf<
   typeof getVerificationDetailsSchema
+>;
+
+export type SignInSchema = zod.TypeOf<
+  typeof signInSchema
 >;

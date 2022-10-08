@@ -10,6 +10,7 @@ import { BsPlayCircleFill } from "react-icons/bs";
 import { IoMdCloseCircle } from "react-icons/io";
 import ReactCodeInput from "react-code-input";
 import classNames from "classnames";
+import numeral from "numeral";
 
 interface VerificationCodeProps {
   onSuccess: (
@@ -30,14 +31,43 @@ export default function VerificationCode(props: VerificationCodeProps) {
     resolver: zodResolver(UsersSchema.confirmVerificationCodeSchema),
   });
 
+  const context = trpc.useContext();
+
   useEffect(() => {
     setValue("email", props.verificationDetails.email);
   }, [props.verificationDetails.email]);
 
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
+  const [timer, setTimer] = useState<number>(
+    props.verificationDetails.nextResendVerificationDate
+      ? Math.max(
+          0,
+          (props.verificationDetails.nextResendVerificationDate.getTime() -
+            Date.now()) /
+            1_000
+        )
+      : 0
+  );
+
+  useEffect(() => {
+    setTimer(
+      props.verificationDetails.nextResendVerificationDate
+        ? Math.max(
+            0,
+            (props.verificationDetails.nextResendVerificationDate.getTime() -
+              Date.now()) /
+              1_000
+          )
+        : 0
+    );
+  }, [props.verificationDetails.nextResendVerificationDate]);
 
   const { mutateAsync: confirmVerificationCode, isLoading } = trpc.useMutation([
     "users.confirmVerificationCode",
+  ]);
+
+  const { mutateAsync: resendVerificationCode } = trpc.useMutation([
+    "users.resendVerificationCode",
   ]);
 
   async function onSubmit(data: UsersDTO.ConfirmVerificationCodeSchema) {
@@ -49,6 +79,29 @@ export default function VerificationCode(props: VerificationCodeProps) {
       setErrorMessage((e as any).message);
     }
   }
+
+  async function handleResend() {
+    setErrorMessage(null);
+    try {
+      await resendVerificationCode({ email: props.verificationDetails.email });
+      context.invalidateQueries(["users.getVerificationDetails"]);
+    } catch (e) {
+      setErrorMessage((e as any).message);
+    }
+  }
+
+  useEffect(() => {
+    let timeout: NodeJS.Timeout | undefined;
+    if (timer > 0) {
+      timeout = setTimeout(() => {
+        setTimer((current) => Math.floor(current - 1));
+      }, 1_000);
+    }
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [timer]);
 
   return (
     <>
@@ -74,6 +127,9 @@ export default function VerificationCode(props: VerificationCodeProps) {
             {...register("code")}
             onChange={(code) => {
               setValue("code", code);
+              if (code.length === 6) {
+                handleSubmit(onSubmit)();
+              }
             }}
             type="number"
             fields={6}
@@ -82,7 +138,6 @@ export default function VerificationCode(props: VerificationCodeProps) {
             })}
           />
         </div>
-
         <small
           className={classNames("duration-100 text-error", {
             "opacity-0": !errors.code?.message,
@@ -90,7 +145,6 @@ export default function VerificationCode(props: VerificationCodeProps) {
         >
           {errors.code?.message ?? "Error Placeholder"}
         </small>
-
         <Button
           disabled={isLoading}
           loading={isLoading}
@@ -98,6 +152,21 @@ export default function VerificationCode(props: VerificationCodeProps) {
         >
           Submit
         </Button>
+        <p>
+          Did&apos;t receive the email?{" "}
+          {timer > 0 ? (
+            `Resend code after 
+          ${numeral(timer).format("00:00:00")} minutes`
+          ) : (
+            <button
+              type="button"
+              className="link link-info"
+              onClick={handleResend}
+            >
+              Resend code now
+            </button>
+          )}
+        </p>
       </form>
     </>
   );

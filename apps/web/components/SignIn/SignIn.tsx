@@ -2,44 +2,41 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import type { UsersDTO } from "@RoomParty/trpc/dto";
 import { UsersSchema } from "@RoomParty/trpc/schema";
 import { trpc } from "@web/api";
-import Button from "@web/components/Button/Button";
-import Input from "@web/components/Input/Input";
 import { InferMutationOutput } from "@web/types/trpc";
-import classNames from "classnames";
-import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BsEye, BsEyeSlash, BsPlayCircleFill } from "react-icons/bs";
 import { FaGoogle } from "react-icons/fa";
 import { IoMdCloseCircle } from "react-icons/io";
+import Button from "../Button/Button";
+import Input from "../Input/Input";
 
-interface SignUpProps {
+interface SignInProps {
   onSuccess: (
-    res: InferMutationOutput<"users.signUp">,
-    data: UsersDTO.RegisterSchema
+    res: InferMutationOutput<"users.signIn">,
+    data: UsersDTO.SignInSchema
   ) => any;
 }
 
-export default function SignUp(props: SignUpProps) {
+export default function SignIn(props: SignInProps) {
   const {
     register,
     formState: { errors },
     handleSubmit,
-  } = useForm<UsersDTO.RegisterSchema>({
+    setValue,
+  } = useForm<UsersDTO.SignInSchema>({
     mode: "onSubmit",
-    resolver: zodResolver(UsersSchema.registerSchema),
+    resolver: zodResolver(UsersSchema.signInSchema),
   });
+
+  const { mutateAsync: login, isLoading } = trpc.useMutation(["users.signIn"]);
 
   const [errorMessage, setErrorMessage] = useState<null | string>(null);
 
-  const { mutateAsync: registerAccount, isLoading } = trpc.useMutation([
-    "users.signUp",
-  ]);
-
-  async function onSubmit(data: UsersDTO.RegisterSchema) {
+  async function onSubmit(data: UsersDTO.SignInSchema) {
     setErrorMessage(null);
     try {
-      const res = await registerAccount(data);
+      const res = await login(data);
       props.onSuccess(res, data);
     } catch (e) {
       setErrorMessage((e as any).message);
@@ -52,7 +49,7 @@ export default function SignUp(props: SignUpProps) {
     <>
       <BsPlayCircleFill className="inline mr-2" />
       RoomParty
-      <h1>Sign Up</h1>
+      <h1>Sign in</h1>
       <Button
         className="w-full !btn-outline"
         onClick={() => {
@@ -60,7 +57,7 @@ export default function SignUp(props: SignUpProps) {
             process.env.NEXT_PUBLIC_SERVER_URL + "/oauth2/redirect/google";
         }}
       >
-        <FaGoogle className="mr-2" /> Sign Up with Google
+        <FaGoogle className="mr-2" /> Sign in with Google
       </Button>
       <div className="w-full divider divider-vertical">OR</div>
       <form className="w-full" onSubmit={handleSubmit(onSubmit)}>
@@ -72,11 +69,13 @@ export default function SignUp(props: SignUpProps) {
             </div>
           </div>
         )}
+
         <Input
           label="Email"
           {...register("email")}
           error={errors.email?.message}
         />
+
         <div className="form-control">
           <div className="relative flex items-center input-group">
             <Input
@@ -95,38 +94,13 @@ export default function SignUp(props: SignUpProps) {
             </div>
           </div>
         </div>
-        <Input
-          label="Confirm Password"
-          type="password"
-          {...register("password2")}
-          error={errors.password2?.message}
-        />
-        <div>
-          <input
-            type="checkbox"
-            className="inline-block checkbox checkbox-info"
-            {...register("agreeToTermsAndConditions")}
-          />
-          <span className="inline-block ml-4 mr-1 break-words">
-            I agree to RoomParty&apos;s{" "}
-          </span>
-          <Link href="/teerms-and-conditions" passHref>
-            <a className="break-words link">Terms and Conditions</a>
-          </Link>
-        </div>
-        <small
-          className={classNames("duration-100 text-error", {
-            "opacity-0": !errors.agreeToTermsAndConditions?.message,
-          })}
-        >
-          {errors.agreeToTermsAndConditions?.message ?? "Error Placeholder"}
-        </small>
+
         <Button
           disabled={isLoading}
           loading={isLoading}
           className="w-full mt-4"
         >
-          Sign Up
+          Sign in
         </Button>
       </form>
     </>

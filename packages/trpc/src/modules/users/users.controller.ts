@@ -8,6 +8,7 @@ import type ModelsService from "../models/models.service";
 import {
   ConfirmVerificationCodeSchema,
   GetVerificationDetailsSchema,
+  SignInSchema,
   RegisterSchema,
   ResendVerificationCodeSchema,
 } from "./users.dto";
@@ -21,7 +22,7 @@ class UsersController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Email) private emailService: EmailService,
     @inject(SERVICES_TYPES.Users) private usersService: UsersService
-  ) {}
+  ) { }
 
   async me(id: string) {
     return await this.modelsService.client.account.findFirst({
@@ -33,7 +34,18 @@ class UsersController {
     });
   }
 
-  async register(data: RegisterSchema) {
+  async signIn(data: SignInSchema, jwt: ReturnType<typeof createAuthProviderJwt>) {
+    const account = await this.modelsService.client.account.findFirst({ where: { email: data.email } })
+    if (!account) throw new TRPCError({ code: 'NOT_FOUND', message: 'User with this email does not exist.' })
+
+    if (!account.password) throw new TRPCError({ code: 'BAD_REQUEST', message: `This account is linked to the following provider: ${account.provider}. Kindly login using the provider mentioned.` })
+
+    if (!this.usersService.comparePasswordHash(data.password, account.password)) throw new TRPCError({ code: 'UNAUTHORIZED', message: 'Invalid credentials.' })
+
+    return jwt.signer(account)
+  }
+
+  async signUp(data: RegisterSchema) {
     const maybeAccount = await this.modelsService.client.account.findFirst({
       where: { email: data.email },
     });
@@ -48,6 +60,7 @@ class UsersController {
     const createdAccount = await this.modelsService.client.account.create({
       data: {
         email: data.email,
+        password: this.usersService.generatePasswordHash(data.password),
         provider: "Local",
         verificationCode: this.usersService.generateVerificationCode(),
         nextResendVerificationDate: new Date(
@@ -165,6 +178,7 @@ class UsersController {
         isVerified: true,
         user: {
           update: {
+            name: 'User',
             picture: this.usersService.generateRandomUserPicture(
               maybeAccount.id
             ),

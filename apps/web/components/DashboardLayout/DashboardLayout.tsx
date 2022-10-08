@@ -1,5 +1,5 @@
 import { BsMoon, BsPlayCircleFill, BsSun } from "react-icons/bs";
-import { FaGoogle, FaSpinner, FaTwitter } from "react-icons/fa";
+import { FaGoogle, FaSpinner, FaTwitter, FaUser } from "react-icons/fa";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
@@ -112,12 +112,19 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                     </label>
                     <ul
                       tabIndex={0}
-                      className="p-2 px-10 py-1 shadow dropdown-content menu bg-base-100 rounded-box"
+                      className="p-0 shadow dropdown-content menu bg-base-100 rounded-box"
                     >
-                      <li>
+                      <li className="p-0 whitespace-nowrap">
+                        <Link href="/user-settings" passHref>
+                          <a className="text-xs no-underline md:text-sm">
+                            User Settings
+                          </a>
+                        </Link>
+                      </li>
+                      <li className="p-0 whitespace-nowrap">
                         <button
                           aria-label="Logout"
-                          className="text-xs md:text-sm btn-xs md:btn-md"
+                          className="text-xs md:text-sm"
                           onClick={handleSignout}
                         >
                           Logout
@@ -129,19 +136,13 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
               ) : (
                 <div
                   className="tooltip tooltip-left tooltip-secondary"
-                  data-tip="Login with Google"
+                  data-tip="Sign in"
                 >
-                  <button
-                    aria-label="Login with Google"
-                    className="btn btn-sm btn-circle btn-outline"
-                    onClick={() => {
-                      (window as any).location =
-                        process.env.NEXT_PUBLIC_SERVER_URL +
-                        "/oauth2/redirect/google";
-                    }}
-                  >
-                    <FaGoogle />
-                  </button>
+                  <Link href="/sign-in" passHref>
+                    <a className="btn btn-sm">
+                      <FaUser />
+                    </a>
+                  </Link>
                 </div>
               )}
             </>
