@@ -52,6 +52,7 @@ export default function VideoChatItem(props: VideoChatItemProps) {
             {
               "ring-transparent": !props.isMe,
               "ring-amber-500": props.isMe,
+              "-scale-x-100": props.isMe,
             }
           )}
           ref={localVideo}
