@@ -131,19 +131,19 @@ export default function ReactPlayerControlBar(
           />
         </div>
         <div className="flex items-center">
-          <div className="relative p-2 text-xs group">
+          <div className="relative flex w-full gap-2">
             <VolumeIcon
               role="button"
               className="w-4 h-auto cursor-pointer"
               onClick={() => props.setMuted(!props.isMuted)}
             />
-            <div className="absolute w-[100px] left-[50%] translate-x-[-50%] z-10 bottom-[200%] -rotate-90 bg-base-100 p-1 opacity-0 group-hover:opacity-100">
+            <div className="w-[50px] md:w-[100px] bg-base-100">
               <input
                 min="0"
                 max="100"
                 value={props.volume ?? 100}
                 type="range"
-                className=" range range-secondary range-xs"
+                className="w-full range range-secondary range-xs"
                 onChange={(e) => {
                   props.setVolume(Number(e.target.value));
                 }}
@@ -153,6 +153,7 @@ export default function ReactPlayerControlBar(
           <div className="w-[70px] p-2 text-xs">
             {props.isLive ? (
               <button
+                className="flex items-center"
                 aria-label="Seek to live"
                 onClick={async () => {
                   if (props.duration === Infinity) {

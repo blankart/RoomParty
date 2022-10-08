@@ -25,7 +25,7 @@ export default function VideoChatItem(props: VideoChatItemProps) {
 
   return (
     <>
-      <div className="relative inline-block w-[60px] h-auto p-1 lg:w-full">
+      <div className="relative inline-block w-[var(--video-width)] h-auto p-1 duration-300">
         <div className="absolute top-0 left-0 z-10 w-5 h-auto p-1 overflow-hidden text-xs rounded-full bg-secondary aspect-square">
           {props.picture ? (
             <img
@@ -52,6 +52,7 @@ export default function VideoChatItem(props: VideoChatItemProps) {
             {
               "ring-transparent": !props.isMe,
               "ring-amber-500": props.isMe,
+              "-scale-x-100": props.isMe,
             }
           )}
           ref={localVideo}

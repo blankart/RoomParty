@@ -37,6 +37,8 @@ export default function useVideoCall() {
     "video-chat.broadcastStateChange",
   ]);
 
+  const [isVideoChatCollapsed, setIsVideoChatCollapsed] = useState(false)
+
   useEffect(() => {
     if (
       !roomTransientId ||
@@ -161,5 +163,7 @@ export default function useVideoCall() {
     isVideoDisabled,
     videoCallPeerRef,
     setJoinedVideoChat,
+    isVideoChatCollapsed,
+    setIsVideoChatCollapsed
   };
 }
