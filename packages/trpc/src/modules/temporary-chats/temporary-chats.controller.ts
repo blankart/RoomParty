@@ -20,7 +20,7 @@ class TemporaryChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(EMITTER_TYPES.TemporaryChats)
     private temporaryChatsEmitter: TemporaryChatsEmitter
-  ) {}
+  ) { }
 
   async send(data: SendSchema) {
     this.temporaryChatsEmitter.emitter.channel("SEND").emit(data.id, data);
@@ -111,6 +111,8 @@ class TemporaryChatsController {
             },
             select: { concurrentSessionCount: true },
           });
+
+        console.log({ updatedRoomTransient })
 
         this.temporaryChatsEmitter.emitter.channel("SEND").off(data.id, onAdd);
 

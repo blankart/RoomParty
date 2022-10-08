@@ -72,7 +72,7 @@ model RoomTransient {
   room                   Room    @relation(fields: [roomId], references: [id], onDelete: Cascade)
   roomId                 String
   name                   String
-  concurrentSessionCount Int     @default(1)
+  concurrentSessionCount Int     @default(0)
 }
 
 model Chat {
