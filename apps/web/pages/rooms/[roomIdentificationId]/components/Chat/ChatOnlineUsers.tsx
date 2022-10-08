@@ -78,7 +78,7 @@ export default memo(function ChatOnlineUsers(props: ChatOnlineUsersProps) {
           <div className="avatar placeholder">
             <div className="w-6 h-6 text-xs bg-neutral-focus text-neutral-content">
               <div className="!m-0 w-full h-full text-[.9rem] absolute top-[50%] left-[50%] translate-x-[-50%] translate-y-[-50%] bg-secondary rounded-full">
-                +{data?.count ?? 0}
+                +{(data?.count ?? 0) - 3}
               </div>
             </div>
           </div>
