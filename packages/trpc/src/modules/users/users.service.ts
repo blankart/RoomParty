@@ -7,10 +7,10 @@ import ModelsService from "../models/models.service";
 class UsersService {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
 
   generateRandomUserPicture(str: string) {
-    return `https://avatars.dicebear.com/api/jdenticon/${str}.svg`
+    return `https://avatars.dicebear.com/api/jdenticon/${str}.svg`;
   }
 
   generateVerificationCode() {

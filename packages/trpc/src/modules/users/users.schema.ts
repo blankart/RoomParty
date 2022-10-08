@@ -35,5 +35,5 @@ export const resendVerificationCodeSchema = zod.object({
 });
 
 export const getVerificationDetailsSchema = zod.object({
-  accountId: zod.string()
-})
+  accountId: zod.string(),
+});

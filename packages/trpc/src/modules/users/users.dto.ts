@@ -16,4 +16,6 @@ export type ResendVerificationCodeSchema = zod.TypeOf<
   typeof resendVerificationCodeSchema
 >;
 
-export type GetVerificationDetailsSchema = zod.TypeOf<typeof getVerificationDetailsSchema>
+export type GetVerificationDetailsSchema = zod.TypeOf<
+  typeof getVerificationDetailsSchema
+>;

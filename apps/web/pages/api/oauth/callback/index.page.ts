@@ -6,5 +6,5 @@ export default function handler(req: NextApiRequest, res: NextApiResponse) {
   if (!access_token) return res.redirect("/");
   if (typeof access_token !== "string") return res.redirect("/");
   res.setHeader("set-cookie", `${ACCESS_TOKEN_KEY}=${access_token}; path=/;`);
-  res.redirect(redirect as string ?? "/");
+  res.redirect((redirect as string) ?? "/");
 }

@@ -21,7 +21,7 @@ class UsersController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Email) private emailService: EmailService,
     @inject(SERVICES_TYPES.Users) private usersService: UsersService
-  ) { }
+  ) {}
 
   async me(id: string) {
     return await this.modelsService.client.account.findFirst({
@@ -69,7 +69,7 @@ class UsersController {
       email: createdAccount.email,
     });
 
-    return createdAccount.id
+    return createdAccount.id;
   }
 
   async getVerificationDetails(data: GetVerificationDetailsSchema) {
@@ -77,13 +77,13 @@ class UsersController {
       where: { id: data.accountId, isVerified: false },
       select: {
         email: true,
-        nextResendVerificationDate: true
-      }
-    })
+        nextResendVerificationDate: true,
+      },
+    });
 
-    if (!maybeAccount) throw new TRPCError({ code: 'NOT_FOUND' })
+    if (!maybeAccount) throw new TRPCError({ code: "NOT_FOUND" });
 
-    return maybeAccount
+    return maybeAccount;
   }
 
   async resendVerificationCode(data: ResendVerificationCodeSchema) {
@@ -165,9 +165,11 @@ class UsersController {
         isVerified: true,
         user: {
           update: {
-            picture: this.usersService.generateRandomUserPicture(maybeAccount.id)
-          }
-        }
+            picture: this.usersService.generateRandomUserPicture(
+              maybeAccount.id
+            ),
+          },
+        },
       },
     });
 

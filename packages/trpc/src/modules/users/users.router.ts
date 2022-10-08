@@ -16,7 +16,7 @@ class UsersRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Users) private usersController: UsersController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
 
   router() {
     const self = this;
@@ -28,7 +28,7 @@ class UsersRouter {
           return await self.usersController.register(input);
         },
       })
-      .query('getVerificationDetails', {
+      .query("getVerificationDetails", {
         input: getVerificationDetailsSchema,
         async resolve({ input }) {
           return await self.usersController.getVerificationDetails(input);
