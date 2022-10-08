@@ -45,11 +45,9 @@ export default memo(function Chat(props: ChatProps) {
         >
           <BsThreeDots className="w-8 h-auto absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%]" />
         </button>
-        <section className="w-full p-0 md:p-4 bg-base-200 tabs lg:w-[400px]">
-          <VideoCall />
-        </section>
+        <VideoCall />
 
-        <section className="flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100 overflow-hidden relative w-full lg:w-[400px]">
+        <section className="flex flex-col justify-end flex-1 h-full lg:h-screen bg-base-100 overflow-hidden relative w-full lg:w-[400px]">
           <section className="absolute inset-0 flex flex-col justify-end flex-1 h-full overflow-hidden bg-base-100">
             <div
               ref={ctx.chatsRef}
