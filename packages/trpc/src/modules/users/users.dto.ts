@@ -21,6 +21,4 @@ export type GetVerificationDetailsSchema = zod.TypeOf<
   typeof getVerificationDetailsSchema
 >;
 
-export type SignInSchema = zod.TypeOf<
-  typeof signInSchema
->;
+export type SignInSchema = zod.TypeOf<typeof signInSchema>;

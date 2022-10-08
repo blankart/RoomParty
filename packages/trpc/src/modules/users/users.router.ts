@@ -17,17 +17,17 @@ class UsersRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Users) private usersController: UsersController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) { }
+  ) {}
 
   router() {
     const self = this;
     return this.trpcRouter
       .createRouter()
-      .mutation('signIn', {
+      .mutation("signIn", {
         input: signInSchema,
         async resolve({ input, ctx }) {
-          return await self.usersController.signIn(input, ctx.jwt)
-        }
+          return await self.usersController.signIn(input, ctx.jwt);
+        },
       })
       .mutation("signUp", {
         input: registerSchema,

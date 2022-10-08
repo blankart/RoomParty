@@ -13,13 +13,13 @@ type GoogleOAuth20StrategyParams = ConstructorParameters<
 type GoogleOAuth20ProviderCallbackParamsShifted = Parameters<
   GoogleOAuth20StrategyParams[1]
 > extends [
-    infer Req,
-    infer AccessToken,
-    infer RefresToken,
-    infer Options,
-    infer Profile,
-    infer Done
-  ]
+  infer Req,
+  infer AccessToken,
+  infer RefresToken,
+  infer Options,
+  infer Profile,
+  infer Done
+]
   ? [Req, AccessToken, RefresToken, Profile, AuthNextCallback]
   : never;
 
@@ -43,8 +43,8 @@ export default function initializeGoogleOAuth20Provider(
       where: {
         OR: [
           { providerId: profile.id, provider: "Google" },
-          { email: profile._json.email! }
-        ]
+          { email: profile._json.email! },
+        ],
       },
     });
 
@@ -66,15 +66,15 @@ export default function initializeGoogleOAuth20Provider(
         },
       });
     } else {
-      if (maybeUser.provider === 'Local') {
+      if (maybeUser.provider === "Local") {
         maybeUser = await prismaClient.account.update({
           where: { id: maybeUser.id },
           data: {
             provider: "Google",
             providerId: profile.id,
             isVerified: true,
-          }
-        })
+          },
+        });
       }
     }
 

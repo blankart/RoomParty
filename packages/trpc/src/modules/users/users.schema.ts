@@ -3,7 +3,8 @@ import zod from "zod";
 export const registerSchema = zod
   .object({
     email: zod.string().email(),
-    password: zod.string().min(8), password2: zod.string().min(8),
+    password: zod.string().min(8),
+    password2: zod.string().min(8),
     agreeToTermsAndConditions: zod.boolean(),
   })
   .superRefine(({ password, password2, agreeToTermsAndConditions }, ctx) => {
@@ -39,5 +40,5 @@ export const getVerificationDetailsSchema = zod.object({
 
 export const signInSchema = zod.object({
   email: zod.string().email(),
-  password: zod.string().min(8)
-})
+  password: zod.string().min(8),
+});

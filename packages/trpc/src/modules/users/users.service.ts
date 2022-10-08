@@ -2,15 +2,15 @@ import { TRPCError } from "@trpc/server";
 import { inject, injectable } from "inversify";
 import { SERVICES_TYPES } from "../../types/container";
 import ModelsService from "../models/models.service";
-import bcrypt from 'bcrypt'
+import bcrypt from "bcrypt";
 
 @injectable()
 class UsersService {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) { }
+  ) {}
 
-  static SALT_ROUNDS = 10
+  static SALT_ROUNDS = 10;
 
   generateRandomUserPicture(str: string) {
     return `https://avatars.dicebear.com/api/jdenticon/${str}.svg`;
@@ -43,11 +43,11 @@ class UsersService {
   }
 
   generatePasswordHash(password: string) {
-    return bcrypt.hashSync(password, UsersService.SALT_ROUNDS)
+    return bcrypt.hashSync(password, UsersService.SALT_ROUNDS);
   }
 
   comparePasswordHash(password: string, hash: string) {
-    return bcrypt.compareSync(password, hash)
+    return bcrypt.compareSync(password, hash);
   }
 }
 
