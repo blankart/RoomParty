@@ -6,6 +6,7 @@
     "typeRoots": ["./types"],
     "noEmit": false,
     "emitDeclarationOnly": false,
+    "module": "commonjs",
     "outDir": "dist"
   },
   "files": ["./types/global.d.ts"]

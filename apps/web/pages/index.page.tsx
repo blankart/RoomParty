@@ -18,7 +18,6 @@ import soundCloudIcon from "@web/public/images/soundcloud-icon.png";
 import CreateARoomCard from "./components/CreateARoomCard";
 import JoinARoomCard from "./components/JoinARoomCard";
 import FavoritedRoom from "./components/FavoritedRoom";
-import Button from "@web/components/Button/Button";
 
 export default function IndexPage() {
   const title = `${APP_NAME} - Watch Videos with your Friends`;
@@ -38,6 +37,15 @@ export default function IndexPage() {
           images: [{ url: thumbnail.src }],
         }}
       />
+      <video
+        className="fixed inset-0 w-full opacity-40 dark:opacity-10 blur-lg !m-0 h-full object-cover z-[-2]"
+        autoPlay
+        loop
+        muted
+        preload="none"
+      >
+        <source src="/images/bg.mp4" type="video/mp4" />
+      </video>
       <div className="container block w-full overflow-y-auto prose max-w-none">
         <div className="mt-10 hero">
           <div className="grid grid-cols-1 md:grid-cols-2">
@@ -45,7 +53,7 @@ export default function IndexPage() {
               <div className="max-w-[min(600px)] p-4 text-left">
                 <h1 className="text-3xl font-bold md:text-4xl xl:text-5xl">
                   <BsPlayCircleFill className="inline mr-4" />
-                  RoomParty
+                  Watch with Friends
                 </h1>
                 <h2 className="text-sm text-left md:text-2xl xl:text-3xl">
                   You can now watch videos together with your friends!

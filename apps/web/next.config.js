@@ -9,5 +9,8 @@ module.exports = withTM(
   withSuperjson()({
     // reactStrictMode: true,
     pageExtensions: ["page.tsx", "page.ts", "page.jsx", "page.js"],
+    typescript: {
+      ignoreBuildErrors: true,
+    },
   })
 );

@@ -1,4 +1,4 @@
-import { PlayerStatus } from "@RoomParty/trpc";
+import type { PlayerStatus } from "@RoomParty/trpc";
 import { trpc } from "@web/api";
 import { InferQueryOutput } from "@web/types/trpc";
 import debounce from "lodash.debounce";

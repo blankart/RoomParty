@@ -28,6 +28,9 @@
     "start": {
       "cache": false
     },
+    "studio": {
+      "cache": false
+    },
     "lint": {
       "outputs": []
     },
@@ -73,6 +76,7 @@
     "SERVER_JWT_SECRET",
     "NODE_TLS_REJECT_UNAUTHORIZED",
     "NODE_ENV",
-    "DISCORD_WEBHOOK_ROOM_NOTIFICATION_URL"
+    "DISCORD_WEBHOOK_ROOM_NOTIFICATION_URL",
+    "SIB_EMAIL_API_KEY"
   ]
 }

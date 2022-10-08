@@ -18,26 +18,25 @@ class ChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Chats) private chatsService: ChatsService,
     @inject(EMITTER_TYPES.Chats) private chatsEmitter: ChatsEmitter
-  ) { }
+  ) {}
   async chats(data: ChatsSchema) {
-    const room = await this.modelsService.client.room
-      .findFirst({
-        where: {
-          id: data.id,
-        },
-        select: {
-          chats: {
-            take: 20,
-            orderBy: {
-              createdAt: "desc",
-            },
+    const room = await this.modelsService.client.room.findFirst({
+      where: {
+        id: data.id,
+      },
+      select: {
+        chats: {
+          take: 20,
+          orderBy: {
+            createdAt: "desc",
           },
         },
-      })
+      },
+    });
 
     return (room?.chats ?? [])
       .reverse()
-      .map(this.chatsService.convertEmoticonsToEmojisInChatsObject)
+      .map(this.chatsService.convertEmoticonsToEmojisInChatsObject);
   }
 
   async send(data: SendSchema) {
@@ -52,13 +51,13 @@ class ChatsController {
         },
         ...(data.userId
           ? {
-            color: data.color,
-            user: {
-              connect: {
-                id: data.userId,
+              color: data.color,
+              user: {
+                connect: {
+                  id: data.userId,
+                },
               },
-            },
-          }
+            }
           : {}),
       },
     });

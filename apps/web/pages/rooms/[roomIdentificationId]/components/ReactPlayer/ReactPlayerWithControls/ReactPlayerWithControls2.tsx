@@ -37,7 +37,7 @@ export default memo(function ReactPlayerWithControls2() {
         <div className="relative flex flex-col flex-1 w-full bg-base-100">
           <div className="relative w-full h-full group video-container">
             {!control.isControlsDisabled && <VideoSearch />}
-            {/* {showPlayPauseOverlay && (
+            {showPlayPauseOverlay && (
               <button
                 aria-label={control.isPlayed ? "Pause video" : "Play video"}
                 className="absolute inset-0 z-[1]"
@@ -49,7 +49,7 @@ export default memo(function ReactPlayerWithControls2() {
                     : () => {}
                 }
               />
-            )} */}
+            )}
             <ReactPlayer {...reactPlayerProps} {...player} />
           </div>
           <ReactPlayerControlBar {...control} />

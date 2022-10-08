@@ -1,5 +1,8 @@
 import * as trpc from "@trpc/server";
-import type { JwtPayloadDecoded, JwtVerifier } from "@RoomParty/auth-providers";
+import type {
+  createAuthProviderJwt,
+  JwtPayloadDecoded,
+} from "@RoomParty/auth-providers";
 import { injectable, inject } from "inversify";
 import type * as trpcExpress from "@trpc/server/adapters/express";
 import { inferAsyncReturnType } from "@trpc/server";
@@ -14,7 +17,7 @@ class TRPCRouter {
   constructor(
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
   ) {}
-  createContext(jwt: JwtVerifier) {
+  createContext(jwt: ReturnType<typeof createAuthProviderJwt>) {
     return ({ req, res }: trpcExpress.CreateExpressContextOptions) => {
       return {
         req,
@@ -34,21 +37,24 @@ class TRPCRouter {
         let decoded: undefined | JwtPayloadDecoded;
         let user = null;
         try {
-          decoded = await jwt(getAccessToken(ctx));
+          decoded = await jwt.verifier(getAccessToken(ctx));
         } catch {}
 
         if (decoded) {
           user = await this.modelsService.client.account.findFirst({
             where: {
-              providerId: decoded.providerId,
-              provider: decoded.provider,
+              id: decoded.id,
             },
             include: { user: true },
           });
         }
 
+        if (!user?.isVerified) {
+          user = null;
+        }
+
         return next({
-          ctx: { ...ctx, user },
+          ctx: { ...ctx, user, jwt },
         });
       }
     );
@@ -59,20 +65,23 @@ class TRPCRouter {
       async ({ ctx: { jwt, ...ctx }, next }) => {
         let decoded: undefined | JwtPayloadDecoded;
         try {
-          decoded = await jwt(getAccessToken(ctx));
+          decoded = await jwt.verifier(getAccessToken(ctx));
         } catch {}
 
         if (!decoded) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
 
         const user = await this.modelsService.client.account.findFirst({
-          where: { providerId: decoded.providerId, provider: decoded.provider },
+          where: {
+            id: decoded.id,
+          },
           include: { user: true },
         });
 
         if (!user) throw new trpc.TRPCError({ code: "UNAUTHORIZED" });
+        if (!user.isVerified) throw new trpc.TRPCError({ code: "FORBIDDEN" });
 
         return next({
-          ctx: { ...ctx, user },
+          ctx: { ...ctx, user, jwt },
         });
       }
     );

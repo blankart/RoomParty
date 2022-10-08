@@ -16,7 +16,8 @@
     "emitDecoratorMetadata": true,
     "strictPropertyInitialization": false,
     "esModuleInterop": true,
-    "isolatedModules": false
+    "isolatedModules": false,
+    "skipLibCheck": true
   },
   "files": ["./types/global.d.ts"]
 }

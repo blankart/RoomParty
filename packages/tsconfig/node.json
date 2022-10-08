@@ -12,7 +12,7 @@
     "noEmit": true,
     "incremental": true,
     "esModuleInterop": true,
-    "module": "CommonJS",
+    "module": "commonjs",
     "resolveJsonModule": true,
     "isolatedModules": false,
     "jsx": "preserve"

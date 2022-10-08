@@ -37,7 +37,7 @@ export default function useVideoCall() {
     "video-chat.broadcastStateChange",
   ]);
 
-  const [isVideoChatCollapsed, setIsVideoChatCollapsed] = useState(false)
+  const [isVideoChatCollapsed, setIsVideoChatCollapsed] = useState(false);
 
   useEffect(() => {
     if (
@@ -164,6 +164,6 @@ export default function useVideoCall() {
     videoCallPeerRef,
     setJoinedVideoChat,
     isVideoChatCollapsed,
-    setIsVideoChatCollapsed
+    setIsVideoChatCollapsed,
   };
 }

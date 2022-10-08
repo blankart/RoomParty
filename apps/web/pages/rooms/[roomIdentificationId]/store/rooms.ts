@@ -1,5 +1,4 @@
-import type { Chat } from "@RoomParty/prisma-client";
-import { TemporaryChat } from "@RoomParty/trpc";
+import type { TemporaryChat } from "@RoomParty/trpc";
 import create from "zustand";
 
 export interface RoomsStore {

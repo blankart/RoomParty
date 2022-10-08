@@ -1,7 +1,7 @@
 import type { PassportStatic } from "passport";
 import type { Express } from "express";
 import { Strategy as GoogleOAuth2Strategy } from "passport-google-oauth20";
-import { AuthNextCallback, JwtSigner } from "../../types";
+import { AuthNextCallback, JwtPayload, JwtSigner } from "../../types";
 import type { CustomPrismaClient } from "@RoomParty/prisma-client";
 
 export const OAUTH_URL_REDIRECT_ROUTE = "/oauth2/redirect/google";
@@ -39,15 +39,22 @@ export default function initializeGoogleOAuth20Provider(
     ...params: GoogleOAuth20ProviderCallbackParamsShifted
   ) {
     const [req, accessToken, refreshToken, profile, done] = params;
-    const maybeUser = await prismaClient.account.findFirst({
-      where: { providerId: profile.id, provider: "Google" },
+    let maybeUser = await prismaClient.account.findFirst({
+      where: {
+        OR: [
+          { providerId: profile.id, provider: "Google" },
+          { email: profile._json.email! },
+        ],
+      },
     });
 
     if (!maybeUser) {
-      await prismaClient.account.create({
+      maybeUser = await prismaClient.account.create({
         data: {
           provider: "Google",
           providerId: profile.id,
+          isVerified: true,
+          email: profile._json.email!,
           user: {
             create: {
               name: profile.displayName ?? profile.name?.givenName,
@@ -58,9 +65,24 @@ export default function initializeGoogleOAuth20Provider(
           },
         },
       });
+    } else {
+      if (maybeUser.provider === "Local") {
+        maybeUser = await prismaClient.account.update({
+          where: { id: maybeUser.id },
+          data: {
+            provider: "Google",
+            providerId: profile.id,
+            isVerified: true,
+          },
+        });
+      }
     }
 
-    return done(null, { providerId: profile.id, provider: "Google" });
+    const jwtPayload: JwtPayload = {
+      ...maybeUser,
+    };
+
+    return done(null, jwtPayload);
   }
 
   const { serverUrl, ...googleOAuth20Ooptions } = options;

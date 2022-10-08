@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import { FaPause, FaPlay, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import _debounce from "lodash.debounce";
 import { convertTimeToFormattedTime } from "@RoomParty/shared-lib";
-import { PlayerStatus } from "@RoomParty/trpc";
+import type { PlayerStatus } from "@RoomParty/trpc";
 
 export interface ReactPlayerControlBarProps {
   isPlayed: boolean;

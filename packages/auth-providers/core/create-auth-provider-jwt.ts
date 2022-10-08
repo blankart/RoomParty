@@ -17,11 +17,16 @@ export default function createAuthProviderJwt(
     );
   }
 
+  function signer(user: JwtPayload) {
+    return jwt.sign(user, options.secret, options.jwtOptions);
+  }
+
   return {
-    signer(redirectUrl: string) {
+    signer,
+    signerMiddleware(redirectUrl: string) {
       return function (req: Request, res: Response) {
         const user = req.user as JwtPayload;
-        const token = jwt.sign(user, options.secret, options.jwtOptions);
+        const token = signer(user);
         return res.redirect(
           redirectUrl +
             `?${new URLSearchParams({ access_token: token }).toString()}`

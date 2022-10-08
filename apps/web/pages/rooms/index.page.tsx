@@ -4,8 +4,9 @@ import { APP_NAME } from "@RoomParty/shared-lib";
 
 import Rooms from "./components/Rooms";
 import thumbnail from "@web/public/images/thumbnail.png";
+import withSignIn from "@web/higher-order/withSignIn";
 
-export default function RoomsPage() {
+function RoomsPage() {
   const title = `My Rooms | ${APP_NAME}`;
   const description =
     "If you have someone you want to watch a movie with, but everyone's busy, this is the perfect solution. You'll be able to watch movies together with your friends at home whenever you want!";
@@ -28,3 +29,5 @@ export default function RoomsPage() {
     </>
   );
 }
+
+export default withSignIn(RoomsPage);

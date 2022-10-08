@@ -8,12 +8,17 @@ datasource db {
 }
 
 model Account {
-  id         String @id @default(cuid())
-  provider   String
-  providerId String
-  userId     String
-  user       User   @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Room       Room[]
+  id                         String    @id @default(cuid())
+  provider                   Providers @default(Local)
+  providerId                 String?
+  userId                     String
+  user                       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Room                       Room[]
+  email                      String
+  verificationCode           String?
+  nextResendVerificationDate DateTime?
+  isVerified                 Boolean   @default(false)
+  password                   String?
 }
 
 model User {
@@ -23,7 +28,7 @@ model User {
   lastName      String?
   picture       String?
   roomId        String?
-  Room          Room?           @relation(fields: [roomId], references: [id])
+  Room          Room?           @relation(fields: [roomId], references: [id], onDelete: Cascade)
   accounts      Account[]
   Chat          Chat[]
   FavoritedRoom FavoritedRoom[]
@@ -95,4 +100,9 @@ enum VideoPlatform {
 enum VideoControlRights {
   OwnerOnly
   Everyone
+}
+
+enum Providers {
+  Google
+  Local
 }

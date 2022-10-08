@@ -41,6 +41,7 @@ import TemporaryChatsEmitter from "../modules/temporary-chats/temporary-chats.em
 import TemporaryChatsController from "../modules/temporary-chats/temporary-chats.controller";
 import TemporaryChatsRouter from "../modules/temporary-chats/temporary-chats.router";
 import DiscordService from "../modules/discord/discord.service";
+import EmailService from "../modules/email/email.service";
 
 const trpcContainerModule = new ContainerModule((bind) => {
   /**
@@ -77,6 +78,8 @@ const trpcContainerModule = new ContainerModule((bind) => {
   bind<DiscordService>(SERVICES_TYPES.Discord)
     .to(DiscordService)
     .inSingletonScope();
+
+  bind<EmailService>(SERVICES_TYPES.Email).to(EmailService).inSingletonScope();
 
   /**
    * Injected Emitters
