@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { RoomsDTO } from "@RoomParty/trpc/dto";
+import type { RoomsDTO } from "@RoomParty/trpc/dto";
 import { RoomsSchema } from "@RoomParty/trpc/schema";
 import { trpc } from "@web/api";
 import Button from "@web/components/Button/Button";

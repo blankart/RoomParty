@@ -3,7 +3,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/router";
 import { useState } from "react";
 
-import { RoomsDTO } from "@RoomParty/trpc/dto";
+import type { RoomsDTO } from "@RoomParty/trpc/dto";
 import { RoomsSchema } from "@RoomParty/trpc/schema";
 
 import { trpc } from "@web/api";

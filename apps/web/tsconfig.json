@@ -6,6 +6,7 @@
     "allowJs": true,
     "isolatedModules": true,
     "typeRoots": ["./types", "./@types"],
+    "module": "commonjs",
     "baseUrl": ".",
     "paths": {
       "@web/*": ["./*"]
@@ -19,7 +20,8 @@
       "mocha"
     ],
     "experimentalDecorators": true,
-    "emitDecoratorMetadata": true
+    "emitDecoratorMetadata": true,
+    "skipLibCheck": true
   },
   "files": ["./types/global.d.ts"]
 }
