@@ -1,9 +1,9 @@
-import { JwtVerifier } from "@RoomParty/auth-providers";
+import type { createAuthProviderJwt } from "@RoomParty/auth-providers";
 import appContainer from "../container/container";
 import { TRPC_ROUTER } from "../types/container";
 import TRPCRouter from "./router";
 
-export const createContext = (jwt: JwtVerifier) =>
+export const createContext = (jwt: ReturnType<typeof createAuthProviderJwt>) =>
   appContainer.get<TRPCRouter>(TRPC_ROUTER).createContext(jwt);
 export const createRouter = () =>
   appContainer.get<TRPCRouter>(TRPC_ROUTER).createRouter();

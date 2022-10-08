@@ -28,6 +28,9 @@
     "start": {
       "cache": false
     },
+    "studio": {
+      "cache": false
+    },
     "lint": {
       "outputs": []
     },

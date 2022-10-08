@@ -1,9 +1,5 @@
 import { injectable } from "inversify";
-import {
-  TransactionalEmailsApi,
-  TransactionalEmailsApiApiKeys,
-  SendSmtpEmail,
-} from "sib-api-v3-typescript";
+import * as SibApiV3Sdk from "sib-api-v3-typescript";
 import fs from "fs";
 
 interface SendEmailConfirmationParams {
@@ -13,12 +9,12 @@ interface SendEmailConfirmationParams {
 
 @injectable()
 class EmailService {
-  private sibApiV3SdkInstance: TransactionalEmailsApi;
+  private sibApiV3SdkInstance: SibApiV3Sdk.TransactionalEmailsApi;
   constructor() {
-    this.sibApiV3SdkInstance = new TransactionalEmailsApi();
+    this.sibApiV3SdkInstance = new SibApiV3Sdk.TransactionalEmailsApi();
     if (process.env.SIB_EMAIL_API_KEY) {
       this.sibApiV3SdkInstance.setApiKey(
-        TransactionalEmailsApiApiKeys.apiKey,
+        SibApiV3Sdk.TransactionalEmailsApiApiKeys.apiKey,
         process.env.SIB_EMAIL_API_KEY
       );
     }
@@ -26,10 +22,10 @@ class EmailService {
 
   async sendEmailConfirmation(data: SendEmailConfirmationParams) {
     const sendEmailConfirmationTemplate = fs.readFileSync(
-      "./templates/sendEmailConfirmation.template.html",
+      __dirname + "/templates/sendEmailConfirmation.template.html",
       "utf-8"
     );
-    const sendSmtpEmail = new SendSmtpEmail();
+    const sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
     sendSmtpEmail.to = [{ email: data.email }];
     sendSmtpEmail.params = data;
     sendSmtpEmail.subject = "RoomParty Sign Up Verification Code";

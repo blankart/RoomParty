@@ -1,10 +1,14 @@
 import { inject, injectable } from "inversify";
-import type TRPCRouter from "../../trpc/router";
 import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
-import type UsersController from "./users.controller";
-import zod from "zod";
-import { confirmVerificationCodeSchema, registerSchema } from "./users.schema";
+import {
+  confirmVerificationCodeSchema,
+  getVerificationDetailsSchema,
+  registerSchema,
+  resendVerificationCodeSchema,
+} from "./users.schema";
 
+import type TRPCRouter from "../../trpc/router";
+import type UsersController from "./users.controller";
 export const USERS_ROUTER_NAME = "users";
 
 @injectable()
@@ -12,7 +16,7 @@ class UsersRouter {
   constructor(
     @inject(CONTROLLER_TYPES.Users) private usersController: UsersController,
     @inject(TRPC_ROUTER) private trpcRouter: TRPCRouter
-  ) {}
+  ) { }
 
   router() {
     const self = this;
@@ -24,10 +28,25 @@ class UsersRouter {
           return await self.usersController.register(input);
         },
       })
+      .query('getVerificationDetails', {
+        input: getVerificationDetailsSchema,
+        async resolve({ input }) {
+          return await self.usersController.getVerificationDetails(input);
+        },
+      })
+      .mutation("resendVerificationCode", {
+        input: resendVerificationCodeSchema,
+        async resolve({ input }) {
+          return await self.usersController.resendVerificationCode(input);
+        },
+      })
       .mutation("confirmVerificationCode", {
         input: confirmVerificationCodeSchema,
-        async resolve({ input }) {
-          return await self.usersController.confirmVerificationCode(input);
+        async resolve({ input, ctx }) {
+          return await self.usersController.confirmVerificationCode(
+            input,
+            ctx.jwt
+          );
         },
       });
   }

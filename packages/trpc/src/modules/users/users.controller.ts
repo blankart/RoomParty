@@ -5,7 +5,15 @@ import type EmailService from "../email/email.service";
 import type UsersService from "./users.service";
 import type ModelsService from "../models/models.service";
 
-import { ConfirmVerificationCodeSchema, RegisterSchema } from "./users.dto";
+import {
+  ConfirmVerificationCodeSchema,
+  GetVerificationDetailsSchema,
+  RegisterSchema,
+  ResendVerificationCodeSchema,
+} from "./users.dto";
+import type { createAuthProviderJwt } from "@RoomParty/auth-providers";
+
+const RESEND_VERIFICATION_DATE_DURATION_IN_MS = 1_000 * 60 * 2;
 
 @injectable()
 class UsersController {
@@ -13,7 +21,7 @@ class UsersController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(SERVICES_TYPES.Email) private emailService: EmailService,
     @inject(SERVICES_TYPES.Users) private usersService: UsersService
-  ) {}
+  ) { }
 
   async me(id: string) {
     return await this.modelsService.client.account.findFirst({
@@ -42,11 +50,15 @@ class UsersController {
         email: data.email,
         provider: "Local",
         verificationCode: this.usersService.generateVerificationCode(),
+        nextResendVerificationDate: new Date(
+          Date.now() + RESEND_VERIFICATION_DATE_DURATION_IN_MS
+        ),
         user: {
           create: {},
         },
       },
       select: {
+        id: true,
         verificationCode: true,
         email: true,
       },
@@ -56,41 +68,110 @@ class UsersController {
       code: createdAccount.verificationCode!,
       email: createdAccount.email,
     });
+
+    return createdAccount.id
   }
 
-  async confirmVerificationCode(data: ConfirmVerificationCodeSchema) {
-    const maybeExistingAccount =
-      await this.modelsService.client.account.findFirst({
-        where: { email: data.email },
-        select: { verificationCode: true, isVerified: true, id: true },
-      });
+  async getVerificationDetails(data: GetVerificationDetailsSchema) {
+    const maybeAccount = await this.modelsService.client.account.findFirst({
+      where: { id: data.accountId, isVerified: false },
+      select: {
+        email: true,
+        nextResendVerificationDate: true
+      }
+    })
 
-    if (!maybeExistingAccount)
-      throw new TRPCError({
-        code: "BAD_REQUEST",
-        message: "Invalid email address",
-      });
+    if (!maybeAccount) throw new TRPCError({ code: 'NOT_FOUND' })
 
-    if (maybeExistingAccount.isVerified)
+    return maybeAccount
+  }
+
+  async resendVerificationCode(data: ResendVerificationCodeSchema) {
+    const maybeAccount = await this.modelsService.client.account.findFirst({
+      where: { email: data.email },
+    });
+
+    if (!maybeAccount) throw new TRPCError({ code: "NOT_FOUND" });
+
+    if (maybeAccount.isVerified)
       throw new TRPCError({
         code: "BAD_REQUEST",
         message:
           "This user is already verified his/her email. Please login to continue.",
       });
 
-    if (maybeExistingAccount.verificationCode !== data.code)
+    if (
+      maybeAccount.nextResendVerificationDate &&
+      maybeAccount.nextResendVerificationDate.getTime() > Date.now()
+    ) {
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Please wait a few minutes.",
+      });
+    }
+
+    const updatedAccount = await this.modelsService.client.account.update({
+      where: { id: maybeAccount.id },
+      data: {
+        verificationCode: this.usersService.generateVerificationCode(),
+        nextResendVerificationDate: new Date(
+          Date.now() + RESEND_VERIFICATION_DATE_DURATION_IN_MS
+        ),
+      },
+      select: {
+        verificationCode: true,
+        email: true,
+      },
+    });
+
+    await this.emailService.sendEmailConfirmation({
+      code: updatedAccount.verificationCode!,
+      email: updatedAccount.email,
+    });
+  }
+
+  async confirmVerificationCode(
+    data: ConfirmVerificationCodeSchema,
+    jwt: ReturnType<typeof createAuthProviderJwt>
+  ) {
+    const maybeAccount = await this.modelsService.client.account.findFirst({
+      where: { email: data.email },
+      select: { verificationCode: true, isVerified: true, id: true },
+    });
+
+    if (!maybeAccount)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message: "Invalid email address",
+      });
+
+    if (maybeAccount.isVerified)
+      throw new TRPCError({
+        code: "BAD_REQUEST",
+        message:
+          "This user has already verified his/her email. Please login to continue.",
+      });
+
+    if (maybeAccount.verificationCode !== data.code)
       throw new TRPCError({
         code: "BAD_REQUEST",
         message: "Invalid verification code.",
       });
 
-    await this.modelsService.client.account.update({
-      where: { id: maybeExistingAccount.id },
+    const updatedAccount = await this.modelsService.client.account.update({
+      where: { id: maybeAccount.id },
       data: {
         verificationCode: null,
         isVerified: true,
+        user: {
+          update: {
+            picture: this.usersService.generateRandomUserPicture(maybeAccount.id)
+          }
+        }
       },
     });
+
+    return jwt.signer(updatedAccount);
   }
 }
 

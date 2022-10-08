@@ -8,15 +8,16 @@ datasource db {
 }
 
 model Account {
-  id               String    @id @default(cuid())
-  provider         Providers @default(Local)
-  providerId       String?
-  userId           String
-  user             User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-  Room             Room[]
-  email            String
-  verificationCode String?
-  isVerified       Boolean   @default(false)
+  id                         String    @id @default(cuid())
+  provider                   Providers @default(Local)
+  providerId                 String?
+  userId                     String
+  user                       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  Room                       Room[]
+  email                      String
+  verificationCode           String?
+  nextResendVerificationDate DateTime?
+  isVerified                 Boolean   @default(false)
 }
 
 model User {

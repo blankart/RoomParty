@@ -10,3 +10,20 @@ html {
 body {
   padding-bottom: env(safe-area-inset-bottom);
 }
+
+.react-code-input > input {
+  @apply p-2 rounded-lg md:px-4 input input-sm md:input-md input-info;
+}
+
+.react-code-input.error > input {
+  @apply input-error;
+}
+
+.react-code-input > input::-webkit-outer-spin-button,
+.react-code-input > input::-webkit-inner-spin-button {
+  @apply !appearance-none m-0;
+}
+
+.react-code-input {
+  @apply space-x-1 md:space-x-3;
+}

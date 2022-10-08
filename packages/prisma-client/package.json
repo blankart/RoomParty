@@ -13,7 +13,8 @@
     "clean": "rm -rf dist",
     "build": "yarn clean && tsc",
     "dev": "yarn clean && tsc-watch --noClear",
-    "typecheck": "tsc"
+    "typecheck": "tsc",
+    "studio": "prisma studio"
   },
   "dependencies": {
     "@prisma/client": "^4.3.1",

@@ -13,7 +13,7 @@ import {
 
 import { injectable, inject } from "inversify";
 import { CONTROLLER_TYPES, TRPC_ROUTER } from "../../types/container";
-import TRPCRouter from "../../trpc/router";
+import type TRPCRouter from "../../trpc/router";
 import type RoomsController from "./rooms.controller";
 
 export const ROOMS_ROUTER_NAME = "rooms";

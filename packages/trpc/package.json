@@ -7,9 +7,10 @@
   "scripts": {
     "lint": "eslint *.ts*",
     "clean": "rm -rf dist",
-    "build": "yarn clean && tsc",
-    "dev": "yarn clean && tsc-watch --noClear",
-    "dev:only": "yarn clean && tsc-watch --noClear --onCompilationStarted \"yarn copy-files\" --onSuccess \"node ./dist/index.js\"",
+    "prebuild": "yarn clean && yarn copy-files",
+    "build": "yarn prebuild && tsc",
+    "dev": "yarn prebuild && tsc-watch --noClear",
+    "dev:only": "yarn dev --onSuccess \"node ./dist/index.js\" --onCompilationStarted \"yarn copy-files\"",
     "copy-files": "mkdir -p ./dist/src/modules/email/templates/ && cp -R ./src/modules/email/templates/ ./dist/src/modules/email/templates/",
     "typecheck": "tsc",
     "test:unit:watch": "jest --watch",

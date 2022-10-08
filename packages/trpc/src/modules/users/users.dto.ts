@@ -1,4 +1,9 @@
-import { confirmVerificationCodeSchema, registerSchema } from "./users.schema";
+import {
+  confirmVerificationCodeSchema,
+  getVerificationDetailsSchema,
+  registerSchema,
+  resendVerificationCodeSchema,
+} from "./users.schema";
 import zod from "zod";
 
 export type RegisterSchema = zod.TypeOf<typeof registerSchema>;
@@ -6,3 +11,9 @@ export type RegisterSchema = zod.TypeOf<typeof registerSchema>;
 export type ConfirmVerificationCodeSchema = zod.TypeOf<
   typeof confirmVerificationCodeSchema
 >;
+
+export type ResendVerificationCodeSchema = zod.TypeOf<
+  typeof resendVerificationCodeSchema
+>;
+
+export type GetVerificationDetailsSchema = zod.TypeOf<typeof getVerificationDetailsSchema>

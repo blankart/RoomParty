@@ -29,3 +29,11 @@ export const confirmVerificationCodeSchema = zod.object({
   email: zod.string().email(),
   code: zod.string().length(6),
 });
+
+export const resendVerificationCodeSchema = zod.object({
+  email: zod.string().email(),
+});
+
+export const getVerificationDetailsSchema = zod.object({
+  accountId: zod.string()
+})

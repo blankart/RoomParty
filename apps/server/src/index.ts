@@ -26,7 +26,7 @@ async function main() {
 
   const prismaClient = createPrismaClient();
 
-  const { signer, verifier } = createAuthProviderJwt(jwt, {
+  const authProviderJWT = createAuthProviderJwt(jwt, {
     secret: process.env.SERVER_JWT_SECRET!,
     jwtOptions: { expiresIn: "1d" },
   });
@@ -43,11 +43,13 @@ async function main() {
     })
   );
 
+  const context = createContext(authProviderJWT);
+
   app.use(
     "/trpc",
     trpcExpress.createExpressMiddleware({
       router,
-      createContext: createContext(verifier),
+      createContext: context,
       batching: {
         enabled: true,
       },
@@ -65,7 +67,7 @@ async function main() {
   const handler = applyWSSHandler({
     wss,
     router,
-    createContext: createContext(verifier) as any,
+    createContext: context as any,
   });
 
   wss.on("connection", (ws) => {
@@ -121,7 +123,7 @@ async function main() {
         userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
       },
       prismaClient,
-      signer
+      authProviderJWT.signerMiddleware
     );
   } else {
     const missingCredentials = [
