@@ -9,6 +9,7 @@ interface ButtonProps
   > {
   loading?: boolean;
   disabled?: boolean;
+  variant?: "info" | "none";
 }
 
 export default function Button({ disabled, loading, ...props }: ButtonProps) {
@@ -16,7 +17,8 @@ export default function Button({ disabled, loading, ...props }: ButtonProps) {
     <button
       {...props}
       className={classNames(
-        "btn btn-info",
+        "btn",
+        (!props.variant || props.variant === "info") && "btn-info",
         disabled && "btn-disabled",
         props.className
       )}
