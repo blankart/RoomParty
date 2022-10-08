@@ -114,13 +114,13 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                       tabIndex={0}
                       className="p-0 shadow dropdown-content menu bg-base-100 rounded-box"
                     >
-                      <li className="p-0 whitespace-nowrap">
+                      {/* <li className="p-0 whitespace-nowrap">
                         <Link href="/user-settings" passHref>
                           <a className="text-xs no-underline md:text-sm">
                             User Settings
                           </a>
                         </Link>
-                      </li>
+                      </li> */}
                       <li className="p-0 whitespace-nowrap">
                         <button
                           aria-label="Logout"
