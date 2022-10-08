@@ -348,7 +348,7 @@ export default function PrivacyPolicyPage() {
           {" "}
           If you wish to be informed what Personal Data we hold about you and if
           you want it to be removed from our systems, please email us at{" "}
-          <b>blankartwp@gmail.com</b>.
+          <b>hello.roomparty@gmail.com</b>.
         </p>
         <p>
           In certain circumstances, you have the following data protection
@@ -420,7 +420,7 @@ export default function PrivacyPolicyPage() {
         </p>
         <p>
           0.4. users are able to change their personal information by emailing
-          us at <b>blankartwp@gmail.com</b>.
+          us at <b>hello.roomparty@gmail.com</b>.
         </p>
         <p>Our Policy on “Do Not Track” Signals:</p>
         <p>
@@ -525,7 +525,8 @@ export default function PrivacyPolicyPage() {
         </p>
         <p>
           To exercise your California data protection rights described above,
-          please send your request(s) by email: <b>blankartwp@gmail.com</b>.
+          please send your request(s) by email: <b>hello.roomparty@gmail.com</b>
+          .
         </p>
         <p>
           Your data protection rights, described above, are covered by the CCPA,
@@ -640,7 +641,7 @@ export default function PrivacyPolicyPage() {
         </p>
         <p>
           If you have any questions about this Privacy Policy, please contact us
-          by email: <b>blankartwp@gmail.com</b>.
+          by email: <b>hello.roomparty@gmail.com</b>.
         </p>
       </div>
     </>

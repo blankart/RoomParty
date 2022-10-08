@@ -3,6 +3,7 @@ import type { UsersDTO } from "@RoomParty/trpc/dto";
 import { UsersSchema } from "@RoomParty/trpc/schema";
 import { trpc } from "@web/api";
 import { InferMutationOutput } from "@web/types/trpc";
+import Link from "next/link";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { BsEye, BsEyeSlash, BsPlayCircleFill } from "react-icons/bs";
@@ -103,6 +104,13 @@ export default function SignIn(props: SignInProps) {
         >
           Sign in
         </Button>
+
+        <p>
+          Don&apos;t have an account?{" "}
+          <Link href="/sign-up" passHref>
+            <a>Sign Up</a>
+          </Link>
+        </p>
       </form>
     </>
   );

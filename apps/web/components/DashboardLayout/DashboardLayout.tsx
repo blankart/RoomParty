@@ -183,7 +183,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
             <span className="text-white footer-title">Contact</span>
             <a
               className="text-white link link-hover"
-              href="mailto:blankartwp@gmail.com"
+              href="mailto:hello.roomparty@gmail.com"
             >
               Support
             </a>

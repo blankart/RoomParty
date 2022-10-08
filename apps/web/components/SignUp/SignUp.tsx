@@ -110,7 +110,7 @@ export default function SignUp(props: SignUpProps) {
           <span className="inline-block ml-4 mr-1 break-words">
             I agree to RoomParty&apos;s{" "}
           </span>
-          <Link href="/teerms-and-conditions" passHref>
+          <Link href="/terms-and-conditions" passHref>
             <a className="break-words link">Terms and Conditions</a>
           </Link>
         </div>
@@ -128,6 +128,13 @@ export default function SignUp(props: SignUpProps) {
         >
           Sign Up
         </Button>
+
+        <p>
+          Already have an account?{" "}
+          <Link href="/sign-in" passHref>
+            <a>Sign In</a>
+          </Link>
+        </p>
       </form>
     </>
   );
