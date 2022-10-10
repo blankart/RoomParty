@@ -164,8 +164,6 @@ export function ReactPlayerProvider(props: {
     return reactPlayerRef?.current?.getInternalPlayer();
   }
 
-  console.log(reactPlayerRef?.current);
-
   const shouldClickTheVideoFirstOnReadyOrChangeUrl = useMemo(
     () => getShouldClickTheVideoFirstOnReadyOrChangeUrl(videoPlatform),
     [videoPlatform]

@@ -112,8 +112,6 @@ class TemporaryChatsController {
             select: { concurrentSessionCount: true },
           });
 
-        console.log({ updatedRoomTransient })
-
         this.temporaryChatsEmitter.emitter.channel("SEND").off(data.id, onAdd);
 
         if ((updatedRoomTransient.concurrentSessionCount ?? 0) === 0)
