@@ -102,7 +102,7 @@ export default function Rooms() {
                 <h2 className="text-lg text-center md:text-2xl">
                   No rooms created yet.{" "}
                   <Link href="/">
-                    <a className="font-bold link link-secondary">Create one?</a>
+                    <a className="font-bold link link-info">Create one?</a>
                   </Link>
                 </h2>
               </div>

@@ -79,7 +79,7 @@ export default function ReactPlayerControlBar(
     <>
       <div
         className={classNames(
-          "absolute bottom-8 left-[50%] translate-x-[-50%] text-xs md:text-sm p-1 px-2 text-center w-full badge badge-secondary rounded-none z-[1] opacity-0 h-fit duration-300 translate-y-[20px]",
+          "absolute bottom-8 left-[50%] translate-x-[-50%] text-xs md:text-sm p-1 px-2 text-center w-full badge badge-info rounded-none z-[1] opacity-0 h-fit duration-300 translate-y-[20px]",
           showPlayerStatus && "opacity-100 translate-y-0",
           shouldDisableControlBar && "bottom-0"
         )}
@@ -117,7 +117,7 @@ export default function ReactPlayerControlBar(
         <div className="relative flex items-center flex-1 py-2">
           <input
             type="range"
-            className={classNames("range range-secondary range-xs", {
+            className={classNames("range range-info range-xs", {
               "opacity-40 pointer-events-none": shouldDisableTimeControl,
             })}
             min="0"
@@ -143,7 +143,7 @@ export default function ReactPlayerControlBar(
                 max="100"
                 value={props.volume ?? 100}
                 type="range"
-                className="w-full range range-secondary range-xs"
+                className="w-full range range-info range-xs"
                 onChange={(e) => {
                   props.setVolume(Number(e.target.value));
                 }}

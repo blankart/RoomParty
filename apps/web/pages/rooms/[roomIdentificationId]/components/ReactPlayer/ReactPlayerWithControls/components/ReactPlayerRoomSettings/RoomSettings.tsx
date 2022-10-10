@@ -116,7 +116,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
         <p className="text-sm md:text-md !m-0">Enabled?</p>
         <input
           type="checkbox"
-          className="toggle toggle-secondary toggle-sm"
+          className="toggle toggle-info toggle-sm"
           {...register("private", {
             onChange(event) {
               if (!event.target.checked) setValue("password", undefined);
@@ -140,7 +140,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
           <div
             role="button"
             className={classNames(
-              "btn btn-secondary btn-ghost btn-sm md:btn-md",
+              "btn btn-info btn-ghost btn-sm md:btn-md",
               !isPrivate && "btn-disabled"
             )}
             onClick={() => setShowPassword(!showPassword)}
@@ -156,7 +156,7 @@ export default function RoomSettings(props: RoomSettingsProps) {
         </p>
         <input
           type="checkbox"
-          className="toggle toggle-secondary toggle-sm"
+          className="toggle toggle-info toggle-sm"
           {...register("allowAccessToEveryone")}
         />
       </div>

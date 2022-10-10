@@ -1,7 +1,7 @@
 import { memo, useState } from "react";
 import _debounce from "lodash.debounce";
 import { InferQueryOutput } from "@web/types/trpc";
-import { FiShare } from "react-icons/fi";
+import { FiSearch, FiShare } from "react-icons/fi";
 import { useMe } from "@web/context/AuthContext";
 import { trpc } from "@web/api";
 import { FaCopy, FaLock, FaStar } from "react-icons/fa";
@@ -16,6 +16,8 @@ const ReactPlayerRoomSettings = dynamic(
   { ssr: false }
 );
 import dynamic from "next/dynamic";
+import { useVideoSearchStore } from "./VideoSearch/VideoSearch";
+import shallow from "zustand/shallow";
 
 type FindByRoomIdentificationIdResponse =
   InferQueryOutput<"rooms.findByRoomIdentificationId">;
@@ -33,6 +35,14 @@ export default memo(function ReactPlayerRoomInfo(
       enabled: !!user && !!props.id,
     });
 
+  const { showVideoSearchButtons, setShowVideoSearchButtons } =
+    useVideoSearchStore(
+      (s) => ({
+        showVideoSearchButtons: s.showVideoSearchButtons,
+        setShowVideoSearchButtons: s.setShowVideoSearchButtons,
+      }),
+      shallow
+    );
   const showFavoriteButton =
     !!props.id &&
     !!user &&
@@ -40,6 +50,13 @@ export default memo(function ReactPlayerRoomInfo(
     user.user.id !== props.owner.userId;
 
   const showSettingsButton = !!user && user.user.id === props.owner?.userId;
+
+  const isAllowedToControlVideo =
+    props.videoControlRights === "Everyone"
+      ? true
+      : user
+      ? !!props.owner && user.user.id === props.owner?.userId
+      : false;
 
   const { mutateAsync: toggle } = trpc.useMutation(["favorited-rooms.toggle"]);
 
@@ -135,10 +152,27 @@ export default memo(function ReactPlayerRoomInfo(
           )}
         </div>
         <div className="flex gap-2">
+          {isAllowedToControlVideo && (
+            <div
+              className="tooltip tooltip-info tooltip-left"
+              data-tip="Search videos"
+            >
+              <button
+                aria-label="Search videos"
+                className="btn btn-ghost btn-sm btn-circle"
+                onClick={() =>
+                  setShowVideoSearchButtons(!showVideoSearchButtons)
+                }
+              >
+                <FiSearch className="w-4 h-auto" />
+              </button>
+            </div>
+          )}
+
           {showSettingsButton && <ReactPlayerRoomSettings id={props.id} />}
 
           <div
-            className="tooltip tooltip-secondary tooltip-left"
+            className="tooltip tooltip-info tooltip-left"
             data-tip="Share with your friends"
           >
             <button
@@ -152,7 +186,7 @@ export default memo(function ReactPlayerRoomInfo(
 
           {showFavoriteButton && (
             <div
-              className="tooltip tooltip-secondary tooltip-left"
+              className="tooltip tooltip-info tooltip-left"
               data-tip={
                 !isRoomFavorited ? "Add to Favorites" : "Remove to Favorites"
               }
@@ -180,7 +214,7 @@ export default memo(function ReactPlayerRoomInfo(
           )}
 
           <div
-            className="tooltip tooltip-secondary tooltip-left"
+            className="tooltip tooltip-info tooltip-left"
             data-tip="Exit Room"
           >
             <Link href="/" passHref>

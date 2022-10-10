@@ -20,13 +20,13 @@ export default function FavoritedRoomItem(props: FavoritedRoomItemProps) {
             alt={props.name}
           />
         ) : (
-          <div className="w-20 h-20 bg-secondary" />
+          <div className="w-20 h-20 bg-info" />
         )}
       </div>
       <div className="flex flex-col justify-center flex-1">
         <div className="space-x-2">
           <Link href={`/rooms/${props.roomIdentificationId}`} passHref>
-            <a className="inline text-xl no-underline link link-secondary">
+            <a className="inline text-xl no-underline link link-info">
               {props.name}
             </a>
           </Link>

@@ -1,5 +1,5 @@
 import { useRouter } from "next/router";
-import { memo, useState } from "react";
+import { memo, useEffect, useState } from "react";
 import classNames from "classnames";
 import dynamic from "next/dynamic";
 
@@ -12,11 +12,24 @@ import SoundCloudAudioSearchButton from "./components/SoundCloudAudioSearchButto
 import TwitchVideoSearchButton from "./components/TwitchVideoSearchButton";
 import VimeoVideoSearchButton from "./components/VimeoVideoSearchButton";
 import YoutubeVideoSearchButton from "./components/YoutubeVideoSearchButton";
+import create from "zustand";
+import type { VideoPlatform } from "@RoomParty/prisma-client";
+import { FaSpinner } from "react-icons/fa";
+import { AiFillCloseCircle } from "react-icons/ai";
+
+function ModalLoadingFallback() {
+  return (
+    <div className="absolute inset-0 w-full z-[10] p-10 overflow-y-auto bg-base-100/90 duration-100 flex items-center justify-center">
+      <FaSpinner className="w-8 h-auto duration-100 md:w-20 animate-spin" />
+    </div>
+  );
+}
 
 const FacebookVideoSearch = dynamic(
   () => import("./components/FacebookVideoSearch"),
   {
     ssr: false,
+    loading: ModalLoadingFallback,
   }
 );
 
@@ -24,6 +37,7 @@ const MixcloudAudioSearch = dynamic(
   () => import("./components/MixcloudAudioSearch"),
   {
     ssr: false,
+    loading: ModalLoadingFallback,
   }
 );
 
@@ -31,6 +45,7 @@ const SoundCloudAudioSearch = dynamic(
   () => import("./components/SoundCloudAudioSearch"),
   {
     ssr: false,
+    loading: ModalLoadingFallback,
   }
 );
 
@@ -38,6 +53,7 @@ const TwitchVideoSearch = dynamic(
   () => import("./components/TwitchVideoSearch"),
   {
     ssr: false,
+    loading: ModalLoadingFallback,
   }
 );
 
@@ -45,25 +61,43 @@ const VimeoVideoSearch = dynamic(
   () => import("./components/VimeoVideoSearch"),
   {
     ssr: false,
+    loading: ModalLoadingFallback,
   }
 );
 const YoutubeVideoSearch = dynamic(
   () => import("./components/YoutubeVideoSearch"),
   {
     ssr: false,
+    loading: ModalLoadingFallback,
   }
 );
 
+interface VideoSearchStore {
+  videoSearchModalOpen: null | Lowercase<VideoPlatform>;
+  setVideoSearchModalOpen: (
+    newVideoSearchModalOpen: null | Lowercase<VideoPlatform>
+  ) => any;
+  showVideoSearchButtons: boolean;
+  setShowVideoSearchButtons: (newValue: boolean) => any;
+}
+
+export const useVideoSearchStore = create<VideoSearchStore>((set) => ({
+  videoSearchModalOpen: null,
+  setVideoSearchModalOpen: (newValue) =>
+    set((store) => ({ ...store, videoSearchModalOpen: newValue })),
+  showVideoSearchButtons: false,
+  setShowVideoSearchButtons: (newValue) =>
+    set((store) => ({ ...store, showVideoSearchButtons: newValue })),
+}));
+
 export default memo(function VideoSearch() {
-  const [videoSearchModalOpen, setVideoSearchModalOpen] = useState<
-    | null
-    | "youtube"
-    | "twitch"
-    | "facebook"
-    | "vimeo"
-    | "mixcloud"
-    | "soundcloud"
-  >(null);
+  const store = useVideoSearchStore();
+  const {
+    videoSearchModalOpen,
+    setVideoSearchModalOpen,
+    showVideoSearchButtons,
+    setShowVideoSearchButtons,
+  } = store;
 
   const { password } = useRoomContext();
 
@@ -85,13 +119,25 @@ export default memo(function VideoSearch() {
     }
   );
 
+  useEffect(() => {
+    if (isFetchedAfterMount || !data) return;
+    if (!(data as any)?.playerStatus?.url) {
+      setShowVideoSearchButtons(true);
+    } else {
+      setShowVideoSearchButtons(false);
+    }
+  }, [isFetchedAfterMount]);
+
   return (
     <>
       {videoSearchModalOpen === "youtube" && (
         <YoutubeVideoSearch
           showVideoSearch={videoSearchModalOpen === "youtube"}
           onOpenModal={() => setVideoSearchModalOpen("youtube")}
-          onCloseModal={() => setVideoSearchModalOpen(null)}
+          onCloseModal={() => {
+            setVideoSearchModalOpen(null);
+            setShowVideoSearchButtons(false);
+          }}
         />
       )}
 
@@ -99,7 +145,10 @@ export default memo(function VideoSearch() {
         <TwitchVideoSearch
           showVideoSearch={videoSearchModalOpen === "twitch"}
           onOpenModal={() => setVideoSearchModalOpen("twitch")}
-          onCloseModal={() => setVideoSearchModalOpen(null)}
+          onCloseModal={() => {
+            setVideoSearchModalOpen(null);
+            setShowVideoSearchButtons(false);
+          }}
         />
       )}
 
@@ -107,7 +156,10 @@ export default memo(function VideoSearch() {
         <FacebookVideoSearch
           showVideoSearch={videoSearchModalOpen === "facebook"}
           onOpenModal={() => setVideoSearchModalOpen("facebook")}
-          onCloseModal={() => setVideoSearchModalOpen(null)}
+          onCloseModal={() => {
+            setVideoSearchModalOpen(null);
+            setShowVideoSearchButtons(false);
+          }}
         />
       )}
 
@@ -115,7 +167,10 @@ export default memo(function VideoSearch() {
         <VimeoVideoSearch
           showVideoSearch={videoSearchModalOpen === "vimeo"}
           onOpenModal={() => setVideoSearchModalOpen("vimeo")}
-          onCloseModal={() => setVideoSearchModalOpen(null)}
+          onCloseModal={() => {
+            setVideoSearchModalOpen(null);
+            setShowVideoSearchButtons(false);
+          }}
         />
       )}
 
@@ -123,7 +178,10 @@ export default memo(function VideoSearch() {
         <MixcloudAudioSearch
           showVideoSearch={videoSearchModalOpen === "mixcloud"}
           onOpenModal={() => setVideoSearchModalOpen("mixcloud")}
-          onCloseModal={() => setVideoSearchModalOpen(null)}
+          onCloseModal={() => {
+            setVideoSearchModalOpen(null);
+            setShowVideoSearchButtons(false);
+          }}
         />
       )}
 
@@ -131,15 +189,24 @@ export default memo(function VideoSearch() {
         <SoundCloudAudioSearch
           showVideoSearch={videoSearchModalOpen === "soundcloud"}
           onOpenModal={() => setVideoSearchModalOpen("soundcloud")}
-          onCloseModal={() => setVideoSearchModalOpen(null)}
+          onCloseModal={() => {
+            setVideoSearchModalOpen(null);
+            setShowVideoSearchButtons(false);
+          }}
         />
       )}
 
-      {isFetchedAfterMount &&
-      !(data?.playerStatus as any)?.url &&
-      !isIdle &&
-      !isLoading ? (
-        <div className="flex flex-col items-center justify-center w-full h-full text-sm md:text-md">
+      {showVideoSearchButtons && !videoSearchModalOpen ? (
+        <div className="absolute inset-0 z-10 flex flex-col items-center justify-center w-full h-full text-sm duration-100 md:text-md bg-base-100/90">
+          <button
+            className="fixed md:absolute btn btn-ghost btn-sm top-2 right-2 btn-circle"
+            onClick={() => {
+              setVideoSearchModalOpen(null);
+              setShowVideoSearchButtons(false);
+            }}
+          >
+            <AiFillCloseCircle className="w-6 h-auto" />
+          </button>
           <h3>Welcome to {data?.name}&apos;s room!</h3>
           <p className="text-xs md:text-sm">
             Select a video to watch with your friends!
@@ -149,91 +216,64 @@ export default memo(function VideoSearch() {
               showVideoSearch={!!videoSearchModalOpen}
               forceShow
               onOpenModal={() => setVideoSearchModalOpen("youtube")}
-              onCloseModal={() => setVideoSearchModalOpen(null)}
+              onCloseModal={() => {
+                setVideoSearchModalOpen(null);
+                setShowVideoSearchButtons(false);
+              }}
             />
 
             <TwitchVideoSearchButton
               showVideoSearch={!!videoSearchModalOpen}
               forceShow
               onOpenModal={() => setVideoSearchModalOpen("twitch")}
-              onCloseModal={() => setVideoSearchModalOpen(null)}
+              onCloseModal={() => {
+                setVideoSearchModalOpen(null);
+                setShowVideoSearchButtons(false);
+              }}
             />
 
             <FacebookVideoSearchButton
               showVideoSearch={!!videoSearchModalOpen}
               forceShow
               onOpenModal={() => setVideoSearchModalOpen("facebook")}
-              onCloseModal={() => setVideoSearchModalOpen(null)}
+              onCloseModal={() => {
+                setVideoSearchModalOpen(null);
+                setShowVideoSearchButtons(false);
+              }}
             />
 
             <VimeoVideoSearchButton
               showVideoSearch={!!videoSearchModalOpen}
               forceShow
               onOpenModal={() => setVideoSearchModalOpen("vimeo")}
-              onCloseModal={() => setVideoSearchModalOpen(null)}
+              onCloseModal={() => {
+                setVideoSearchModalOpen(null);
+                setShowVideoSearchButtons(false);
+              }}
             />
 
             <MixcloudAudioSearchButton
               showVideoSearch={!!videoSearchModalOpen}
               forceShow
               onOpenModal={() => setVideoSearchModalOpen("mixcloud")}
-              onCloseModal={() => setVideoSearchModalOpen(null)}
+              onCloseModal={() => {
+                setVideoSearchModalOpen(null);
+                setShowVideoSearchButtons(false);
+              }}
             />
 
             <SoundCloudAudioSearchButton
               showVideoSearch={!!videoSearchModalOpen}
               forceShow
               onOpenModal={() => setVideoSearchModalOpen("soundcloud")}
-              onCloseModal={() => setVideoSearchModalOpen(null)}
+              onCloseModal={() => {
+                setVideoSearchModalOpen(null);
+                setShowVideoSearchButtons(false);
+              }}
             />
           </div>
         </div>
-      ) : (
-        <div
-          className={classNames(
-            "absolute z-10 top-4 right-4 duration-100 flex gap-4",
-            {
-              "pointer-events-none": !!videoSearchModalOpen,
-            }
-          )}
-        >
-          <YoutubeVideoSearchButton
-            showVideoSearch={!!videoSearchModalOpen}
-            onOpenModal={() => setVideoSearchModalOpen("youtube")}
-            onCloseModal={() => setVideoSearchModalOpen(null)}
-          />
-
-          <TwitchVideoSearchButton
-            showVideoSearch={!!videoSearchModalOpen}
-            onOpenModal={() => setVideoSearchModalOpen("twitch")}
-            onCloseModal={() => setVideoSearchModalOpen(null)}
-          />
-
-          <FacebookVideoSearchButton
-            showVideoSearch={!!videoSearchModalOpen}
-            onOpenModal={() => setVideoSearchModalOpen("facebook")}
-            onCloseModal={() => setVideoSearchModalOpen(null)}
-          />
-
-          <VimeoVideoSearchButton
-            showVideoSearch={!!videoSearchModalOpen}
-            onOpenModal={() => setVideoSearchModalOpen("vimeo")}
-            onCloseModal={() => setVideoSearchModalOpen(null)}
-          />
-
-          <MixcloudAudioSearchButton
-            showVideoSearch={!!videoSearchModalOpen}
-            onOpenModal={() => setVideoSearchModalOpen("mixcloud")}
-            onCloseModal={() => setVideoSearchModalOpen(null)}
-          />
-
-          <SoundCloudAudioSearchButton
-            showVideoSearch={!!videoSearchModalOpen}
-            onOpenModal={() => setVideoSearchModalOpen("soundcloud")}
-            onCloseModal={() => setVideoSearchModalOpen(null)}
-          />
-        </div>
-      )}
+      ) : null}
     </>
   );
 });

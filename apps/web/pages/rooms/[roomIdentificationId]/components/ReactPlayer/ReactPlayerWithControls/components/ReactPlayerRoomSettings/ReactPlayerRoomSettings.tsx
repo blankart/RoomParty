@@ -25,7 +25,7 @@ export default function ReactPlayerRoomSettings(
         <RoomSettings id={props.id} />
       </Modal>
       <div
-        className="tooltip tooltip-secondary tooltip-left"
+        className="tooltip tooltip-info tooltip-left"
         data-tip="Room Settings"
       >
         <button
