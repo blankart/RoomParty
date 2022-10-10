@@ -43,7 +43,7 @@ export default function RoomItem(props: RoomItemProps) {
           <div className="dropdown dropdown-left">
             <div
               tabIndex={0}
-              className="tooltip tooltip-secondary"
+              className="tooltip tooltip-info"
               data-tip="More Options"
             >
               <button className="rounded-full btn btn-sm btn-ghost">
@@ -52,7 +52,7 @@ export default function RoomItem(props: RoomItemProps) {
             </div>
             <ul
               tabIndex={0}
-              className="!p-0 !m-0 mt-3 list-none shadow-secondary shadow-md bg-base-100 dropdown-content menu menu-compact"
+              className="!p-0 !m-0 mt-3 list-none shadow-info shadow-md bg-base-100 dropdown-content menu menu-compact"
             >
               <li className="p-0 m-0">
                 <button

@@ -31,14 +31,14 @@ export default memo(function Chat(props: ChatProps) {
       >
         <button
           aria-label={ctx.collapsed ? "Uncollapse" : "Collapse"}
-          className="hidden md:block absolute right-[100%] top-[50%] shadow-2xl z-10 bg-secondary p-0 w-4 h-20 rounded-l-md"
+          className="hidden md:block absolute right-[100%] top-[50%] shadow-2xl z-10 bg-info p-0 w-4 h-20 rounded-l-md"
           onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}
         >
           <BsThreeDotsVertical className="absolute left-[50%] top-[50%] translate-x-[-50%] translate-y-[-50%] w-10 h-auto" />
         </button>
         <button
-          className="absolute md:hidden bottom-[100%] left-[50%] translate-x-[-50%] rounded-t-lg rounded-b-none h-4 w-14 bg-secondary"
+          className="absolute md:hidden bottom-[100%] left-[50%] translate-x-[-50%] rounded-t-lg rounded-b-none h-4 w-14 bg-info"
           aria-label={ctx.collapsed ? "Uncollapse" : "Collapse"}
           onClick={() => ctx.set({ collapsed: !ctx.collapsed })}
           title={ctx.collapsed ? "Uncollapse" : "Collapse"}

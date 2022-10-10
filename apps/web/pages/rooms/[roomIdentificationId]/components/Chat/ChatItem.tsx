@@ -39,7 +39,7 @@ export default function ChatItem(props: ChatItemProps) {
             {props.name}
             {props.userId === props.owner && (
               <span
-                className="inline-block m-0 ml-1 mb-1 text-[0.9rem] align-middle tooltip tooltip-secondary"
+                className="inline-block m-0 ml-1 mb-1 text-[0.9rem] align-middle tooltip tooltip-info"
                 data-tip="Room Host"
               >
                 👑

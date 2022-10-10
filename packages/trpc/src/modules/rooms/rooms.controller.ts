@@ -40,7 +40,7 @@ class RoomsController {
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
     @inject(EMITTER_TYPES.Rooms) private roomsEmitter: RoomsEmitter,
     @inject(SERVICES_TYPES.Discord) private discordService: DiscordService
-  ) {}
+  ) { }
   async findByRoomIdentificationId(
     data: FindByRoomIdentificationIdSchema,
     user: CurrentUser
@@ -119,41 +119,40 @@ class RoomsController {
       data: {
         roomIdentificationId,
         name: data.name,
-        chats: {
-          create: {
-            name: "Welcome Message",
-            message: user
-              ? `Welcome to ${data.name}'s room!`
-              : `Welcome to ${data.name}'s room! This room is only available for 24 hours. Create an account to own a watch room!`,
-            isSystemMessage: true,
-          },
-        },
+        // chats: {
+        //   create: {
+        //     name: "Welcome Message",
+        //     message: user
+        //       ? `Welcome to ${data.name}'s room!`
+        //       : `Welcome to ${data.name}'s room! This room is only available for 24 hours. Create an account to own a watch room!`,
+        //     isSystemMessage: true,
+        //   },
+        // },
         ...(user ? { owner: { connect: { id: user.id } } } : {}),
       },
     });
 
     const isAuthenticated = !!user?.id;
 
-    if (!isAuthenticated) {
-      const startAfter = new Date();
-      const ONE_DAY_IN_MS = 1_000 * 60 * 60 * 24;
-      startAfter.setTime(startAfter.getTime() + ONE_DAY_IN_MS);
+    // if (!isAuthenticated) {
+    //   const startAfter = new Date();
+    //   const ONE_DAY_IN_MS = 1_000 * 60 * 60 * 24;
+    //   startAfter.setTime(startAfter.getTime() + ONE_DAY_IN_MS);
 
-      this.queueService.queue(
-        ROOMS_SERVICE_QUEUE.DELETE_ROOM,
-        this.roomsService.deleteRoom.bind(this.roomsService),
-        { id: room.id },
-        { startAfter },
-        room.id
-      );
-    }
+    //   this.queueService.queue(
+    //     ROOMS_SERVICE_QUEUE.DELETE_ROOM,
+    //     this.roomsService.deleteRoom.bind(this.roomsService),
+    //     { id: room.id },
+    //     { startAfter },
+    //     room.id
+    //   );
+    // }
 
     /**
      * Discord webhook
      */
     this.discordService.sendRoomNotificationMessage(
-      `Someone created a room. Room ID: ${room.roomIdentificationId}.${
-        isAuthenticated ? " User is authenticated." : " User is guest."
+      `Someone created a room. Room ID: ${room.roomIdentificationId}.${isAuthenticated ? " User is authenticated." : " User is guest."
       } ${process.env.WEB_BASE_URL}/rooms/${room.roomIdentificationId}`
     );
 
@@ -313,15 +312,15 @@ class RoomsController {
             },
             ...(user
               ? [
-                  {
-                    user: {
-                      id: user.user.id,
-                    },
-                    room: {
-                      roomIdentificationId: data.roomIdentificationId,
-                    },
+                {
+                  user: {
+                    id: user.user.id,
                   },
-                ]
+                  room: {
+                    roomIdentificationId: data.roomIdentificationId,
+                  },
+                },
+              ]
               : []),
           ],
         },
@@ -346,21 +345,21 @@ class RoomsController {
 
       const updateObject = user
         ? {
-            name: data.userName,
-            user: {
-              connect: {
-                id: user.user.id,
-              },
+          name: data.userName,
+          user: {
+            connect: {
+              id: user.user.id,
             },
-          }
+          },
+        }
         : !!maybeExistingTransientUser
-        ? {
+          ? {
             name: data.userName,
             user: {
               disconnect: true,
             },
           }
-        : {
+          : {
             name: data.userName,
           };
 
@@ -378,12 +377,12 @@ class RoomsController {
         name: data.userName ?? "User",
         ...(user
           ? {
-              user: {
-                connect: {
-                  id: user?.user.id,
-                },
+            user: {
+              connect: {
+                id: user?.user.id,
               },
-            }
+            },
+          }
           : {}),
         localStorageSessionid: data.localStorageSessionId,
         room: {

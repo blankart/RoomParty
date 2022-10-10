@@ -55,7 +55,7 @@ export default function ChatTextarea(props: ChatTextareaProps) {
           </div>
           <button
             aria-label="Send"
-            className={classNames("btn btn-secondary btn-xs md:btn-sm", {
+            className={classNames("btn btn-info btn-xs md:btn-sm", {
               "btn-disabled": props.disabled,
             })}
           >

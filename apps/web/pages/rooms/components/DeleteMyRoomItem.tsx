@@ -15,13 +15,11 @@ export default function DeleteMyRoomItem(props: DeleteMyRoomItemProps) {
           {props.thumbnail ? (
             <img src={props.thumbnail} className="object-cover w-20 h-20" />
           ) : (
-            <div className="w-20 h-20 bg-secondary" />
+            <div className="w-20 h-20 bg-info" />
           )}
         </div>
         <div className="flex flex-col justify-center flex-1">
-          <div className="text-xl no-underline text-secondary">
-            {props.name}
-          </div>
+          <div className="text-xl no-underline text-info">{props.name}</div>
           <p className="!m-0">{props.online} online users</p>
         </div>
       </div>

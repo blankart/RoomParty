@@ -73,7 +73,7 @@ export default function IndexPage() {
                 </h2>
                 <div className="flex flex-wrap items-center justify-center p-4 shadow-xl gap-x-4 xl:gap-x-5 gap-y-2 xl:gap-y-5 rounded-2xl dark:shadow-none">
                   <div
-                    className="w-[130px] xl:w-[170px] h-auto tooltip tooltip-secondary tooltip-top"
+                    className="w-[130px] xl:w-[170px] h-auto tooltip tooltip-info tooltip-top"
                     data-tip="Youtube"
                   >
                     <Image
@@ -87,7 +87,7 @@ export default function IndexPage() {
                   </div>
 
                   <div
-                    className="w-[90px] xl:w-[130px] h-auto tooltip tooltip-secondary tooltip-top"
+                    className="w-[90px] xl:w-[130px] h-auto tooltip tooltip-info tooltip-top"
                     data-tip="Twitch"
                   >
                     <Image
@@ -100,7 +100,7 @@ export default function IndexPage() {
                     />
                   </div>
                   <div
-                    className="w-[100px] xl:w-[180px] h-auto tooltip tooltip-secondary tooltip-top"
+                    className="w-[100px] xl:w-[180px] h-auto tooltip tooltip-info tooltip-top"
                     data-tip="Facebook"
                   >
                     <Image
@@ -113,7 +113,7 @@ export default function IndexPage() {
                     />
                   </div>
                   <div
-                    className="w-[100px] xl:w-[140px] h-auto tooltip tooltip-secondary tooltip-top"
+                    className="w-[100px] xl:w-[140px] h-auto tooltip tooltip-info tooltip-top"
                     data-tip="Vimeo"
                   >
                     <Image
@@ -126,7 +126,7 @@ export default function IndexPage() {
                     />
                   </div>
                   <div
-                    className="w-[100px] xl:w-[180px] h-auto tooltip tooltip-secondary tooltip-top"
+                    className="w-[100px] xl:w-[180px] h-auto tooltip tooltip-info tooltip-top"
                     data-tip="Mixcloud"
                   >
                     <Image
@@ -139,7 +139,7 @@ export default function IndexPage() {
                     />
                   </div>
                   <div
-                    className="w-[100px] xl:w-[130px] h-auto tooltip tooltip-secondary tooltip-top"
+                    className="w-[100px] xl:w-[130px] h-auto tooltip tooltip-info tooltip-top"
                     data-tip="SoundCloud"
                   >
                     <Image

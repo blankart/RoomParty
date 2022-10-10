@@ -97,7 +97,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                   <div className="dropdown dropdown-left">
                     <label
                       tabIndex={0}
-                      className="tooltip tooltip-left tooltip-secondary"
+                      className="tooltip tooltip-left tooltip-info"
                       data-tip={user?.user?.name}
                     >
                       <button className="avatar online" aria-label="User Menu">
@@ -135,7 +135,7 @@ export default function DashboardLayout(props: DashboardLayoutProps) {
                 </>
               ) : (
                 <div
-                  className="tooltip tooltip-left tooltip-secondary"
+                  className="tooltip tooltip-left tooltip-info"
                   data-tip="Sign in"
                 >
                   <Link href="/sign-in" passHref>
