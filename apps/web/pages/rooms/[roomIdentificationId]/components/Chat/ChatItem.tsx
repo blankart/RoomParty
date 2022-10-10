@@ -1,6 +1,7 @@
 import { TemporaryChat } from "@RoomParty/trpc";
 // import { InferQueryOutput } from "@web/types/trpc";
 import reactStringReplace from "react-string-replace";
+import { useRoomContext } from "../../context/RoomContext";
 
 // export type ChatsQueryOutput = InferQueryOutput<"chats.chats">[number];
 
@@ -10,6 +11,7 @@ import reactStringReplace from "react-string-replace";
 
 interface ChatItemProps extends TemporaryChat {
   owner: string | undefined;
+  roomTransientId: string;
 }
 
 function parseMessage(message: string) {

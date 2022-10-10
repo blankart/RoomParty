@@ -6,6 +6,7 @@ import { CurrentUser } from "../../types/user";
 import { VideoChatParticipant } from "../../types/video-chat";
 import ModelsService from "../models/models.service";
 import RoomsService from "../rooms/rooms.service";
+import TemporaryChatsEmitter from "../temporary-chats/temporary-chats.emitter";
 import {
   BroadcastStateChangeSchema,
   VideoChatSubscriptionSchema,
@@ -19,8 +20,10 @@ class VideoChatController {
   constructor(
     @inject(EMITTER_TYPES.VideoChat) private videoChatEmitter: VideoChatEmitter,
     @inject(SERVICES_TYPES.Rooms) private roomsService: RoomsService,
-    @inject(SERVICES_TYPES.Models) private modelsService: ModelsService
-  ) {}
+    @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
+    @inject(EMITTER_TYPES.TemporaryChats)
+    private temporaryChatsEmitter: TemporaryChatsEmitter
+  ) { }
 
   async videoChatSubscription(
     data: VideoChatSubscriptionSchema,
@@ -43,6 +46,11 @@ class VideoChatController {
           localStorageSessionid: data.localStorageSessionId,
         },
         include: {
+          room: {
+            select: {
+              id: true
+            }
+          },
           user: {
             select: {
               picture: true,
@@ -71,6 +79,12 @@ class VideoChatController {
         picture: roomTransient.user?.picture ?? undefined,
       },
     ]);
+
+    this.temporaryChatsEmitter.emitter.channel('SEND').emit(roomTransient.room.id, {
+      name: 'System Message',
+      message: `${roomTransient.name} has joined the video chat.`,
+      isSystemMessage: true
+    })
 
     return new Subscription<VideoChatParticipant[]>((emit) => {
       const onAdd = (data: VideoChatParticipant[]) => {
@@ -104,6 +118,12 @@ class VideoChatController {
         this.videoChatEmitter.emitter
           .channel("VIDEO_CHAT_PARTICIPANTS")
           .emit(data.roomIdentificationId, newVideoChatParticipantsMapValue);
+
+        this.temporaryChatsEmitter.emitter.channel('SEND').emit(roomTransient.room.id, {
+          name: 'System Message',
+          message: `${roomTransient.name} has left the video chat.`,
+          isSystemMessage: true
+        })
       };
     });
   }

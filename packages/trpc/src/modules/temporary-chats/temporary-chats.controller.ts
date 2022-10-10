@@ -23,7 +23,7 @@ class TemporaryChatsController {
   ) { }
 
   async send(data: SendSchema) {
-    this.temporaryChatsEmitter.emitter.channel("SEND").emit(data.id, data);
+    this.temporaryChatsEmitter.emitter.channel("SEND").emit(data.id, this.chatsService.convertEmoticonsToEmojisInChatsObject(data));
   }
 
   async chatSubscription(data: ChatsSubscriptionSchema, user: CurrentUser) {
