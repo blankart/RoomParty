@@ -20,10 +20,15 @@ class TemporaryChatsController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(EMITTER_TYPES.TemporaryChats)
     private temporaryChatsEmitter: TemporaryChatsEmitter
-  ) { }
+  ) {}
 
   async send(data: SendSchema) {
-    this.temporaryChatsEmitter.emitter.channel("SEND").emit(data.id, this.chatsService.convertEmoticonsToEmojisInChatsObject(data));
+    this.temporaryChatsEmitter.emitter
+      .channel("SEND")
+      .emit(
+        data.id,
+        this.chatsService.convertEmoticonsToEmojisInChatsObject(data)
+      );
   }
 
   async chatSubscription(data: ChatsSubscriptionSchema, user: CurrentUser) {

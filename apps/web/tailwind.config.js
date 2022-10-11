@@ -16,11 +16,14 @@ module.exports = {
 
   daisyui: {
     log: true,
-    themes: [{
-      halloween: {
-        ...require("daisyui/src/colors/themes")["[data-theme=halloween]"],
-        info: 'rgb(115, 143, 255)'
-      }
-    }, "cupcake"],
+    themes: [
+      {
+        halloween: {
+          ...require("daisyui/src/colors/themes")["[data-theme=halloween]"],
+          info: "rgb(115, 143, 255)",
+        },
+      },
+      "cupcake",
+    ],
   },
 };

@@ -11,7 +11,7 @@ import { useRoomContext } from "../../context/RoomContext";
 
 interface ChatItemProps extends TemporaryChat {
   owner: string | undefined;
-  roomTransientId: string;
+  roomTransientId?: string;
 }
 
 function parseMessage(message: string) {

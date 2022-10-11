@@ -23,7 +23,7 @@ class VideoChatController {
     @inject(SERVICES_TYPES.Models) private modelsService: ModelsService,
     @inject(EMITTER_TYPES.TemporaryChats)
     private temporaryChatsEmitter: TemporaryChatsEmitter
-  ) { }
+  ) {}
 
   async videoChatSubscription(
     data: VideoChatSubscriptionSchema,
@@ -48,8 +48,8 @@ class VideoChatController {
         include: {
           room: {
             select: {
-              id: true
-            }
+              id: true,
+            },
           },
           user: {
             select: {
@@ -80,11 +80,13 @@ class VideoChatController {
       },
     ]);
 
-    this.temporaryChatsEmitter.emitter.channel('SEND').emit(roomTransient.room.id, {
-      name: 'System Message',
-      message: `${roomTransient.name} has joined the video chat.`,
-      isSystemMessage: true
-    })
+    this.temporaryChatsEmitter.emitter
+      .channel("SEND")
+      .emit(roomTransient.room.id, {
+        name: "System Message",
+        message: `${roomTransient.name} has joined the video chat.`,
+        isSystemMessage: true,
+      });
 
     return new Subscription<VideoChatParticipant[]>((emit) => {
       const onAdd = (data: VideoChatParticipant[]) => {
@@ -119,11 +121,13 @@ class VideoChatController {
           .channel("VIDEO_CHAT_PARTICIPANTS")
           .emit(data.roomIdentificationId, newVideoChatParticipantsMapValue);
 
-        this.temporaryChatsEmitter.emitter.channel('SEND').emit(roomTransient.room.id, {
-          name: 'System Message',
-          message: `${roomTransient.name} has left the video chat.`,
-          isSystemMessage: true
-        })
+        this.temporaryChatsEmitter.emitter
+          .channel("SEND")
+          .emit(roomTransient.room.id, {
+            name: "System Message",
+            message: `${roomTransient.name} has left the video chat.`,
+            isSystemMessage: true,
+          });
       };
     });
   }

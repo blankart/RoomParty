@@ -82,12 +82,6 @@ export default memo(function Chat(props: ChatProps) {
             />
           </section>
         </section>
-
-        {/* <section className="flex flex-col justify-end flex-1 h-[50%] lg:h-screen bg-base-100 overflow-hidden relative">
-          <section className="absolute inset-0 flex flex-col justify-end flex-1 h-full overflow-hidden bg-base-100">
-            <VideoCall />
-          </section>
-        </section> */}
       </div>
     </>
   );

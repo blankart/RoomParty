@@ -1,6 +1,6 @@
 {
   "name": "tube-hub-monorepo",
-  "version": "5.0.1",
+  "version": "5.0.2",
   "private": true,
   "workspaces": [
     "apps/*",
@@ -15,7 +15,7 @@
     "start:server": "turbo run start --filter=@RoomParty/server --",
     "start:web": "turbo run start --filter=@RoomParty/web --",
     "start": "turbo run start --parallel",
-    "studio": "env-cmd --file .env.local turbo run studio",
+    "studio": "env-cmd --file .env.production turbo run studio",
     "typecheck": "turbo run typecheck",
     "lint": "turbo run lint",
     "test:unit": "turbo run test:unit --color",
