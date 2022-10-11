@@ -17,11 +17,13 @@ export interface ReactPlayerContextState {
   reactPlayerProps: ReactPlayerProps & {
     reactPlayerRef: RefObject<ReactPlayer>;
   };
+  reactPlayerWithControlsWrapperRef: RefObject<HTMLDivElement>;
   setUrl: (newUrl?: string) => any;
   setVideoPlatform: (newVideoPlatform: VideoPlatform | undefined) => any;
   getInternalPlayer: () => Record<string, any> | undefined;
   playVideo: () => void;
   pauseVideo: () => void;
+  toggleFullScreen: () => void;
   seekTo: (
     time: number,
     type?: "seconds",
@@ -49,6 +51,7 @@ const ReactPlayerContext = createContext<ReactPlayerContextState>({
   reactPlayerProps: {
     reactPlayerRef: { current: null },
   },
+  reactPlayerWithControlsWrapperRef: { current: null },
   setUrl: () => ({}),
   getInternalPlayer: () => ({}),
   playVideo() {},
@@ -56,6 +59,7 @@ const ReactPlayerContext = createContext<ReactPlayerContextState>({
   seekTo() {},
   setVolume() {},
   setDuration() {},
+  toggleFullScreen() {},
   setMuted() {},
   setVideoPlatform() {},
   duration: 0,
@@ -126,6 +130,7 @@ export function ReactPlayerProvider(props: {
   reactPlayerRef: RefObject<ReactPlayer>;
 }) {
   const { reactPlayerRef } = props;
+  const reactPlayerWithControlsWrapperRef = useRef<HTMLDivElement>(null);
   const [url, _setUrl] = useState<string | undefined>();
   const [videoPlatform, setVideoPlatform] = useState<
     VideoPlatform | undefined
@@ -141,6 +146,7 @@ export function ReactPlayerProvider(props: {
   const [isMuted, _setIsMuted] = useState(false);
   const [hasInitiallyPlayed, setHasInitiallyPlayed] = useState(false);
   const [hasError, setHasError] = useState(false);
+  const [isFullScreen, setIsFullScreen] = useState(false);
 
   const [localStorageSoundState, setLocalStorageSoundState] = useLocalStorage(
     APP_NAME + "-volume-state",
@@ -148,6 +154,22 @@ export function ReactPlayerProvider(props: {
   );
 
   const lastVolumeBeforeMuted = useRef<number>(localStorageSoundState.volume);
+
+  useEffect(() => {
+    if (!reactPlayerWithControlsWrapperRef.current) return;
+    reactPlayerWithControlsWrapperRef.current.onfullscreenchange = () => {
+      setIsFullScreen(!isFullScreen);
+    };
+  }, [isFullScreen]);
+
+  async function toggleFullScreen() {
+    const newValue = !isFullScreen;
+    if (newValue) {
+      await reactPlayerWithControlsWrapperRef.current!.requestFullscreen();
+    } else {
+      await document.exitFullscreen();
+    }
+  }
 
   function setUrl(newUrl?: string) {
     setIsReady(false);
@@ -269,6 +291,8 @@ export function ReactPlayerProvider(props: {
   return (
     <ReactPlayerContext.Provider
       value={{
+        toggleFullScreen,
+        reactPlayerWithControlsWrapperRef,
         reactPlayerProps: {
           reactPlayerRef,
           url,
