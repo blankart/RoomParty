@@ -158,7 +158,6 @@ export function ReactPlayerProvider(props: {
   useEffect(() => {
     if (!reactPlayerWithControlsWrapperRef.current) return;
     reactPlayerWithControlsWrapperRef.current.onfullscreenchange = () => {
-      console.log({ newValue: !isFullScreen });
       setIsFullScreen(!isFullScreen);
     };
   }, [isFullScreen]);
