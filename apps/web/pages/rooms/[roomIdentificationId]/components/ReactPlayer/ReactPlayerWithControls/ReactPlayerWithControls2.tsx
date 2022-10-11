@@ -25,6 +25,7 @@ export default memo(function ReactPlayerWithControls2() {
     duration,
     scrubTime,
     isLive,
+    reactPlayerWithControlsWrapperRef,
   } = useReactPlayerContext();
   const { control, player, roomInfo } = useReactPlayerWithControls2();
 
@@ -34,7 +35,10 @@ export default memo(function ReactPlayerWithControls2() {
   return (
     <Suspense>
       <div className="flex flex-col flex-1 w-full max-h-screen bg-base-100">
-        <div className="relative flex flex-col flex-1 w-full bg-base-100">
+        <div
+          ref={reactPlayerWithControlsWrapperRef}
+          className="relative flex flex-col flex-1 w-full bg-base-100"
+        >
           <div className="relative w-full h-full group video-container">
             {!control.isControlsDisabled && <VideoSearch />}
             {showPlayPauseOverlay && (

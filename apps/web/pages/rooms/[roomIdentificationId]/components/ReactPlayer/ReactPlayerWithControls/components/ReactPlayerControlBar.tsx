@@ -4,6 +4,8 @@ import { FaPause, FaPlay, FaVolumeUp, FaVolumeMute } from "react-icons/fa";
 import _debounce from "lodash.debounce";
 import { convertTimeToFormattedTime } from "@RoomParty/shared-lib";
 import type { PlayerStatus } from "@RoomParty/trpc";
+import Button from "@web/components/Button/Button";
+import { BsFullscreen } from "react-icons/bs";
 
 export interface ReactPlayerControlBarProps {
   isPlayed: boolean;
@@ -23,6 +25,7 @@ export interface ReactPlayerControlBarProps {
   hasInitiallyPlayed: boolean;
   isControlsDisabled: boolean;
   lastPlayerStatus: PlayerStatus | null;
+  toggleFullScreen: () => any;
 }
 
 export default function ReactPlayerControlBar(
@@ -181,6 +184,12 @@ export default function ReactPlayerControlBar(
               <>-{timestamp}</>
             )}
           </div>
+          <Button
+            className="text-white btn btn-xs btn-ghost"
+            onClick={props.toggleFullScreen}
+          >
+            <BsFullscreen className="w-3 h-auto" />
+          </Button>
         </div>
       </div>
     </>

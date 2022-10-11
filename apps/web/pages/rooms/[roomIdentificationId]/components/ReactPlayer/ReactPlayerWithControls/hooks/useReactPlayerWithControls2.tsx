@@ -44,6 +44,7 @@ export default function useReactPlayerWithControls2(): {
     hasError,
     setVideoPlatform,
     videoPlatform,
+    toggleFullScreen,
   } = useReactPlayerContext();
 
   const { thumbnail } = useRoomsStore(
@@ -252,6 +253,7 @@ export default function useReactPlayerWithControls2(): {
       hasInitiallyPlayed,
       isControlsDisabled,
       lastPlayerStatus,
+      toggleFullScreen,
     },
     player: {
       controls: false,
