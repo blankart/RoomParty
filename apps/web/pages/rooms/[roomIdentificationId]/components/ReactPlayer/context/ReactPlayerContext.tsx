@@ -160,14 +160,29 @@ export function ReactPlayerProvider(props: {
     reactPlayerWithControlsWrapperRef.current.onfullscreenchange = () => {
       setIsFullScreen(!isFullScreen);
     };
+    (
+      reactPlayerWithControlsWrapperRef as any
+    ).current.onwebkitfullscreenchange = () => {
+      setIsFullScreen(!isFullScreen);
+    };
   }, [isFullScreen]);
 
   async function toggleFullScreen() {
     const newValue = !isFullScreen;
     if (newValue) {
-      await reactPlayerWithControlsWrapperRef.current!.requestFullscreen();
+      await Promise.all([
+        reactPlayerWithControlsWrapperRef.current!.requestFullscreen?.() ??
+          (
+            reactPlayerWithControlsWrapperRef as any
+          ).current!.webkitRequestFullScreen?.(),
+      ]);
     } else {
-      await document.exitFullscreen();
+      await Promise.all([
+        (() => {
+          document.exitFullscreen?.() ??
+            (document as any).webkitExitFullscreen?.();
+        })(),
+      ]);
     }
   }
 
