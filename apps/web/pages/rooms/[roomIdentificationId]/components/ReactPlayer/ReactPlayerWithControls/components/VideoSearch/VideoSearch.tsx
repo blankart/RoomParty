@@ -3,7 +3,7 @@ import { memo, useEffect, useState } from "react";
 import classNames from "classnames";
 import dynamic from "next/dynamic";
 
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
 
 import FacebookVideoSearchButton from "./components/FacebookVideoSearchButton";

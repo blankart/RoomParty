@@ -2,7 +2,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useRoomContext } from "../../../context/RoomContext";
 import _uniqBy from "lodash.uniqby";
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import { useMe } from "@web/context/AuthContext";
 import { InferSubscriptionOutput } from "@web/types/trpc";
 import _intersectionBy from "lodash.intersectionby";

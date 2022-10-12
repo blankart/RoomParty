@@ -1,6 +1,6 @@
 import dynamic from "next/dynamic";
 
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import { useMe } from "@web/context/AuthContext";
 
 const FavoritedRoomItem = dynamic(() => import("./FavoritedRoomItem"), {

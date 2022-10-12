@@ -1,7 +1,10 @@
-import SignIn from "@web/components/SignIn/SignIn";
+import dynamic from "next/dynamic";
 import { useMe } from "@web/context/AuthContext";
 import { ComponentType } from "react";
 import { FaSpinner } from "react-icons/fa";
+const SignIn = dynamic(() => import("@web/components/SignIn/SignIn"), {
+  ssr: false,
+});
 
 export default function withSignIn<P extends Record<string, any>>(
   Component: ComponentType<P>

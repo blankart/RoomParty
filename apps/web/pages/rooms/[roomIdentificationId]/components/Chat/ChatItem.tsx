@@ -1,7 +1,6 @@
-import { TemporaryChat } from "@RoomParty/trpc";
+import type { TemporaryChat } from "@RoomParty/trpc";
 // import { InferQueryOutput } from "@web/types/trpc";
 import reactStringReplace from "react-string-replace";
-import { useRoomContext } from "../../context/RoomContext";
 
 // export type ChatsQueryOutput = InferQueryOutput<"chats.chats">[number];
 

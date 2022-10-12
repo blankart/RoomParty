@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from "react";
 import shallow from "zustand/shallow";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import useDebouncedState from "@web/hooks/useDebouncedState";
 import numeral from "numeral";
 import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";

@@ -7,7 +7,7 @@ import { NextSeo } from "next-seo";
 import type { PlayerStatus } from "@RoomParty/trpc";
 import { APP_NAME } from "@RoomParty/shared-lib";
 
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import Chat from "@web/pages/rooms/[roomIdentificationId]/components/Chat/Chat";
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
 import { useMe } from "@web/context/AuthContext";

@@ -3,7 +3,7 @@ import _debounce from "lodash.debounce";
 import { InferQueryOutput } from "@web/types/trpc";
 import { FiSearch, FiShare } from "react-icons/fi";
 import { useMe } from "@web/context/AuthContext";
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import { FaCopy, FaLock, FaStar } from "react-icons/fa";
 import classNames from "classnames";
 import Link from "next/link";

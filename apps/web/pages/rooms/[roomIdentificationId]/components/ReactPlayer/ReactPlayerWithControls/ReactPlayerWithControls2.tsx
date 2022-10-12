@@ -1,11 +1,12 @@
 import dynamic from "next/dynamic";
 import { memo, Suspense } from "react";
-import { useReactPlayerContext } from "../context/ReactPlayerContext";
 import _debounce from "lodash.debounce";
+
 import ReactPlayerControlBar from "./components/ReactPlayerControlBar";
 import useReactPlayerWithControls2 from "./hooks/useReactPlayerWithControls2";
 import ReactPlayerRoomInfo from "./components/ReactPlayerRoomInfo";
 import VideoSearch from "./components/VideoSearch/VideoSearch";
+import { useReactPlayerContext } from "../context/ReactPlayerContext";
 const ReactPlayer = dynamic(
   () =>
     import(
@@ -17,20 +18,9 @@ const ReactPlayer = dynamic(
 );
 
 export default memo(function ReactPlayerWithControls2() {
-  const {
-    reactPlayerProps,
-    hasInitiallyPlayed,
-    url,
-    hasEnded,
-    duration,
-    scrubTime,
-    isLive,
-    reactPlayerWithControlsWrapperRef,
-  } = useReactPlayerContext();
+  const { reactPlayerProps, reactPlayerWithControlsWrapperRef } =
+    useReactPlayerContext();
   const { control, player, roomInfo } = useReactPlayerWithControls2();
-
-  const showPlayPauseOverlay =
-    (!!url && hasInitiallyPlayed) || control.isControlsDisabled;
 
   return (
     <Suspense>
@@ -41,19 +31,6 @@ export default memo(function ReactPlayerWithControls2() {
         >
           <div className="relative w-full h-full group video-container">
             {!control.isControlsDisabled && <VideoSearch />}
-            {/* {showPlayPauseOverlay && (
-              <button
-                aria-label={control.isPlayed ? "Pause video" : "Play video"}
-                className="absolute inset-0 z-[1]"
-                onClick={
-                  !hasEnded && (scrubTime < duration || isLive)
-                    ? !control.isPlayed
-                      ? control.onPlay
-                      : control.onPause
-                    : () => {}
-                }
-              />
-            )} */}
             <ReactPlayer {...reactPlayerProps} {...player} />
           </div>
           <ReactPlayerControlBar {...control} />

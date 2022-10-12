@@ -1,5 +1,5 @@
 import type { PlayerStatus } from "@RoomParty/trpc";
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import { InferQueryOutput } from "@web/types/trpc";
 import debounce from "lodash.debounce";
 import { useRouter } from "next/router";

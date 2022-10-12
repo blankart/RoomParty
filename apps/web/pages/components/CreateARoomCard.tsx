@@ -8,7 +8,7 @@ import type { RoomsDTO } from "@RoomParty/trpc/dto";
 import { RoomsSchema } from "@RoomParty/trpc/schema";
 
 import Input from "@web/components/Input/Input";
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 
 import BaseCard from "./BaseCard";
 import Button from "@web/components/Button/Button";

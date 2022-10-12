@@ -1,5 +1,5 @@
 import "@web/styles/global.css";
-import { withTRPC } from "@web/api";
+import { withTRPC } from "@web/trpc";
 import { ThemeProvider } from "next-themes";
 import DashboardLayout from "@web/components/DashboardLayout/DashboardLayout";
 import { AuthContextProvider } from "@web/context/AuthContext";

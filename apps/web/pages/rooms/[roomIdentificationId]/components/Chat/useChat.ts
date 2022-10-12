@@ -8,7 +8,7 @@ import { useAutoAnimate } from "@formkit/auto-animate/react";
 import { CHAT_NAME_KEY } from "@RoomParty/shared-lib";
 
 import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/rooms";
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import { useMe } from "@web/context/AuthContext";
 import useLocalStorage from "@web/hooks/useLocalStorage";
 

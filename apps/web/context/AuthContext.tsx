@@ -3,20 +3,24 @@ import { useEffect, useState } from "react";
 import { parseCookies, destroyCookie } from "nookies";
 import { useRouter } from "next/router";
 
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import { ACCESS_TOKEN_KEY } from "@RoomParty/shared-lib";
+import type { UseQueryResult } from "react-query";
+import type { InferQueryOutput } from "@web/types/trpc";
+import type { TRPCClientErrorLike } from "@trpc/client";
+import type { AppRouter } from "@RoomParty/trpc";
 
-// Only used for inferring types
-function useQueryUsersMe() {
-  return trpc.useQuery(["users.me"]);
-}
+type UseQueryUsersMeResult = UseQueryResult<
+  InferQueryOutput<"users.me">,
+  TRPCClientErrorLike<AppRouter>
+>;
 
-interface AuthContextState {
-  user: ReturnType<typeof useQueryUsersMe>["data"];
-  error: ReturnType<typeof useQueryUsersMe>["error"];
-  isLoading: ReturnType<typeof useQueryUsersMe>["isLoading"];
-  isIdle: ReturnType<typeof useQueryUsersMe>["isIdle"];
-  refetch: ReturnType<typeof useQueryUsersMe>["refetch"];
+interface AuthContextState
+  extends Pick<
+    UseQueryUsersMeResult,
+    "error" | "isLoading" | "refetch" | "isIdle"
+  > {
+  user: UseQueryUsersMeResult["data"];
   hasAccessToken: boolean;
   hasUserInitialized: boolean;
   handleSignout: () => void;
