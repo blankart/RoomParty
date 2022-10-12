@@ -1,5 +1,5 @@
 import { APP_NAME } from "@RoomParty/shared-lib";
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import { NextSeo } from "next-seo";
 import dynamic from "next/dynamic";
 import Error from "next/error";

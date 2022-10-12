@@ -2,7 +2,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { FaSadTear, FaSpinner } from "react-icons/fa";
 
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import Modal from "@web/components/Modal/Modal";
 import { useMe } from "@web/context/AuthContext";
 

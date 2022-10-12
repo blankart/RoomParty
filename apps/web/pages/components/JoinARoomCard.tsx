@@ -6,7 +6,7 @@ import { useState } from "react";
 import type { RoomsDTO } from "@RoomParty/trpc/dto";
 import { RoomsSchema } from "@RoomParty/trpc/schema";
 
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import Input from "@web/components/Input/Input";
 import Button from "@web/components/Button/Button";
 

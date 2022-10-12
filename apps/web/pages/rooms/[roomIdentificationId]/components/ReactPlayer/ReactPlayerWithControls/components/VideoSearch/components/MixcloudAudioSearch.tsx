@@ -1,4 +1,4 @@
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import Button from "@web/components/Button/Button";
 import Input from "@web/components/Input/Input";
 import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";

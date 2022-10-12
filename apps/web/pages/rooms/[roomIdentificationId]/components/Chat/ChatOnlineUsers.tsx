@@ -1,4 +1,4 @@
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import useDebouncedEffect from "@web/hooks/useDebouncedEffect";
 import classNames from "classnames";
 import { useRouter } from "next/router";

@@ -1,7 +1,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import type { UsersDTO } from "@RoomParty/trpc/dto";
 import { UsersSchema } from "@RoomParty/trpc/schema";
-import { trpc } from "@web/api";
+import { trpc } from "@web/trpc";
 import Button from "@web/components/Button/Button";
 import { InferMutationOutput, InferQueryOutput } from "@web/types/trpc";
 import { useEffect, useState } from "react";
