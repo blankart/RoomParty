@@ -8,6 +8,12 @@ const YOUTUBE_PLAYER_CONFIG = {
   },
 };
 
+const TWITCH_PLAYER_CONFIG = {
+  options: {
+    muted: false,
+  },
+};
+
 const FACEBOOK_PLAYER_CONFIG = {
   appId: "893427181627527",
   attributes: {
@@ -46,6 +52,7 @@ export default function ReactPlayer({
     vimeo: VIMEO_PLAYER_CONFIG,
     mixcloud: MIXCLOUD_PLAYER_CONFIG,
     soundcloud: SOUNDCLOUD_PLAYER_CONFIG,
+    twitch: TWITCH_PLAYER_CONFIG,
   });
 
   const [isReady, setIsReady] = useState(false);

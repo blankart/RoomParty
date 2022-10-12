@@ -211,25 +211,19 @@ export function ReactPlayerProvider(props: {
   }, [shouldClickTheVideoFirstOnReadyOrChangeUrl]);
 
   async function playVideo() {
+    setIsPlayed(true);
     return Promise.all([
       (reactPlayerRef as any)?.current?.player?.player?.player?.playVideo?.(),
       (reactPlayerRef as any)?.current?.player?.player?.player?.play?.(),
-    ])
-      .then(() => {
-        setIsPlayed(true);
-      })
-      .catch(console.warn);
+    ]).catch(console.warn);
   }
 
   async function pauseVideo() {
+    setIsPlayed(false);
     return Promise.all([
       (reactPlayerRef as any)?.current?.player?.player?.player?.pauseVideo?.(),
       (reactPlayerRef as any)?.current?.player?.player?.player?.pause?.(),
-    ])
-      .then(() => {
-        setIsPlayed(false);
-      })
-      .catch(console.warn);
+    ]).catch(console.warn);
   }
 
   async function seekTo(

@@ -3,6 +3,7 @@ import { useEffect, useRef } from "react";
 import shallow from "zustand/shallow";
 import uniqBy from "lodash.uniqby";
 import randomColor from "randomcolor";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 import { CHAT_NAME_KEY } from "@RoomParty/shared-lib";
 
@@ -46,7 +47,7 @@ export default function useChat(props: ChatProps) {
   const shouldEnableQueries =
     !!roomStore.id && !!userName && !!localStorageSessionId;
 
-  const chatsRef = useRef<HTMLDivElement>(null);
+  const [chatsRef] = useAutoAnimate<HTMLDivElement>({ duration: 100, easing: 'ease-in' });
 
   const [
     userNameChatColorFromLocalStorage,

@@ -6,6 +6,7 @@ import { convertTimeToFormattedTime } from "@RoomParty/shared-lib";
 import type { PlayerStatus } from "@RoomParty/trpc";
 import Button from "@web/components/Button/Button";
 import { BsFullscreen } from "react-icons/bs";
+import isMobile from "../../context/isMobile";
 
 export interface ReactPlayerControlBarProps {
   isPlayed: boolean;
@@ -68,7 +69,8 @@ export default function ReactPlayerControlBar(
 
   const VolumeIcon = props.isMuted ? FaVolumeMute : FaVolumeUp;
 
-  const shouldDisableTimeControl = props.isControlsDisabled || !props.url;
+  const shouldDisableTimeControl =
+    props.isLive || props.isControlsDisabled || !props.url;
 
   const shouldDisablePlayButton =
     props.isControlsDisabled ||
@@ -77,6 +79,8 @@ export default function ReactPlayerControlBar(
     (!props.isLive && props.duration <= props.scrubTime);
 
   const shouldDisableControlBar = !props.hasInitiallyPlayed;
+
+  const shouldShowFullScreen = !isMobile();
 
   return (
     <>
@@ -184,12 +188,14 @@ export default function ReactPlayerControlBar(
               <>-{timestamp}</>
             )}
           </div>
-          <Button
-            className="text-white btn btn-xs btn-ghost"
-            onClick={props.toggleFullScreen}
-          >
-            <BsFullscreen className="w-3 h-auto" />
-          </Button>
+          {shouldShowFullScreen && (
+            <Button
+              className="text-white btn btn-xs btn-ghost"
+              onClick={props.toggleFullScreen}
+            >
+              <BsFullscreen className="w-3 h-auto" />
+            </Button>
+          )}
         </div>
       </div>
     </>

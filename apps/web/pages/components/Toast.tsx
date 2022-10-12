@@ -1,5 +1,6 @@
 import classNames from "classnames";
 import create from "zustand";
+import { useAutoAnimate } from "@formkit/auto-animate/react";
 
 type ToastType = "success" | "error" | "info" | "warning";
 
@@ -42,16 +43,17 @@ export function useToast() {
 
 export default function Toast() {
   const toasts = useToastStore((s) => s.toasts);
+  const [parent] = useAutoAnimate<HTMLDivElement>();
 
   return (
     <>
       {!!toasts.length && (
-        <div className="toast toast-center toast-bottom z-[999]">
+        <div className="toast toast-center toast-bottom z-[999]" ref={parent}>
           {toasts.map((toast) => (
             <div
               key={toast.id}
               className={classNames(
-                "text-xs alert animate-pulse md:text-sm w-[min(100vw,400px)]",
+                "text-xs alert md:text-sm w-[min(100vw,400px)]",
                 {
                   "alert-success": toast.type === "success",
                   "alert-error": toast.type === "error",

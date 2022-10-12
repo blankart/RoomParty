@@ -11,6 +11,7 @@ import { useRoomsStore } from "@web/pages/rooms/[roomIdentificationId]/store/roo
 import shallow from "zustand/shallow";
 import { useRoomContext } from "@web/pages/rooms/[roomIdentificationId]/context/RoomContext";
 import { useMe } from "@web/context/AuthContext";
+import { useToast } from "@web/pages/components/Toast";
 
 export default function useReactPlayerWithControls2(): {
   control: ReactPlayerControlBarProps;
@@ -45,6 +46,7 @@ export default function useReactPlayerWithControls2(): {
     setVideoPlatform,
     videoPlatform,
     toggleFullScreen,
+    getInternalPlayer,
   } = useReactPlayerContext();
 
   const { thumbnail } = useRoomsStore(
@@ -182,7 +184,7 @@ export default function useReactPlayerWithControls2(): {
     null
   );
 
-  function whenPlayerStatusChanged(newPlayerStatus: PlayerStatus) {
+  async function whenPlayerStatusChanged(newPlayerStatus: PlayerStatus) {
     if (newPlayerStatus.type === "PLAYED") {
       playVideo();
       return;
@@ -194,7 +196,7 @@ export default function useReactPlayerWithControls2(): {
     }
 
     if (newPlayerStatus.type === "SEEK_TO") {
-      seekTo(newPlayerStatus.time);
+      seekTo(newPlayerStatus.time, "seconds", false);
       return;
     }
 
@@ -234,6 +236,8 @@ export default function useReactPlayerWithControls2(): {
     scrubTime && seekTo(scrubTime, "seconds", !isPlayed);
   }
 
+  const { add } = useToast();
+
   return {
     control: {
       isMuted,
@@ -261,7 +265,27 @@ export default function useReactPlayerWithControls2(): {
       width: "100%",
       height: "100%",
       style: isControlsDisabled ? { pointerEvents: "none" } : undefined,
-      onPlay: isControlsDisabled ? undefined : reactPlayerProps.onPlay,
+      onPlay() {
+        !isControlsDisabled && reactPlayerProps.onPlay?.();
+        if (!isPlayed) {
+          add(
+            "Use the bottom control bar to synchronize controls.",
+            undefined,
+            "control-bar-warning"
+          );
+          pauseVideo();
+        }
+      },
+      onPause() {
+        if (isPlayed) {
+          playVideo();
+          add(
+            "Use the bottom control bar to synchronize controls.",
+            undefined,
+            "control-bar-warning"
+          );
+        }
+      },
     },
     roomInfo: findByRoomIdentificationIdResponse,
   };
