@@ -4,5 +4,5 @@ export interface TemporaryChat {
   color?: string;
   isSystemMessage?: boolean;
   userId?: string;
-  roomTransientId?: string
+  roomTransientId?: string;
 }

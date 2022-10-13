@@ -47,7 +47,10 @@ export default function useChat(props: ChatProps) {
   const shouldEnableQueries =
     !!roomStore.id && !!userName && !!localStorageSessionId;
 
-  const [chatsRef] = useAutoAnimate<HTMLDivElement>({ duration: 100, easing: 'ease-in' });
+  const [chatsRef] = useAutoAnimate<HTMLDivElement>({
+    duration: 100,
+    easing: "ease-in",
+  });
 
   const [
     userNameChatColorFromLocalStorage,
