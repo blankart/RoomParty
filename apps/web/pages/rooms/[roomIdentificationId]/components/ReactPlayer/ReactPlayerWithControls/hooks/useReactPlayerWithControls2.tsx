@@ -264,7 +264,6 @@ export default function useReactPlayerWithControls2(): {
       pip: false,
       width: "100%",
       height: "100%",
-      style: isControlsDisabled ? { pointerEvents: "none" } : undefined,
       onPlay() {
         !isControlsDisabled && reactPlayerProps.onPlay?.();
         if (!isPlayed) {
