@@ -274,6 +274,8 @@ export default function useReactPlayerWithControls2(): {
             "control-bar-warning"
           );
           pauseVideo();
+        } else {
+          playVideo();
         }
       },
       onPause() {
@@ -284,6 +286,8 @@ export default function useReactPlayerWithControls2(): {
             undefined,
             "control-bar-warning"
           );
+        } else {
+          pauseVideo();
         }
       },
     },

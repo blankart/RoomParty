@@ -193,10 +193,6 @@ export function ReactPlayerProvider(props: {
     _setUrl(newUrl);
   }
 
-  useEffect(() => {
-    if (hasEnded) seekTo(duration);
-  }, [hasEnded]);
-
   function getInternalPlayer() {
     return reactPlayerRef?.current?.getInternalPlayer();
   }
@@ -327,6 +323,7 @@ export function ReactPlayerProvider(props: {
           },
           onEnded() {
             setHasEnded(true);
+            seekTo(duration);
             pauseVideo();
           },
           onReady(player) {
