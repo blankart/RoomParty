@@ -330,7 +330,6 @@ export function ReactPlayerProvider(props: {
             const isLive =
               duration === Infinity ||
               getInternalPlayer()?.getVideoData?.()?.isLive;
-
             setIsLive(isLive);
             setIsReady(true);
             setDuration(player.getDuration());
