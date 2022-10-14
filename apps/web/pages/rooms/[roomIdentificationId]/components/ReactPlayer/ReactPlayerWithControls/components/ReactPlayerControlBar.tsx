@@ -80,6 +80,7 @@ export default function ReactPlayerControlBar(
     (!props.isLive && props.duration <= props.scrubTime);
 
   const shouldShowFullScreen = !isMobile();
+  const shouldShowVolumeControl = !isMobile();
 
   return (
     <>
@@ -129,25 +130,27 @@ export default function ReactPlayerControlBar(
           />
         </div>
         <div className="flex items-center">
-          <div className="relative flex w-full gap-2">
-            <VolumeIcon
-              role="button"
-              className="w-4 h-auto cursor-pointer"
-              onClick={() => props.setMuted(!props.isMuted)}
-            />
-            <div className="w-[50px] md:w-[100px] bg-base-100">
-              <input
-                min="0"
-                max="100"
-                value={props.volume ?? 100}
-                type="range"
-                className="w-full range range-info range-xs"
-                onChange={(e) => {
-                  props.setVolume(Number(e.target.value));
-                }}
+          {shouldShowVolumeControl && (
+            <div className="relative flex w-full gap-2">
+              <VolumeIcon
+                role="button"
+                className="w-4 h-auto cursor-pointer"
+                onClick={() => props.setMuted(!props.isMuted)}
               />
+              <div className="w-[50px] md:w-[100px] bg-base-100">
+                <input
+                  min="0"
+                  max="100"
+                  value={props.volume ?? 100}
+                  type="range"
+                  className="w-full range range-info range-xs"
+                  onChange={(e) => {
+                    props.setVolume(Number(e.target.value));
+                  }}
+                />
+              </div>
             </div>
-          </div>
+          )}
           <div className="w-[70px] p-2 text-xs">
             {props.isLive ? (
               <button
