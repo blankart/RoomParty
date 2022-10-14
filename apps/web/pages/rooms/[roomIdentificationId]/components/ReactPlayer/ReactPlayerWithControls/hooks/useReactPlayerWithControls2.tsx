@@ -189,17 +189,17 @@ export default function useReactPlayerWithControls2(): {
 
   async function whenPlayerStatusChanged(newPlayerStatus: PlayerStatus) {
     if (newPlayerStatus.type === "PLAYED") {
-      playVideo();
+      await playVideo();
       return;
     }
 
     if (newPlayerStatus.type === "PAUSED") {
-      pauseVideo();
+      await pauseVideo();
       return;
     }
 
     if (newPlayerStatus.type === "SEEK_TO") {
-      seekTo(newPlayerStatus.time, "seconds", false);
+      await seekTo(newPlayerStatus.time, "seconds", false);
       return;
     }
 
@@ -207,7 +207,7 @@ export default function useReactPlayerWithControls2(): {
       context.invalidateQueries(["rooms.findByRoomIdentificationId"]);
       setUrl(newPlayerStatus.url);
       setVideoPlatform(newPlayerStatus.videoPlatform);
-      seekTo(newPlayerStatus.time);
+      await seekTo(newPlayerStatus.time, "seconds", false);
       return;
     }
   }
@@ -318,7 +318,7 @@ export default function useReactPlayerWithControls2(): {
               );
             } else {
               add(
-                "Play/pause is disabled for live streams",
+                "Pause is disabled for live streams",
                 undefined,
                 "control-bar-warning"
               );
@@ -338,7 +338,7 @@ export default function useReactPlayerWithControls2(): {
               );
             } else {
               add(
-                "Play/pause is disabled for live streams",
+                "Pause is disabled for live streams",
                 undefined,
                 "control-bar-warning"
               );
