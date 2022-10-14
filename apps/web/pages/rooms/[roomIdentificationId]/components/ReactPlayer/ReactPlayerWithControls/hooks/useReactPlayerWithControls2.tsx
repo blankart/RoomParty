@@ -254,6 +254,11 @@ export default function useReactPlayerWithControls2(): {
       const internalPlayerIsPlayed = (reactPlayerProps as any).reactPlayerRef
         .current?.player?.isPlaying;
 
+      if (isLive) {
+        !internalPlayerIsPlayed && playVideo();
+        return;
+      }
+
       if (isPlayed) {
         !internalPlayerIsPlayed && playVideo();
       } else {
@@ -265,6 +270,7 @@ export default function useReactPlayerWithControls2(): {
       clearInterval(interval);
     };
   }, [
+    isLive,
     isPlayed,
     reactPlayerProps,
     isReady,
@@ -302,22 +308,42 @@ export default function useReactPlayerWithControls2(): {
       async onPlay() {
         !isControlsDisabled && (await reactPlayerProps.onPlay?.());
         if (!isPlayed) {
-          add(
-            "Use the bottom control bar to synchronize controls.",
-            undefined,
-            "control-bar-warning"
-          );
           pauseVideo();
+          if (!isControlsDisabled) {
+            if (!isLive) {
+              add(
+                "Use the bottom control bar to synchronize controls.",
+                undefined,
+                "control-bar-warning"
+              );
+            } else {
+              add(
+                "Play/pause is disabled for live streams",
+                undefined,
+                "control-bar-warning"
+              );
+            }
+          }
         }
       },
       onPause() {
         if (isPlayed) {
           playVideo();
-          add(
-            "Use the bottom control bar to synchronize controls.",
-            undefined,
-            "control-bar-warning"
-          );
+          if (!isControlsDisabled) {
+            if (!isLive) {
+              add(
+                "Use the bottom control bar to synchronize controls.",
+                undefined,
+                "control-bar-warning"
+              );
+            } else {
+              add(
+                "Play/pause is disabled for live streams",
+                undefined,
+                "control-bar-warning"
+              );
+            }
+          }
         }
       },
     },

@@ -13,7 +13,7 @@ interface ToastStore {
   add: (toast: string, type?: ToastType, key?: number | string) => void;
 }
 
-const TOAST_MAX_DISPLAY_TIME_IN_MS = 10_000;
+const TOAST_MAX_DISPLAY_TIME_IN_MS = 3_000;
 
 export const useToastStore = create<ToastStore>((set, get) => ({
   toasts: [],

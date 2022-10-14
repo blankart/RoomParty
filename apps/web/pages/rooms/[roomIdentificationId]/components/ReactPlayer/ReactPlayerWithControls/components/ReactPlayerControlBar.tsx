@@ -73,6 +73,7 @@ export default function ReactPlayerControlBar(
     props.isLive || props.isControlsDisabled || !props.url;
 
   const shouldDisablePlayButton =
+    props.isLive ||
     props.isControlsDisabled ||
     !props.url ||
     props.hasEnded ||
