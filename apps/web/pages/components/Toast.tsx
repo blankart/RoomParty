@@ -53,7 +53,7 @@ export default function Toast() {
             <div
               key={toast.id}
               className={classNames(
-                "text-xs alert md:text-sm w-[min(100vw,400px)] text-center",
+                "text-xs alert md:text-sm w-[min(100vw,400px)] text-center flex justify-center",
                 {
                   "alert-success": toast.type === "success",
                   "alert-error": toast.type === "error",
