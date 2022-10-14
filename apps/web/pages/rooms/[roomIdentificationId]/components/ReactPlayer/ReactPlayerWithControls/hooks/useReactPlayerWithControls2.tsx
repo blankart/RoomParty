@@ -313,13 +313,13 @@ export default function useReactPlayerWithControls2(): {
             if (!isLive) {
               add(
                 "Use the bottom control bar to synchronize controls.",
-                undefined,
+                "error",
                 "control-bar-warning"
               );
             } else {
               add(
                 "Pause is disabled for live streams",
-                undefined,
+                "error",
                 "control-bar-warning"
               );
             }
@@ -333,13 +333,13 @@ export default function useReactPlayerWithControls2(): {
             if (!isLive) {
               add(
                 "Use the bottom control bar to synchronize controls.",
-                undefined,
+                "error",
                 "control-bar-warning"
               );
             } else {
               add(
                 "Pause is disabled for live streams",
-                undefined,
+                "error",
                 "control-bar-warning"
               );
             }
