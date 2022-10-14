@@ -82,18 +82,21 @@ export default function useReactPlayerWithControls2(): {
       return;
     }
 
-    const newPlayerStatus = findByRoomIdentificationIdResponse.playerStatus as
-      | PlayerStatus
-      | undefined;
-    const newScrubTime = newPlayerStatus?.time ?? 0;
-    const shouldPlayTheVideo = newPlayerStatus?.type === "PLAYED";
-    setUrl(newPlayerStatus?.url);
-    setVideoPlatform(
-      findByRoomIdentificationIdResponse?.videoPlatform ??
-        newPlayerStatus?.videoPlatform
-    );
-    seekTo(newScrubTime, "seconds", !shouldPlayTheVideo);
-    findMyRoomAlreadyFetchAfterMount.current = true;
+    (async function () {
+      const newPlayerStatus =
+        findByRoomIdentificationIdResponse.playerStatus as
+          | PlayerStatus
+          | undefined;
+      const newScrubTime = newPlayerStatus?.time ?? 0;
+      const shouldPlayTheVideo = newPlayerStatus?.type === "PLAYED";
+      setUrl(newPlayerStatus?.url);
+      setVideoPlatform(
+        findByRoomIdentificationIdResponse?.videoPlatform ??
+          newPlayerStatus?.videoPlatform
+      );
+      await seekTo(newScrubTime, "seconds", !shouldPlayTheVideo);
+      findMyRoomAlreadyFetchAfterMount.current = true;
+    })();
   }, [isFetchedAfterMount, findByRoomIdentificationIdResponse]);
 
   const { mutateAsync: control } = trpc.useMutation(["player.control"]);
@@ -227,16 +230,48 @@ export default function useReactPlayerWithControls2(): {
     )
       return;
 
-    setTimeout(() => {
+    setTimeout(async () => {
       onReady();
     }, 1_000);
   }, [isReady, isFetchedAfterMount, findByRoomIdentificationIdResponse]);
 
-  function onReady() {
-    scrubTime && seekTo(scrubTime, "seconds", !isPlayed);
+  async function onReady() {
+    scrubTime && (await seekTo(scrubTime, "seconds", !isPlayed));
   }
 
   const { add } = useToast();
+
+  useEffect(() => {
+    if (
+      !isReady ||
+      !isFetchedAfterMount ||
+      !findMyRoomAlreadyFetchAfterMount.current ||
+      !findByRoomIdentificationIdResponse
+    )
+      return;
+
+    const interval = setInterval(() => {
+      const internalPlayerIsPlayed = (reactPlayerProps as any).reactPlayerRef
+        .current?.player?.isPlaying;
+
+      if (isPlayed) {
+        !internalPlayerIsPlayed && playVideo();
+      } else {
+        internalPlayerIsPlayed && pauseVideo();
+      }
+    }, 1_000);
+
+    return () => {
+      clearInterval(interval);
+    };
+  }, [
+    isPlayed,
+    reactPlayerProps,
+    isReady,
+    isFetchedAfterMount,
+    findMyRoomAlreadyFetchAfterMount,
+    findByRoomIdentificationIdResponse,
+  ]);
 
   return {
     control: {
@@ -264,8 +299,8 @@ export default function useReactPlayerWithControls2(): {
       pip: false,
       width: "100%",
       height: "100%",
-      onPlay() {
-        !isControlsDisabled && reactPlayerProps.onPlay?.();
+      async onPlay() {
+        !isControlsDisabled && (await reactPlayerProps.onPlay?.());
         if (!isPlayed) {
           add(
             "Use the bottom control bar to synchronize controls.",

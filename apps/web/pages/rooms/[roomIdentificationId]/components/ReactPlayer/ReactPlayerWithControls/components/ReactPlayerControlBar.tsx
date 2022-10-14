@@ -78,8 +78,6 @@ export default function ReactPlayerControlBar(
     props.hasEnded ||
     (!props.isLive && props.duration <= props.scrubTime);
 
-  const shouldDisableControlBar = !props.hasInitiallyPlayed;
-
   const shouldShowFullScreen = !isMobile();
 
   return (
@@ -87,8 +85,7 @@ export default function ReactPlayerControlBar(
       <div
         className={classNames(
           "absolute bottom-8 left-[50%] translate-x-[-50%] text-xs md:text-sm p-1 px-2 text-center w-full badge badge-info rounded-none z-[1] opacity-0 h-fit duration-300 translate-y-[20px]",
-          showPlayerStatus && "opacity-100 translate-y-0",
-          shouldDisableControlBar && "bottom-0"
+          showPlayerStatus && "opacity-100 translate-y-0"
         )}
       >
         {props.lastPlayerStatus?.type === "CHANGE_URL"
@@ -99,14 +96,7 @@ export default function ReactPlayerControlBar(
           ? `${props.lastPlayerStatus?.name} played the video.`
           : `${props.lastPlayerStatus?.name} is skipping the video.`}
       </div>
-      <div
-        className={classNames(
-          "flex duration-300 items-center w-full h-8 gap-2 bg-base-100 z-[2]",
-          {
-            "!h-0 overflow-hidden": shouldDisableControlBar,
-          }
-        )}
-      >
+      <div className="flex duration-300 items-center w-full h-8 gap-2 bg-base-100 z-[2]">
         <button
           aria-label={props.isPlayed ? "Pause video" : "Play video"}
           className={classNames(

@@ -21,17 +21,17 @@ export interface ReactPlayerContextState {
   setUrl: (newUrl?: string) => any;
   setVideoPlatform: (newVideoPlatform: VideoPlatform | undefined) => any;
   getInternalPlayer: () => Record<string, any> | undefined;
-  playVideo: () => void;
-  pauseVideo: () => void;
-  toggleFullScreen: () => void;
+  playVideo: () => Promise<any>;
+  pauseVideo: () => Promise<any>;
+  toggleFullScreen: () => Promise<any>;
   seekTo: (
     time: number,
     type?: "seconds",
     shouldPauseAfterScrub?: boolean
-  ) => void;
+  ) => Promise<any>;
   setDuration: (time: number) => void;
-  setVolume: (time: number) => void;
-  setMuted: (muted: boolean) => void;
+  setVolume: (time: number) => Promise<any>;
+  setMuted: (muted: boolean) => Promise<any>;
   duration: number;
   url?: string;
   videoPlatform?: VideoPlatform;
@@ -54,13 +54,13 @@ const ReactPlayerContext = createContext<ReactPlayerContextState>({
   reactPlayerWithControlsWrapperRef: { current: null },
   setUrl: () => ({}),
   getInternalPlayer: () => ({}),
-  playVideo() {},
-  pauseVideo() {},
-  seekTo() {},
-  setVolume() {},
+  async playVideo() {},
+  async pauseVideo() {},
+  async seekTo() {},
+  async setVolume() {},
   setDuration() {},
-  toggleFullScreen() {},
-  setMuted() {},
+  async toggleFullScreen() {},
+  async setMuted() {},
   setVideoPlatform() {},
   duration: 0,
   hasEnded: false,
@@ -248,11 +248,11 @@ export function ReactPlayerProvider(props: {
         reactPlayerRef as any
       )?.current?.player?.player?.player?.setCurrentTime?.(time),
     ])
-      .then(() => {
+      .then(async () => {
         setHasEnded(false);
         setScrubTime(time);
-        shouldPauseAfterScrub && pauseVideo();
-        !shouldPauseAfterScrub && playVideo();
+        shouldPauseAfterScrub && (await pauseVideo());
+        !shouldPauseAfterScrub && (await playVideo());
       })
       .catch(console.warn);
   }
