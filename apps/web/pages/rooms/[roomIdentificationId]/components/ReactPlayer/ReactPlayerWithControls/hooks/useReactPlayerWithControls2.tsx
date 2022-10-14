@@ -199,7 +199,7 @@ export default function useReactPlayerWithControls2(): {
     }
 
     if (newPlayerStatus.type === "SEEK_TO") {
-      await seekTo(newPlayerStatus.time, "seconds", false);
+      await seekTo(newPlayerStatus.time);
       return;
     }
 
